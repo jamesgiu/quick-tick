@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
-import {MantineProvider} from "@mantine/core";
+import {MantineProvider, MantineTheme} from "@mantine/core";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {BASE_PATH, QuickTickPage} from "./components/AppShell/util/QuickTickPage";
 import Daily from "./components/Daily/Daily";
@@ -11,6 +11,7 @@ import Timecharging from "./components/Timecharging/Timecharging";
 import Stats from "./components/Metrics/Stats";
 import Home from "./components/Home/Home";
 import NotFound from "./components/NotFound/NotFound";
+
 
 const router = createBrowserRouter([
     {
@@ -44,7 +45,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
+      <MantineProvider
+          withGlobalStyles
+          withNormalizeCSS
+          theme={{colorScheme: "dark"}}
+      >
           <RouterProvider router={router} />
       </MantineProvider>
   </React.StrictMode>

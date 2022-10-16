@@ -1,9 +1,10 @@
-import {AppShell, Header, Navbar} from "@mantine/core";
+import {AppShell, Aside, Center, Header, MediaQuery, Navbar} from "@mantine/core";
 import React from "react";
 import "./QuickTickAppShell.css";
 import QuickTickNavbar from "./components/Navbar/QuickTickNavbar";
 import QuickTickHeader from "./components/Header/QuickTickHeader";
 import {Outlet} from "react-router";
+import QuickTickFooter from "./components/Footer/QuickTickFooter";
 
 interface QuickTickAppShellProps {
     children: JSX.Element
@@ -12,16 +13,13 @@ export default function QuickTickAppShell(props: QuickTickAppShellProps): JSX.El
     return (
         <AppShell
             padding="md"
+            navbarOffsetBreakpoint="sm"
+            asideOffsetBreakpoint="sm"
             navbar={<QuickTickNavbar/>}
             header={<QuickTickHeader/>}
-            styles={(theme) => {
-                return ({
-                    main: {backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0]},
-                });
-            }}
+            footer={<QuickTickFooter/>}
         >
-            {props.children}
-            <Outlet />
+          <Outlet/>
         </AppShell>
     )
 }

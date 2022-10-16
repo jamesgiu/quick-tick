@@ -1,0 +1,27 @@
+.header-logo .icon-tabler-chevron-right {
+    margin-right: -5px;
+}
+
+.header-text {
+    font-family: "Ink Free";
+    font-size: 2rem;
+}
+
+.header-text-first-half {
+    color: #646cff;
+    letter-spacing: -3.2px;
+    font-weight: 500;
+}
+
+.header-text-second-half {
+    color: #007180C1;
+    font-weight: 700;
+    font-family: "Lucida Handwriting";
+}
+
+.header-group-2 {
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    right: 1px;
+}

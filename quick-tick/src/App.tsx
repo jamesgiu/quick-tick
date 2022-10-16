@@ -9,9 +9,7 @@ import {BrowserRouter} from "react-router-dom";
 
 function App() {
   return (
-      <QuickTickAppShell>
-          <div className="App"/>
-      </QuickTickAppShell>
+      <QuickTickAppShell/>
   )
 }
 
