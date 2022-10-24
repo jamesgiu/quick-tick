@@ -1,4 +1,4 @@
-![img.png](splash.png)
+![img.png](quick-tick/src/assets/splash.png)
 
 # Quick Tick
 
@@ -23,4 +23,4 @@ The guidelines are as follows:
 - There are no guidelines in the wild west.
 
 ## Screenshots
-![img.png](screenshot.png)
+![img.png](quick-tick/src/assets/screenshot.png)
