@@ -22,6 +22,7 @@
     "@mantine/prism": "^5.5.4",
     "@mantine/rte": "^5.5.4",
     "@mantine/spotlight": "^5.5.4",
+    "@react-oauth/google": "^0.2.8",
     "dayjs": "^1.11.5",
     "embla-carousel-react": "^7.0.3",
     "react": "^18.2.0",

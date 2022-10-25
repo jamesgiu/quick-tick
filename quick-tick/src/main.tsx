@@ -11,6 +11,8 @@ import Timecharging from "./components/Timecharging/Timecharging";
 import Stats from "./components/Metrics/Stats";
 import Home from "./components/Home/Home";
 import NotFound from "./components/NotFound/NotFound";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 
 
 const router = createBrowserRouter([
@@ -45,6 +47,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GC_CLIENT_ID}>
       <MantineProvider
           withGlobalStyles
           withNormalizeCSS
@@ -52,5 +55,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       >
           <RouterProvider router={router} />
       </MantineProvider>
+      </GoogleOAuthProvider>
   </React.StrictMode>
 )
