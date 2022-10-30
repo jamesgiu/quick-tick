@@ -2,7 +2,7 @@ import {Button, Header, Menu, Navbar, Stack} from "@mantine/core";
 import React from "react";
 import "./QuickTickNavbar.css";
 import {Link} from "react-router-dom";
-import {QuickTickPage} from "../../util/QuickTickPage";
+import {QuickTickPage} from "../../../../util/QuickTickPage";
 import {IconUserCheck, IconHomeExclamation, IconClock, IconTimeline} from "@tabler/icons";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import Divider = Menu.Divider;

@@ -2,8 +2,12 @@ import {ActionIcon, Button, Center, Group, Header, ThemeIcon} from "@mantine/cor
 import React from "react";
 import "./QuickTickHeader.css";
 import {Link} from "react-router-dom";
-import {QuickTickPage} from "../../util/QuickTickPage";
-import {IconChecks, IconChevronRight, IconUser} from '@tabler/icons';
+import {QuickTickPage} from "../../../../util/QuickTickPage";
+import {IconChecks, IconChevronRight, IconLogout, IconSettings, IconHandStop} from '@tabler/icons';
+import {useRecoilState, useResetRecoilState, useSetRecoilState} from "recoil";
+import {credentialAtom, userInfoAtom} from "../../../../recoil/Atoms";
+import {showNotification} from "@mantine/notifications";
+
 
 export const LOGO =     <span> <span className={"header-logo"}>
                         <IconChevronRight/>
@@ -16,6 +20,21 @@ export const LOGO =     <span> <span className={"header-logo"}>
     </span>;
 
 export default function QuickTickHeader(): JSX.Element {
+    const setCredentials = useSetRecoilState(credentialAtom);
+    const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
+
+    // Will also reset the credentials atom
+    const logout = () => {
+        console.log("Setting state to undefined");
+        setCredentials(undefined);
+        setUserInfo(undefined);
+        showNotification({
+            title: "Logged out",
+            message: "Successfully logged out, goodbye!",
+            icon: <IconHandStop/>
+        })
+    }
+
     return (
         <div className={"quick-tick-header"}>
             <Header height={60} p="xs">
@@ -25,7 +44,10 @@ export default function QuickTickHeader(): JSX.Element {
                     </Link>
                 </Group>
                 <Group position={"right"} className={"header-group-2"}>
-                    <Button leftIcon={<IconUser/>} variant={"subtle"}/>
+                    <Button leftIcon={<IconSettings/>} variant={"subtle"}/>
+                    {userInfo &&
+                        <Button leftIcon={<IconLogout/>} variant={"subtle"} onClick={() => logout()}/>
+                    }
                 </Group>
             </Header>
         </div>

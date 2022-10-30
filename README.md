@@ -22,5 +22,10 @@ The guidelines are as follows:
 
 - There are no guidelines in the wild west.
 
+## Host it yourself
+### .env file keys
+#### 1. VITE_GC_CLIENT_ID
+Retrieved from https://console.cloud.google.com/apis/credentials
+
 ## Screenshots
 ![img.png](quick-tick/src/assets/screenshot.png)
