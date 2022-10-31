@@ -36,10 +36,10 @@ jobs:
           git config user.email github-actions@github.com
           git config --global url."git@github.com:".insteadOf "https://github.com/"
       - run: npm ci
-      - run: npm run build
+      - run: npm run predeploy
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: build
+          folder: dist
           ssh-key: ${{ secrets.GH_ACTIONS_KEY }}
