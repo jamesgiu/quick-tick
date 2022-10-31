@@ -44,24 +44,21 @@ export default function QuickTickAuth(): JSX.Element {
 
     // When the credential changes, get the user info again.
     useEffect(()=> {
-        if (credential && credential.access_token) {
+        if (!userInfo && credential && credential.access_token) {
             getUserInfo();
         }
     }, [credential]);
 
-    useEffect(()=>{
-        if (userInfo && userInfo.name) {
+    const getUserInfo = () => {
+        GoogleAPI.getUserInfo(credential.access_token, (userInfo)=> {
+            setUserInfo(userInfo);
             showNotification({
                 title: 'Authenticated!',
                 message: `Welcome ${userInfo.name}!`,
                 icon: <IconMoodSmileDizzy/>,
                 color: "green"
             });
-        }
-    }, [userInfo]);
-
-    const getUserInfo = () => {
-        GoogleAPI.getUserInfo(credential.access_token, (userInfo)=> setUserInfo(userInfo), ()=> showNotification(errorNotification));
+        }, ()=> showNotification(errorNotification));
     }
 
     return (

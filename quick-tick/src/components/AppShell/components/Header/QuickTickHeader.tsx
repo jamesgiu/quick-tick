@@ -25,7 +25,6 @@ export default function QuickTickHeader(): JSX.Element {
 
     // Will also reset the credentials atom
     const logout = () => {
-        console.log("Setting state to undefined");
         setCredentials(undefined);
         setUserInfo(undefined);
         showNotification({
