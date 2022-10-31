@@ -12,7 +12,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./quick-tick
+        
     strategy:
       matrix:
         node-version: [14.x, 16.x]
@@ -22,7 +25,6 @@ jobs:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
-        working-directory: ./quick-tick
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
