@@ -3,7 +3,7 @@
 }
 
 .header-text {
-    font-family: "Ink Free";
+    font-family: "Rage";
     font-size: 2rem;
 }
 
@@ -16,7 +16,7 @@
 .header-text-second-half {
     color: #007180C1;
     font-weight: 700;
-    font-family: "Lucida Handwriting";
+    font-family: "Rage";
 }
 
 .header-group-2 {
@@ -24,4 +24,14 @@
     top: 1px;
     bottom: 1px;
     right: 1px;
+}
+
+.header-group-2 .mantine-Button-root,
+.header-group-2 .mantine-Button-icon {
+    padding: 0;
+    margin: 0;
+}
+
+.header-group-2 {
+    margin-right: 10px;
 }
