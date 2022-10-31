@@ -6,10 +6,7 @@ import QuickTickHeader from "./components/Header/QuickTickHeader";
 import {Outlet} from "react-router";
 import QuickTickFooter from "./components/Footer/QuickTickFooter";
 
-interface QuickTickAppShellProps {
-    children: JSX.Element
-}
-export default function QuickTickAppShell(props: QuickTickAppShellProps): JSX.Element {
+export default function QuickTickAppShell(): JSX.Element {
     return (
         <AppShell
             padding="md"

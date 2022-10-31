@@ -1,6 +1,6 @@
 import {createBrowserRouter} from "react-router-dom";
 import App from "../App";
-import {BASE_PATH, QuickTickPage} from "../util/QuickTickPage";
+import {QuickTickPage} from "../util/QuickTickPage";
 import Daily from "../components/Daily/Daily";
 import Upcoming from "../components/Upcoming/Upcoming";
 import Timecharging from "../components/Timecharging/Timecharging";
@@ -10,7 +10,7 @@ import NotFound from "../components/NotFound/NotFound";
 
 const router = createBrowserRouter([
     {
-        path: `${QuickTickPage.HOME}`,
+        path: QuickTickPage.HOME,
         element: <App/>,
         errorElement: <NotFound/>,
         children: [
@@ -19,19 +19,19 @@ const router = createBrowserRouter([
                 element: <Home/>,
             },
             {
-                path: `${BASE_PATH()}${QuickTickPage.DAILY}`,
+                path: QuickTickPage.DAILY,
                 element: <Daily/>,
             },
             {
-                path: `${BASE_PATH()}${QuickTickPage.UPCOMING}`,
+                path: QuickTickPage.UPCOMING,
                 element: <Upcoming/>,
             },
             {
-                path: `${BASE_PATH()}${QuickTickPage.TIMECHARGING}`,
+                path: QuickTickPage.TIMECHARGING,
                 element: <Timecharging/>,
             },
             {
-                path: `${BASE_PATH()}${QuickTickPage.STATS}`,
+                path: QuickTickPage.STATS,
                 element: <Stats/>,
             },
         ]

@@ -1,15 +1,11 @@
-export function BASE_PATH(): string {
-    return "/";
-}
-
 /**
  * Enum that represents possible pages in the QuickTick application.
  */
 export enum QuickTickPage {
-    HOME = "/",
-    DAILY = "/daily",
-    UPCOMING = "/upcoming",
-    TIMECHARGING = "/timecharging",
-    STATS = "/stats",
+    HOME = "/quick-tick",
+    DAILY = "/quick-tick/daily",
+    UPCOMING = "/quick-tick/upcoming",
+    TIMECHARGING = "/quick-tick/timecharging",
+    STATS = "/quick-tick/stats",
     NOT_FOUND = "/404",
 }
