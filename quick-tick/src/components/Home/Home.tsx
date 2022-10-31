@@ -1,9 +1,8 @@
 import React from "react";
 import "./Home.css";
-import {Avatar, Button, Center, Group, Header, Text} from "@mantine/core";
-import {IconBrandGithub, IconChecks, IconChevronRight} from "@tabler/icons";
-import {LOGO} from "../AppShell/components/Header/QuickTickHeader";
-
+import { Avatar, Center, Text } from "@mantine/core";
+import { IconBrandGithub, IconChecks } from "@tabler/icons";
+import { LOGO } from "../AppShell/components/Header/QuickTickHeader";
 
 const SVG_WAVE = (
     <svg viewBox="0 -30 500 80" width="100%" height="50" preserveAspectRatio="none" className={"svg-wave"}>
@@ -32,21 +31,20 @@ export default function Home(): JSX.Element {
         <div className={"home"}>
             <Center>
                 <Avatar radius={"xl"}>
-                    <IconChecks size={30}/>
+                    <IconChecks size={30} />
                 </Avatar>
             </Center>
-            <h2>
-                Welcome to {LOGO}
-            </h2>
+            <h2>Welcome to {LOGO}</h2>
             <i>A task-management application</i>
             {SVG_WAVE}
             <div className={"home-content-area"}>
-                <IconBrandGithub/>
+                <IconBrandGithub />
                 <Text size={"sm"}>
-                    QuickTick is an open source project, have a <a href={"https://github.com/jamesgiu/quick-tick"}>gander</a>.
+                    QuickTick is an open source project, have a{" "}
+                    <a href={"https://github.com/jamesgiu/quick-tick"}>gander</a>.
                 </Text>
             </div>
             {SVG_WAVE_BOTTOM}
         </div>
-    )
+    );
 }
