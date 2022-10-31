@@ -1,0 +1,41 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Deploy to GH Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: true # to allow further authenticated git commands
+          fetch-depth: 0 # fetch all history for other branches and tags
+          ssh-key: ${{ secrets.GH_ACTIONS_KEY }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          ssh-key: ${{ secrets.GH_ACTIONS_KEY }}
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git config --global url."git@github.com:".insteadOf "https://github.com/"
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: build
+          ssh-key: ${{ secrets.GH_ACTIONS_KEY }}
