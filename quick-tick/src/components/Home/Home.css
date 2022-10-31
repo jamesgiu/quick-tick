@@ -1,16 +1,16 @@
 .home {
-    margin: auto;
+  margin: auto;
 }
 
 .home .svg-wave {
-    background-color: #282c34;
-    margin-bottom: -10px;
+  background-color: #282c34;
+  margin-bottom: -10px;
 }
 
 .home .home-content-area {
-    background-color: #1b1c1d;
+  background-color: #1b1c1d;
 }
 
 .home .github-buttons {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }

@@ -7,6 +7,8 @@
 
 Task-management application using React and Google Tasks
 
+Hosted at: https://jamesgiu.github.io/quick-tick/
+
 ## Commands
 
 ### `npm run dev`
@@ -16,6 +18,26 @@ Open [http://localhost:5173](http://localhost:5173/) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
+
+### `npm run deploy`
+
+Will deploy the application to `github-pages` to be hosted.
+
+See more: https://github.com/jamesgiu/quick-tick/deployments/activity_log?environment=github-pages
+
+### Other
+#### `npm run lint` and `npm run lint:fix`
+
+Runs `eslint` over the project.
+
+#### `npm run lint:css` and `npm run lint:css:fix`
+
+Runs `stylelint` over the project.
+
+#### `npm run style` and `npm run style:fix`
+
+Runs `prettier` over the project.
+
 
 ## Contributing
 

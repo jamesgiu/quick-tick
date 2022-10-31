@@ -1,12 +1,21 @@
 {
   "name": "quick-tick",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "homepage": "https://jamesgiu.github.io/quick-tick/",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "predeploy": "tsc && vite build --base=/quick-tick/",
+    "preview": "vite preview",
+    "lint": "eslint . --ext=.ts,.tsx",
+    "lint:fix": "eslint . --ext=.ts,.tsx --fix",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:css:fix": "stylelint --fix \"src/**/*.css\"",
+    "style": "prettier --check src/",
+    "style:fix": "prettier --write src/",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -36,8 +45,19 @@
   "devDependencies": {
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
     "@vitejs/plugin-react": "^2.1.0",
-    "typescript": "^4.6.4",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "gh-pages": "^4.0.0",
+    "prettier": "2.3.2",
+    "stylelint": "^13.13.1",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-standard": "^22.0.0",
+    "typescript": "^4.8.4",
     "vite": "^3.1.0"
   }
 }
