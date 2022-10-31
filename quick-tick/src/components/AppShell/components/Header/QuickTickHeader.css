@@ -40,7 +40,6 @@
   width: 100vw;
 }
 
-
 /* stylelint-disable */
 /* Unfortunately, due to react-burger-menu using unexposed JS styling, !important is necessary here. */
 .burger-button > button#react-burger-menu-btn {
