@@ -1,4 +1,6 @@
 .navbar-link-stack {
   float: left;
   text-align: left;
+  height: 100%;
+  display: flex;
 }
