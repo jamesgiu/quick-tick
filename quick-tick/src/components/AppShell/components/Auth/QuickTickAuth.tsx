@@ -6,7 +6,7 @@ import { showNotification } from "@mantine/notifications";
 import { useRecoilState } from "recoil";
 import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
-import { UserInfoResponse } from "../../../../api/Types";
+import {REQUIRED_SCOPES, UserInfoResponse} from "../../../../api/Types";
 
 const errorNotification = {
     title: "Login failed",
@@ -28,6 +28,7 @@ export default function QuickTickAuth(): JSX.Element {
         onError: (): void => {
             showNotification(errorNotification);
         },
+        scope: REQUIRED_SCOPES
     });
 
     // When the credential changes, get the user info again.

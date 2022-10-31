@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_ACTIONS, UserInfoResponse } from "./Types";
+import {GOOGLE_API_ACTIONS, TASK_API_ACTIONS, TaskListResponse, TaskResponse, UserInfoResponse} from "./Types";
 
 export class GoogleAPI {
     public static getUserInfo(
@@ -7,7 +7,36 @@ export class GoogleAPI {
         onSuccess: (info: UserInfoResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios(API_ACTIONS.USER_INFO, {
+        axios(GOOGLE_API_ACTIONS.BASE_URL + GOOGLE_API_ACTIONS.USER_INFO, {
+            headers: {
+                Authorization: `Bearer ${credential}`,
+            },
+        })
+            .then((response) => onSuccess(response.data))
+            .catch((error) => onFailure(error.message));
+    }
+
+    public static getTaskLists(
+        credential: string,
+        onSuccess: (response: TaskListResponse) => void,
+        onFailure: (error: string) => void
+    ): void {
+        axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS, {
+            headers: {
+                Authorization: `Bearer ${credential}`,
+            },
+        })
+            .then((response) => onSuccess(response.data))
+            .catch((error) => onFailure(error.message));
+    }
+
+    public static getTasks(
+        credential: string,
+        taskListId: string,
+        onSuccess: (response: TaskResponse) => void,
+        onFailure: (error: string) => void
+    ): void {
+        axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskListId + "/tasks", {
             headers: {
                 Authorization: `Bearer ${credential}`,
             },
