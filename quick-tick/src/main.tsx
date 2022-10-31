@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           withNormalizeCSS
           theme={{colorScheme: "dark"}}
       >
-          <NotificationsProvider>
+          <NotificationsProvider limit={3}>
             <RouterProvider router={router} />
           </NotificationsProvider>
       </MantineProvider>
