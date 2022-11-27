@@ -9,7 +9,6 @@ interface QuickTickTableProps {
     rows: QuickTickTableRow[]
 }
 export default function QuickTickTable(props: QuickTickTableProps) : JSX.Element {
-
     const buildHeaders = () : JSX.Element[] => {
         let headers: JSX.Element[] = [];
 

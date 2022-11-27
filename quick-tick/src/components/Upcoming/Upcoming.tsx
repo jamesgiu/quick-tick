@@ -4,6 +4,8 @@ import {credentialAtom} from "../../recoil/Atoms";
 import {GoogleAPI} from "../../api/GoogleAPI";
 import {Task, TaskList} from "../../api/Types";
 import QuickTickTable, {QuickTickTableRow} from "../QuickTickTable/QuickTickTable";
+import {showNotification} from "@mantine/notifications";
+import {IconBug, IconUserX} from "@tabler/icons";
 
 
 // TODO
@@ -14,11 +16,15 @@ import QuickTickTable, {QuickTickTableRow} from "../QuickTickTable/QuickTickTabl
 // ** Create Task List
 // ** Create Task - maybe use "notes" to extend functionality?
 // Investigate the other task object types
-// Refreshing the token
-// Toasts for errors
 // Loading spinners
 // Automatic emoji assignment??
 // For stats page => pie chart of categories of task
+const errorNotification = {
+    title: "Task retrieval failed",
+    message: "Could not retrieve tasks! 😥",
+    color: "red",
+    icon: <IconBug />,
+}
 export default function Upcoming(): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const [taskLists, setTaskLists] = useState<TaskList[]>([]);
@@ -49,10 +55,10 @@ export default function Upcoming(): JSX.Element {
                         taskList.tasks = response.items;
                         const newTaskLists = [...taskLists, taskList];
                         setTaskLists(newTaskLists);
-                    }, (e) => { console.log(e)});
+                    }, () => { showNotification(errorNotification)});
                 });
             },
-            (e)=>{console.log(e)})
+            ()=>{showNotification(errorNotification)})
     }, []);
 
     return (
