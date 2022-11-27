@@ -6,6 +6,17 @@ export interface UserInfoResponse {
     picture: string;
 }
 
+export interface QuickTickCredential extends TokenResponse {
+    // The Datetime the user's token will expire
+    accessTokenExpiryEpoch: number
+}
+
+export interface TokenResponse {
+    access_token: string,
+    expires_in: number,
+    id_token: string,
+    refresh_token: string
+}
 export interface TaskListResponse {
     kind: string,
     etag: string,
@@ -55,6 +66,11 @@ export interface Task {
 export enum GOOGLE_API_ACTIONS {
     BASE_URL = "https://www.googleapis.com",
     USER_INFO = "/oauth2/v3/userinfo"
+}
+
+export enum GOOGLE_API_OAUTH {
+    BASE_URL = "https://oauth2.googleapis.com",
+    TOKEN = "/token"
 }
 export enum TASK_API_ACTIONS {
     TASK_URL = "https://tasks.googleapis.com",

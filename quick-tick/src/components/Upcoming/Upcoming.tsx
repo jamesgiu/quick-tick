@@ -39,13 +39,13 @@ export default function Upcoming(): JSX.Element {
 
     // On mount, retrieve and store the logged in User's task lists
     useEffect(()=> {
-        GoogleAPI.getTaskLists(credential.access_token,
+        GoogleAPI.getTaskLists(credential,
             (response)=> {
                 const taskLists = response.items;
 
                 // Now get the tasks for each task list
                 taskLists.forEach(taskList => {
-                    GoogleAPI.getTasks(credential.access_token, taskList.id, (response) => {
+                    GoogleAPI.getTasks(credential, taskList.id, (response) => {
                         taskList.tasks = response.items;
                         const newTaskLists = [...taskLists, taskList];
                         setTaskLists(newTaskLists);
