@@ -1,5 +1,13 @@
 import axios from "axios";
-import {GOOGLE_API_ACTIONS, TASK_API_ACTIONS, TaskListResponse, TaskResponse, UserInfoResponse} from "./Types";
+import {
+    GOOGLE_API_ACTIONS,
+    TASK_API_ACTIONS,
+    TaskList,
+    Task,
+    UserInfoResponse,
+    TaskListResponse,
+    TaskResponse
+} from "./Types";
 
 export class GoogleAPI {
     public static getUserInfo(

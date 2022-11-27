@@ -8,14 +8,27 @@ export interface UserInfoResponse {
 
 export interface TaskListResponse {
     kind: string,
+    etag: string,
+    items: TaskList[]
+}
+
+export interface TaskResponse {
+    kind: string,
+    etag: string,
+    items: Task[]
+}
+
+export interface TaskList {
+    kind: string,
     id: string,
     etag: string,
     title: string,
     updated: string,
-    selfLink: string
+    selfLink: string,
+    tasks: Task[]
 }
 
-export interface TaskResponse {
+export interface Task {
     kind: string,
     id: string,
     etag: string,
