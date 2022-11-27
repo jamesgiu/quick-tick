@@ -5,6 +5,20 @@ import {GoogleAPI} from "../../api/GoogleAPI";
 import {Task, TaskList} from "../../api/Types";
 import QuickTickTable, {QuickTickTableRow} from "../QuickTickTable/QuickTickTable";
 
+
+// TODO
+// Task tick/untick
+// Hide/show completed
+// Multiple tables per task list
+// New task form  -> Assign a category which will create a task list
+// ** Create Task List
+// ** Create Task - maybe use "notes" to extend functionality?
+// Investigate the other task object types
+// Refreshing the token
+// Toasts for errors
+// Loading spinners
+// Automatic emoji assignment??
+// For stats page => pie chart of categories of task
 export default function Upcoming(): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const [taskLists, setTaskLists] = useState<TaskList[]>([]);
