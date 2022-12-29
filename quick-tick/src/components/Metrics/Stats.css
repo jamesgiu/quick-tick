@@ -12,3 +12,7 @@
     max-width: 400px;
     margin: auto;
 }
+
+.stats .tasks-breakdown-chart .VictoryContainer text tspan {
+    fill: rgb(69, 90, 100) !important;
+}
