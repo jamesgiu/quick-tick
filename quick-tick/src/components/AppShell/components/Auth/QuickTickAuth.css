@@ -1,0 +1,5 @@
+.quick-tick-auth .profile-area .auth-actions {
+    float: left;
+    text-align: left;
+    display: flex;
+}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Avatar, Box, Button, Group, Text } from "@mantine/core";
-import { IconBrandGoogle, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
+import { Accordion, Anchor, Avatar, Box, Button, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
+import { IconBrandGoogle, IconMoodSmileDizzy, IconUserX, IconCalendar, IconChevronRight, IconHandStop, IconLogout, IconExternalLink } from "@tabler/icons";
 import { useGoogleLogin } from "@react-oauth/google";
 import { showNotification } from "@mantine/notifications";
 import { useRecoilState } from "recoil";
@@ -16,8 +16,19 @@ const errorNotification = {
 };
 
 export default function QuickTickAuth(): JSX.Element {
-    const [credential, setCredential] = useRecoilState<QuickTickCredential>(credentialAtom);
-    const [userInfo, setUserInfo] = useRecoilState<UserInfoResponse>(userInfoAtom);
+    const [credential, setCredential] = useRecoilState<QuickTickCredential | undefined>(credentialAtom);
+    const [userInfo, setUserInfo] = useRecoilState<UserInfoResponse | undefined>(userInfoAtom);
+
+    // Will also reset the credentials atom
+    const logout = (): void => {
+        setCredential(undefined);
+        setUserInfo(undefined);
+        showNotification({
+            title: "Logged out",
+            message: "Successfully logged out, goodbye!",
+            icon: <IconHandStop />,
+        });
+    };
 
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse) : void=> {
         const expiryDateEpoch = Date.now() + response.expires_in * 1000;
@@ -61,42 +72,57 @@ export default function QuickTickAuth(): JSX.Element {
 
         // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
         const TWO_MINUTES_MS = 2 * 60 * 1000;
-        setTimeout(()=> GoogleAPI.refreshToken(credential,
-            (response)=> {
-                generateExpirationTimeAndSetCredentials(response)
-            }, ()=>showNotification(errorNotification)), (credential.expires_in * 1000) - TWO_MINUTES_MS)
+        if (credential) {
+            setTimeout(()=> GoogleAPI.refreshToken(credential,
+                (response)=> {
+                    generateExpirationTimeAndSetCredentials(response)
+                }, ()=>showNotification(errorNotification)), (credential.expires_in * 1000) - TWO_MINUTES_MS)
+        }
     }, [credential]);
 
 
     const getUserInfo = (): void => {
-        GoogleAPI.getUserInfo(
-            credential,
-            (userInfo) => {
-                setUserInfo(userInfo);
-                showNotification({
-                    title: "Authenticated!",
-                    message: `Welcome ${userInfo.name}!`,
-                    icon: <IconMoodSmileDizzy />,
-                    color: "green",
-                });
-            },
-            () => showNotification(errorNotification)
-        );
+        if (credential) {
+            GoogleAPI.getUserInfo(
+                credential,
+                (userInfo) => {
+                    setUserInfo(userInfo);
+                    showNotification({
+                        title: "Authenticated!",
+                        message: `Welcome ${userInfo.name}!`,
+                        icon: <IconMoodSmileDizzy />,
+                        color: "green",
+                    });
+                },
+                () => showNotification(errorNotification)
+            );
+        }       
     };
 
     return (
         <div className={"quick-tick-auth"}>
             {userInfo ? (
-                <Group>
-                    <Avatar src={userInfo.picture} color="blue" radius="xl" variant={"light"} size={"md"} />
-                    <Box sx={{ flex: 1 }}>
-                        <Text size="sm" weight={500}>
-                            {userInfo.name}
-                        </Text>
-                        <Text color="dimmed" size="xs">
-                            {userInfo.email}
-                        </Text>
-                    </Box>
+                <Group className="profile-area">
+                    <Accordion>
+                    <Accordion.Item value="profile-controls">
+                    <Accordion.Control icon={<Avatar src={userInfo.picture} color="blue" radius="xl" variant={"light"} size={"md"} />}>
+                            <Box sx={{ flex: 1 }}>
+                                    <Text size="sm" weight={500}>
+                                        {userInfo.name}
+                                    </Text>
+                                    <Text color="dimmed" size="xs">
+                                        {userInfo.email}
+                                    </Text>
+                                </Box>
+                        </Accordion.Control>
+                        <Accordion.Panel>
+                            <Stack className="auth-actions" align={"stretch"} spacing={1}>
+                                <Button variant="subtle" size="sm"><Anchor variant="text" underline={false} href={"https://calendar.google.com/calendar/"} type="button" size="sm"> <IconCalendar/> Google Calendar <IconExternalLink size={16}/></Anchor></Button>
+                                <Button variant="subtle" size="sm" onClick={(): void => logout()} leftIcon={<IconLogout/>}>Log out</Button>
+                             </Stack>
+                        </Accordion.Panel>
+                        </Accordion.Item>
+                        </Accordion>
                 </Group>
             ) : (
                 <Button onClick={(): void => login()} leftIcon={<IconBrandGoogle />}>

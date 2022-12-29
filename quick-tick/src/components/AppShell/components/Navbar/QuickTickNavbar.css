@@ -4,3 +4,7 @@
   height: 100%;
   display: flex;
 }
+
+.nav-accordion .mantine-Accordion-control {
+  padding: 0;
+}
