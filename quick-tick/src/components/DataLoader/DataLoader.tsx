@@ -9,10 +9,10 @@ import { LoadingOverlay } from "@mantine/core";
 import { ListItem } from "@mantine/core/lib/List/ListItem/ListItem";
 import NewTask from "../Tasks/NewTask/NewTask";
 
-function errorNotification(resource: string) : NotificationProps {
+export function genErrorNotificationProps(resource: string) : NotificationProps {
     return {
-        title: `${resource} retrieval failed`,
-        message: `Could not retrieve ${resource}! 😥`,
+        title: `${resource} process failed`,
+        message: `Could not process ${resource}! 😥`,
         color: "red",
         icon: <IconBug />,
     }
@@ -38,10 +38,10 @@ function DataLoader(): JSX.Element {
                     GoogleAPI.getTasks(credential, taskList.id, (response) => {
                         setLoading(false);
                         setTaskListMap(taskListMap.set(taskList.id, response.items));
-                    }, () => { showNotification(errorNotification("Tasks"))});
+                    }, () => { showNotification(genErrorNotificationProps("Tasks"))});
                 });
             },
-            ()=>{showNotification(errorNotification("TaskLists"))})
+            ()=>{showNotification(genErrorNotificationProps("TaskLists"))})
     }
 
     // When the credentail atom is set, then retrieve and set tasks + tasklists.
@@ -50,10 +50,10 @@ function DataLoader(): JSX.Element {
             getTasks();
         }
 
-    }, [credential])
+    }, [credential]);
 
     if (loading) {
-        return <LoadingOverlay visible={true} overlayBlur={2} />
+        return <LoadingOverlay visible={true} overlayBlur={2} />;
     }
 
     return <></>;

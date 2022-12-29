@@ -26,6 +26,8 @@ export default function Upcoming(): JSX.Element {
     const getTasksAsRows = () : QuickTickTableRow[] => {
         const rows: QuickTickTableRow[] = [];
 
+        console.log(taskListMap);
+        
         taskListMap.forEach(taskListTasks => {
             taskListTasks.forEach(task => {
                     rows.push({rowData: [task.title, task.notes, task.status, task.due, task.completed]});

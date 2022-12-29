@@ -30,14 +30,12 @@ export interface TaskResponse {
 }
 
 export interface TaskList {
-    taskList: never[];
     kind: string,
     id: string,
     etag: string,
     title: string,
     updated: string,
-    selfLink: string,
-    tasks: Task[]
+    selfLink: string
 }
 
 export interface Task {
@@ -55,7 +53,6 @@ export interface Task {
     completed: string,
     deleted: boolean,
     hidden: boolean,
-    taskListId: string,
     links: [
         {
             type: string,

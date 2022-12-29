@@ -1,4 +1,5 @@
 import axios, {AxiosPromise} from "axios";
+import { NewTaskFormFields } from "../components/Tasks/NewTask/NewTask";
 import {
     GOOGLE_API_ACTIONS,
     TASK_API_ACTIONS,
@@ -45,6 +46,36 @@ export class GoogleAPI {
         onFailure: (error: string) => void
     ): void {
         axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskListId + "/tasks", {
+            headers: {
+                Authorization: `Bearer ${credential.access_token}`,
+            },
+        })
+            .then((response) => onSuccess(response.data))
+            .catch((error) => { console.log(error); onFailure(error.message)});
+    }
+
+    public static createNewTaskList(
+        credential: QuickTickCredential,
+        taskListTitle: string,
+        onSuccess: (response: TaskResponse) => void,
+        onFailure: (error: string) => void
+    ): void {
+        axios.post(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS, { title: taskListTitle }, {
+            headers: {
+                Authorization: `Bearer ${credential.access_token}`,
+            },
+        })
+            .then((response) => onSuccess(response.data))
+            .catch((error) => { console.log(error); onFailure(error.message)});
+    }
+
+    public static createNewTask(
+        credential: QuickTickCredential,
+        newTaskValues: NewTaskFormFields,
+        onSuccess: (response: TaskResponse) => void,
+        onFailure: (error: string) => void
+    ): void {
+        axios.post(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + newTaskValues.taskListId + "/tasks", newTaskValues, {
             headers: {
                 Authorization: `Bearer ${credential.access_token}`,
             },
