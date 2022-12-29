@@ -1,4 +1,4 @@
-import { Burger, Button, Group, Header, MediaQuery } from "@mantine/core";
+import { Burger, Button, Group, Header, MediaQuery, Stack } from "@mantine/core";
 import React, { useState } from "react";
 import "./QuickTickHeader.css";
 import { Link } from "react-router-dom";
@@ -9,6 +9,8 @@ import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import { showNotification } from "@mantine/notifications";
 import { fallDown as BurgerMenu } from "react-burger-menu";
 import { getNavbarLinks } from "../Navbar/QuickTickNavbar";
+import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
+import NewTask from "../../../Tasks/NewTask/NewTask";
 interface WindowSize {
     width: number;
     height: number;
@@ -55,10 +57,13 @@ export default function QuickTickHeader(): JSX.Element {
                     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
                         <Burger opened={burgerOpen} onClick={(): void => setBurgerOpen((o) => !o)} />
                     </MediaQuery>
-                    <Link to={QuickTickPage.HOME}>{LOGO}</Link>
+                    <Link to={QuickTickPage.HOME}>{LOGO}</Link>        
                 </Group>
                 <Group position={"right"} className={"header-group-2"}>
-                    <Button leftIcon={<IconSettings size={30} />} variant={"subtle"} />
+                    <Group className="header-main-actions">
+                        <NewTask/>
+                        <NewTaskList/>
+                    </Group>
                     {userInfo && (
                         <Button leftIcon={<IconLogout size={30} />} variant={"subtle"} onClick={(): void => logout()} />
                     )}
@@ -71,8 +76,8 @@ export default function QuickTickHeader(): JSX.Element {
                         overlayClassName={"burger-overlay"}
                         burgerButtonClassName={"burger-button"}
                     >
-                        <span className={"burger-menu"} onClick={(): void => setBurgerOpen(false)}>
-                            {getNavbarLinks(true)}
+                        <span className={"burger-menu"}>
+                            {getNavbarLinks(true, ()=>setBurgerOpen(false))}
                         </span>
                     </BurgerMenu>
                 )}
