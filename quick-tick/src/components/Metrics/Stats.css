@@ -1,10 +1,14 @@
 .stats .tasks-breakdown-pie .VictoryContainer {
     margin: auto;
-    height: 300px !important;
+    min-width: 300px;
+    max-width: 400px;
 }
 
 .stats .pie-grid {
     margin: auto;
-    width: 80%;
-    padding-left: 10%;
+}
+
+.stats .tasks-breakdown-chart .VictoryContainer {
+    max-width: 400px;
+    margin: auto;
 }

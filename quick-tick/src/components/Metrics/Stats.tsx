@@ -63,7 +63,7 @@ export default function Stats(): JSX.Element {
         <h4>
             Breakdown of completed tasks by task list
         </h4> 
-        <Grid className="pie-grid">
+        <Grid className="pie-grid" columns={10}>
             <Grid.Col span={5}>
         <Box>
         <h5>
@@ -73,7 +73,6 @@ export default function Stats(): JSX.Element {
                     <VictoryPie
         data={generatePieValuesForBreakdownLastXDays(30)}
             theme={VictoryTheme.material}
-
         />
         </span>
         </Box>
@@ -98,7 +97,7 @@ export default function Stats(): JSX.Element {
            <h4>
             Task completion over time, last 7 days
             </h4> 
-            <span className="tasks-breakdown-pie">
+            <span className="tasks-breakdown-chart">
             <VictoryChart>
         <VictoryBar
           data={generateChartValuesLast7Days()}
