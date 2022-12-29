@@ -28,5 +28,5 @@ export const taskListsAtom = atom({
 
 export const taskListsMapAtom = atom({
     key: "tasklistsMap",
-    default: new Map()
+    default: new Map<string, Task[]>()
 })

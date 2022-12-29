@@ -37,11 +37,11 @@ function DataLoader(): JSX.Element {
                     setLoading(true);
                     GoogleAPI.getTasks(credential, taskList.id, (response) => {
                         setLoading(false);
-                        setTaskListMap(taskListMap.set(taskList.id, response.items));
-                    }, () => { showNotification(genErrorNotificationProps("Tasks"))});
+                        setTaskListMap(taskListMap.set(taskList.title, response.items));
+                    }, () => { showNotification(genErrorNotificationProps("Tasks")); setLoading(false)});
                 });
             },
-            ()=>{showNotification(genErrorNotificationProps("TaskLists"))})
+            ()=>{showNotification(genErrorNotificationProps("TaskLists")); setLoading(false)})
     }
 
     // When the credentail atom is set, then retrieve and set tasks + tasklists.

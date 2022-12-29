@@ -45,7 +45,7 @@ export class GoogleAPI {
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskListId + "/tasks", {
+        axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskListId + "/tasks?showCompleted=true&showHidden=true&maxResults=100", {
             headers: {
                 Authorization: `Bearer ${credential.access_token}`,
             },

@@ -16,6 +16,11 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: ()=> void): JS
                     Upcoming tasks
                 </Button>
             </Link>
+            <Link to={QuickTickPage.STATS} onClick={onClickCallback}>
+                    <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
+                        Stats
+                    </Button>
+            </Link>
             <Accordion className="nav-accordion">
                 <Accordion.Item value="coming-soon">
                 <Divider />
@@ -31,11 +36,6 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: ()=> void): JS
                         <Link to={QuickTickPage.TIMECHARGING} onClick={onClickCallback}>
                             <Button leftIcon={<IconClock />} variant="subtle" size={mobile ? "xl" : "sm"}>
                                 Timecharging
-                            </Button>
-                        </Link>
-                        <Link to={QuickTickPage.STATS} onClick={onClickCallback}>
-                            <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                                Stats
                             </Button>
                         </Link>
                     </Accordion.Panel>
