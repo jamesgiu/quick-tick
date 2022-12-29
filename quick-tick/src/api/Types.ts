@@ -30,6 +30,7 @@ export interface TaskResponse {
 }
 
 export interface TaskList {
+    taskList: never[];
     kind: string,
     id: string,
     etag: string,
@@ -54,6 +55,7 @@ export interface Task {
     completed: string,
     deleted: boolean,
     hidden: boolean,
+    taskListId: string,
     links: [
         {
             type: string,

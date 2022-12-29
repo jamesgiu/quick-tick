@@ -50,7 +50,7 @@ export class GoogleAPI {
             },
         })
             .then((response) => onSuccess(response.data))
-            .catch((error) => onFailure(error.message));
+            .catch((error) => { console.log(error); onFailure(error.message)});
     }
 
     public static getTokens(

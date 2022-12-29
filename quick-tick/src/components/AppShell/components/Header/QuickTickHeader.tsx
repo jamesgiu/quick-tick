@@ -48,6 +48,7 @@ export default function QuickTickHeader(): JSX.Element {
             message: "Successfully logged out, goodbye!",
             icon: <IconHandStop />,
         });
+        location.reload();
     };
 
     return (

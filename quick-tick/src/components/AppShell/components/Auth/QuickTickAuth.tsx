@@ -28,6 +28,7 @@ export default function QuickTickAuth(): JSX.Element {
             message: "Successfully logged out, goodbye!",
             icon: <IconHandStop />,
         });
+        location.reload();
     };
 
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse) : void=> {
