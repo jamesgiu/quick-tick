@@ -3,7 +3,7 @@ import { Accordion, Anchor, Avatar, Box, Button, Group, Menu, Stack, Text, Unsty
 import { IconBrandGoogle, IconMoodSmileDizzy, IconUserX, IconCalendar, IconChevronRight, IconHandStop, IconLogout, IconExternalLink } from "@tabler/icons";
 import { useGoogleLogin } from "@react-oauth/google";
 import { showNotification } from "@mantine/notifications";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
 import {QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse} from "../../../../api/Types";
@@ -16,13 +16,15 @@ const errorNotification = {
 };
 
 export default function QuickTickAuth(): JSX.Element {
-    const [credential, setCredential] = useRecoilState<QuickTickCredential | undefined>(credentialAtom);
-    const [userInfo, setUserInfo] = useRecoilState<UserInfoResponse | undefined>(userInfoAtom);
+    const resetCredentials = useResetRecoilState(credentialAtom);
+    const resetUserState = useResetRecoilState(userInfoAtom);
+    const [credential, setCredential] = useRecoilState<QuickTickCredential>(credentialAtom);
+    const [userInfo, setUserInfo] = useRecoilState<UserInfoResponse>(userInfoAtom);
 
     // Will also reset the credentials atom
     const logout = (): void => {
-        setCredential(undefined);
-        setUserInfo(undefined);
+        resetCredentials();
+        resetUserState();
         showNotification({
             title: "Logged out",
             message: "Successfully logged out, goodbye!",
