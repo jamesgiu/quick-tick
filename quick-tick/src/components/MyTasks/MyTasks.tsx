@@ -69,11 +69,11 @@ export default function MyTasks(): JSX.Element {
         <NewTask/>
         <ResponsiveGridLayout
             className="layout"
-            layouts={{'lg': layout, 'md': layout}}
+            layouts={{'lg': layout, 'md': layout, 'sm': layout, 'xs': layout}}
             onDragStop={(layout) => setLayout(layout)}
             onResizeStop={(layout) => setLayout(layout)}
             rowHeight={5}
-            cols={{'lg': 12, 'md': 12}}
+            cols={{'lg': 12, 'md': 12, 'sm': 12, 'xs': 12}}
         >
             {getTaskListPanels()}
        </ResponsiveGridLayout>
