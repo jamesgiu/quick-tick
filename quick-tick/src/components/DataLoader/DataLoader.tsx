@@ -49,7 +49,6 @@ function DataLoader(): JSX.Element {
         if (credential) {
             getTasks();
         }
-
     }, [credential]);
 
     if (loading) {
