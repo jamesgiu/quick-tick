@@ -7,7 +7,7 @@ import "./Stats.css";
 import { clampUseMovePosition } from "@mantine/hooks";
 
 interface ChartValueItem {
-    x: string | number,
+    x: string | Date,
     y: number
 }
 
@@ -31,7 +31,7 @@ export default function Stats(): JSX.Element {
             }
     
          });
-         return taskListNamesAndCount;
+         return taskListNamesAndCount.sort();
     }
 
     
@@ -45,7 +45,7 @@ export default function Stats(): JSX.Element {
             for(let day=1; day < 7; day++) {
                 const xVal = new Date(Date.now() - 1000 * 60 * 60 * 24 * day);
                 const newItem = {
-                    x: xVal.getDate(),
+                    x: xVal,
                     y: completedTasks.filter(task => new Date(task.completed).getDate() === xVal.getDate()).length,
                 }
 
@@ -55,7 +55,7 @@ export default function Stats(): JSX.Element {
             }
          });
 
-         return taskCompletionAndDate.sort();
+         return taskCompletionAndDate
     }
     
     return <div className={"stats"}>
@@ -105,11 +105,11 @@ export default function Stats(): JSX.Element {
               fill: "#c43a31",
             },
           }}
-          scale={{x: "log"}}
           animate={{
             duration: 2000,
             onLoad: { duration: 1000 }
           }}
+          scale={{x: "time"}}
         />
       </VictoryChart>
 </span>

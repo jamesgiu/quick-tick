@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../api/GoogleAPI";
 import { Task, TaskList } from "../../api/Types";
-import { credentialAtom, taskListsAtom, tasksAtom, taskListsMapAtom } from "../../recoil/Atoms";
+import { credentialAtom, taskListsAtom, tasksAtom, taskListsMapAtom, dataLoadingAtom } from "../../recoil/Atoms";
 import {IconBug} from "@tabler/icons";
 import { LoadingOverlay } from "@mantine/core";
 import { ListItem } from "@mantine/core/lib/List/ListItem/ListItem";
@@ -23,7 +23,7 @@ function DataLoader(): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const [taskLists, setTaskLists] = useRecoilState<TaskList[]>(taskListsAtom);
     const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
-    const [loading, setLoading] = useState<Boolean>(false);
+    const [loading, setLoading] = useRecoilState<Boolean>(dataLoadingAtom);
 
     const getTasks = () : void => {
         setLoading(true);
@@ -46,7 +46,7 @@ function DataLoader(): JSX.Element {
 
     // When the credentail atom is set, then retrieve and set tasks + tasklists.
     useEffect(()=> {
-        if (credential !== "") {
+        if (credential) {
             getTasks();
         }
 

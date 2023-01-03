@@ -39,6 +39,7 @@ export class GoogleAPI {
             .catch((error) => onFailure(error.message));
     }
 
+    // TODO will need to get this to return all tasks, loop through 100 items at a time
     public static getTasks(
         credential: QuickTickCredential,
         taskListId: string,
@@ -51,7 +52,7 @@ export class GoogleAPI {
             },
         })
             .then((response) => onSuccess(response.data))
-            .catch((error) => { console.log(error); onFailure(error.message)});
+            .catch((error) => onFailure(error.message));
     }
 
     public static createNewTaskList(
@@ -66,7 +67,7 @@ export class GoogleAPI {
             },
         })
             .then((response) => onSuccess(response.data))
-            .catch((error) => { console.log(error); onFailure(error.message)});
+            .catch((error) => onFailure(error.message));
     }
 
     public static createNewTask(
@@ -81,7 +82,7 @@ export class GoogleAPI {
             },
         })
             .then((response) => onSuccess(response.data))
-            .catch((error) => { console.log(error); onFailure(error.message)});
+            .catch((error) => onFailure(error.message));
     }
 
     public static getTokens(

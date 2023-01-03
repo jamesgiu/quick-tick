@@ -1,7 +1,11 @@
 .stats .tasks-breakdown-pie .VictoryContainer {
     margin: auto;
-    min-width: 300px;
+    min-width: 100px;
     max-width: 400px;
+}
+
+.stats .tasks-breakdown-pie .VictoryContainer svg {
+    overflow: visible;
 }
 
 .stats .pie-grid {

@@ -8,6 +8,9 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { RecoilRoot } from "recoil";
 import router from "./router/Router";
 
+import "/node_modules/react-grid-layout/css/styles.css";
+import "/node_modules/react-resizable/css/styles.css";
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
         <RecoilRoot>

@@ -57,9 +57,7 @@ function NewTaskList(): JSX.Element {
       </Box>
     </Modal>
 
-    <Group position="center">
-      <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconFilePlus/>} size="lg">Tasklist</Button>
-    </Group>
+    <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconFilePlus/>} size="sm">Tasklist</Button>
   </>);
 }
 

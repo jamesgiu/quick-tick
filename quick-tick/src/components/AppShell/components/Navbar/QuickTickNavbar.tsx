@@ -3,7 +3,7 @@ import React from "react";
 import "./QuickTickNavbar.css";
 import { Link } from "react-router-dom";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
-import { IconClock, IconHomeExclamation, IconTimeline, IconUserCheck, IconTrafficCone } from "@tabler/icons";
+import { IconClock, IconCheckupList, IconTimeline, IconUserCheck, IconTrafficCone } from "@tabler/icons";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import Divider = Menu.Divider;
 import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/AccordionItem";
@@ -11,9 +11,9 @@ import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/Accordi
 export const getNavbarLinks = (mobile: boolean, onClickCallback?: ()=> void): JSX.Element => {
     return (
         <Stack className={"navbar-link-stack"} align={"stretch"} justify={"center"}>
-            <Link to={QuickTickPage.UPCOMING} onClick={onClickCallback}>
-                <Button leftIcon={<IconHomeExclamation />} variant="subtle" size={mobile ? "xl" : "sm" }>
-                    Upcoming tasks
+            <Link to={QuickTickPage.MY_TASKS} onClick={onClickCallback}>
+                <Button leftIcon={<IconCheckupList />} variant="subtle" size={mobile ? "xl" : "sm" }>
+                    My tasks
                 </Button>
             </Link>
             <Link to={QuickTickPage.STATS} onClick={onClickCallback}>

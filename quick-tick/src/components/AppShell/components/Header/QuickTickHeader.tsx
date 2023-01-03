@@ -4,7 +4,7 @@ import "./QuickTickHeader.css";
 import { Link } from "react-router-dom";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { IconChecks, IconChevronRight, IconHandStop, IconLogout, IconSettings } from "@tabler/icons";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
 import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import { showNotification } from "@mantine/notifications";
 import { fallDown as BurgerMenu } from "react-burger-menu";
@@ -31,8 +31,9 @@ export const LOGO = (
 );
 
 export default function QuickTickHeader(): JSX.Element {
-    const setCredentials = useSetRecoilState(credentialAtom);
-    const [userInfo, setUserInfo] = useRecoilState(userInfoAtom);
+    const resetCredentials = useResetRecoilState(credentialAtom);
+    const resetUserState = useResetRecoilState(userInfoAtom);
+    const userInfo = useRecoilValue(userInfoAtom);
     const [burgerOpen, setBurgerOpen] = useState(false);
     const [windowSize, setWindowSize] = useState<WindowSize>({ width: window.innerWidth, height: window.innerWidth });
     window.onresize = (): void => {
@@ -41,8 +42,8 @@ export default function QuickTickHeader(): JSX.Element {
 
     // Will also reset the credentials atom
     const logout = (): void => {
-        setCredentials(undefined);
-        setUserInfo(undefined);
+        resetCredentials();
+        resetUserState();
         showNotification({
             title: "Logged out",
             message: "Successfully logged out, goodbye!",

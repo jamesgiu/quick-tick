@@ -6,6 +6,7 @@ import { IconSquarePlus, IconCheckbox  } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
+import { TaskList } from "../../../api/Types";
 import { credentialAtom, taskListsAtom, taskListsMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 
@@ -17,7 +18,11 @@ export interface NewTaskFormFields {
   due: string,
 };
 
-function NewTask(): JSX.Element {
+export interface NewTaskProps {
+  defaultTaskList?: TaskList,
+}
+
+function NewTask(props: NewTaskProps): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const taskLists = useRecoilValue(taskListsAtom);
     const [opened, setOpened] = useState(false);
@@ -25,7 +30,7 @@ function NewTask(): JSX.Element {
 
     const form = useForm<NewTaskFormFields>({
       initialValues: {
-        taskListId: '',
+        taskListId: props.defaultTaskList ? props.defaultTaskList.id : '',
         title: '',
         notes: '',
         // One week from now, by default.
@@ -33,12 +38,10 @@ function NewTask(): JSX.Element {
       }});
 
     const submit = (values: NewTaskFormFields) : void => {
-      console.log(values);
       setLoading(true);
 
        // Transform the given date to ISO if it is not already
       form.setFieldValue('due', new Date(form.values.due).toISOString())
-      
       GoogleAPI.createNewTask(credential, values, () => { showNotification({
       title: "Task created!",
       message: values.title + " successfully created!",
@@ -51,7 +54,6 @@ function NewTask(): JSX.Element {
 
 
     const buildSelectValuesFromTaskLists = (): SelectItem[] => {
-      console.log(taskLists);
       const selectItems : SelectItem[] = [];
 
       taskLists.forEach((taskList) => {
@@ -68,11 +70,12 @@ function NewTask(): JSX.Element {
     <Modal
       opened={opened}
       onClose={() => setOpened(false)}
-      title="New task"
+      title={props.defaultTaskList ? `New task for ${props.defaultTaskList.title}` : "New task"}
     >
   {loading && <LoadingOverlay visible={true} overlayBlur={2} />}
       <Box sx={{ maxWidth: 300 }} mx="auto">
       <form onSubmit={form.onSubmit(submit)}>
+        <span>
       <TextInput
           withAsterisk
           label="Task title"
@@ -91,17 +94,16 @@ function NewTask(): JSX.Element {
         placeholder="Pick a task list"
         data={buildSelectValuesFromTaskLists()}
         {...form.getInputProps('taskListId')}
-        />    
+        />
        <Group position="right" mt="md">
           <Button type="submit">Submit</Button>
         </Group>
+        </span>
       </form>
       </Box>
     </Modal>
-
-    <Group position="center">
-      <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconSquarePlus/>} size="lg">Task</Button>
-    </Group>
+    
+    <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconSquarePlus/>} size="sm">Task</Button>
   </>);
 }
 

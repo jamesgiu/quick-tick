@@ -4,7 +4,7 @@
 export enum QuickTickPage {
     HOME = "/quick-tick",
     DAILY = "/quick-tick/daily",
-    UPCOMING = "/quick-tick/upcoming",
+    MY_TASKS = "/quick-tick/my-tasks",
     TIMECHARGING = "/quick-tick/timecharging",
     STATS = "/quick-tick/stats",
     NOT_FOUND = "/404",
