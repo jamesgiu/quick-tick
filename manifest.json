@@ -1,16 +1,14 @@
 {
-    "short_name": "Quick Tick",
-    "name": "Quick Tick - Task tracking appliactcion",
-    "icons": [
-      {
-        "src": "favicon.ico",
-        "sizes": "64x64 32x32 24x24 16x16",
-        "type": "image/x-icon"
-      }
-    ],
-    "start_url": ".",
-    "display": "standalone",
-    "theme_color": "#000000",
-    "background_color": "#ffffff"
+  "index.html": {
+    "file": "assets/index.acd31721.js",
+    "src": "index.html",
+    "isEntry": true,
+    "css": [
+      "assets/index.aeabd7d2.css"
+    ]
+  },
+  "index.css": {
+    "file": "assets/index.aeabd7d2.css",
+    "src": "index.css"
   }
-  
+}
