@@ -11,6 +11,7 @@ import { fallDown as BurgerMenu } from "react-burger-menu";
 import { getNavbarLinks } from "../Navbar/QuickTickNavbar";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
 import NewTask from "../../../Tasks/NewTask/NewTask";
+import DataLoader from "../../../DataLoader/DataLoader";
 interface WindowSize {
     width: number;
     height: number;
@@ -65,6 +66,7 @@ export default function QuickTickHeader(): JSX.Element {
                     <Group className="header-main-actions">
                         <NewTask/>
                         <NewTaskList/>
+                        <DataLoader/>
                     </Group>
                     {userInfo && (
                         <Button leftIcon={<IconLogout size={30} />} variant={"subtle"} onClick={(): void => logout()} />

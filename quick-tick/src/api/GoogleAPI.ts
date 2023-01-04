@@ -85,6 +85,38 @@ export class GoogleAPI {
             .catch((error) => onFailure(error.message));
     }
 
+    public static completeTask(
+        credential: QuickTickCredential,
+        taskList: TaskList,
+        task: Task,
+        onSuccess: (response: TaskResponse) => void,
+        onFailure: (error: string) => void
+    ): void {
+        axios.put(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskList.id + "/tasks/" + task.id, task, {
+            headers: {
+                Authorization: `Bearer ${credential.access_token}`,
+            },
+        })
+            .then((response) => onSuccess(response.data))
+            .catch((error) => onFailure(error.message));
+    }
+
+    public static deleteTask(
+        credential: QuickTickCredential,
+        taskList: TaskList,
+        task: Task,
+        onSuccess: (response: TaskResponse) => void,
+        onFailure: (error: string) => void
+    ): void {
+        axios.delete(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskList.id + "/tasks/" + task.id, {
+            headers: {
+                Authorization: `Bearer ${credential.access_token}`,
+            },
+        })
+            .then((response) => onSuccess(response.data))
+            .catch((error) => onFailure(error.message));
+    }
+
     public static getTokens(
         oauthCode: string,
         onSuccess: (response: TokenResponse) => void,

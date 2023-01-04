@@ -23,7 +23,7 @@ export default function Stats(): JSX.Element {
 
             if (completedTasks.length > 0) {
                 const newItem = {
-                    x: tasklist + `(${completedTasks.length})`,
+                    x: JSON.parse(tasklist).title + `(${completedTasks.length})`,
                     y: completedTasks.length
                 }
                 

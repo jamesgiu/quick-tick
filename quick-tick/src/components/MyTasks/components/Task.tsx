@@ -3,7 +3,7 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import {credentialAtom, taskListsAtom, taskListsMapAtom, tasksAtom} from "../../../recoil/Atoms";
 import {showNotification} from "@mantine/notifications";
 import {IconBug, IconUserX} from "@tabler/icons";
-import { Task } from "../../../api/Types";
+import { Task, TaskList } from "../../../api/Types";
 
 
 // TODO

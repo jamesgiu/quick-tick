@@ -2,7 +2,7 @@ import React from "react";
 import {Table} from "@mantine/core";
 
 export interface QuickTickTableRow {
-    rowData: string[]
+    rowData: (string|JSX.Element)[]
 }
 interface QuickTickTableProps {
     headers: string[],

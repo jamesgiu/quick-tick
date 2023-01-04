@@ -5,7 +5,7 @@ import {Layout} from "react-grid-layout";
 
 const { persistAtom } = recoilPersist();
 
-export const dataLoadingAtom = atom<Boolean>({
+export const dataLoadingAtom = atom<boolean>({
     key: "dataLoading",
     default: false,
 });
@@ -35,6 +35,11 @@ export const taskListsAtom = atom<TaskList[]>({
 export const taskListsMapAtom = atom({
     key: "tasklistsMap",
     default: new Map<string, Task[]>()
+})
+
+export const tasksMapAtom = atom({
+    key: "tasksMap",
+    default: new Map<string, TaskList>()
 })
 
 export const taskListLayoutAtom =  atom<Layout[]>({

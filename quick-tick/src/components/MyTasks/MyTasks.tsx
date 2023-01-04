@@ -32,7 +32,6 @@ export default function MyTasks(): JSX.Element {
 
     const getTaskListPanels = () : JSX.Element[] => {
         const taskListPanels: JSX.Element[] = [];
-        console.log(layout);
         const layoutIds = layout.map(layoutItem => layoutItem.i).sort();
         const taskListIds = taskLists.map(taskList => taskList.id).sort();
         let newLayout : Layout[] = [...layout];

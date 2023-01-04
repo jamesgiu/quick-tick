@@ -8,6 +8,7 @@ import QuickTickTable, { QuickTickTableRow } from "../../QuickTickTable/QuickTic
 import { Badge, Card, Group, Text } from "@mantine/core";
 import "./TaskList.css";
 import NewTask from "../../Tasks/NewTask/NewTask";
+import TaskControls from "./TaskControls";
 
 
 // TODO
@@ -28,7 +29,7 @@ interface TaskListProps {
 export default function TaskListCard(props: TaskListProps): JSX.Element {
     const taskListMap = useRecoilValue<Map<string, Task[]>>(taskListsMapAtom);
 
-    const activeTasks = taskListMap.get(props.taskList.title)?.filter((task) => !task.completed);
+    const activeTasks = taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed);
     const usePluralPhrasing = activeTasks && (activeTasks?.length === 0 || activeTasks?.length > 1);
 
     const getTasksAsRows = () : QuickTickTableRow[] => {
@@ -36,7 +37,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
         if (activeTasks?.length ?? 0 > 0) {
             activeTasks!.forEach(task => {
                 if (!task.completed) {
-                    rows.push({rowData: [task.title, task.notes, task.status, task.due, task.completed]});
+                    rows.push({rowData: [task.title, task.due, <TaskControls targetTask={task}/>]});
                 }
             })
         }
@@ -48,7 +49,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     <Card shadow="sm" p="lg" radius="md" withBorder className="task-list">
         <span className="draggable-area">
         <Group position="apart" mt="md" mb="xs">
-            <IconDotsVertical/>
+            <IconDotsVertical color={"#a5d8ff"}/>
             <Text weight={500}>{props.taskList.title}</Text>
             <Badge color="pink" variant="light">
                {activeTasks?.length ?? 0} task{usePluralPhrasing ? "s" : ""}
@@ -56,7 +57,6 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
             <NewTask defaultTaskList={props.taskList}/>
          </Group>
       </span>
-
-      <QuickTickTable headers={["Title", "Notes", "Status", "Due", "Completed"]} rows={getTasksAsRows()}/> 
+      <QuickTickTable headers={["Title", "Due", "Controls"]} rows={getTasksAsRows()}/> 
     </Card>);
 }

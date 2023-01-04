@@ -2,3 +2,11 @@
     overflow: hidden;
     height: 100%;
 }
+
+.draggable-area:hover {
+    cursor: grab;
+}
+
+.draggable-area:active {
+    cursor: grabbing;
+}
