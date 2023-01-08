@@ -9,7 +9,7 @@ import {IconBug, IconUserX} from "@tabler/icons";
 import {Layout} from "react-grid-layout";
 import { Responsive, WidthProvider } from "react-grid-layout";
 const ResponsiveGridLayout = WidthProvider(Responsive);
-import TaskListCard from "./components/TaskList";
+import TaskListCard from "./components/TaskListCard";
 import "./MyTasks.css";
 import { LoadingOverlay } from "@mantine/core";
 import NewTaskList from "../Tasks/NewTasklist/NewTasklist";
@@ -48,7 +48,7 @@ export default function MyTasks(): JSX.Element {
             if (JSON.stringify(layoutIds) !== JSON.stringify(taskListIds)) {                
                 // If we haven't seen this tasklist id before, add it to our layouts array.
                 if (!layoutIds.includes(taskList.id)) {
-                    const layoutItem = {i: taskList.id, x: 0, y: i, h: 15, w: 5, maxH: 30};
+                    const layoutItem = {i: taskList.id, x: 0, y: i, h: 15, w: 5};
                     newLayout.push(layoutItem);
                 }
 

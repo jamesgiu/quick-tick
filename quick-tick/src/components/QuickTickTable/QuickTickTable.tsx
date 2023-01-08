@@ -1,5 +1,6 @@
 import React from "react";
 import {Table} from "@mantine/core";
+import "./QuickTickTable.css";
 
 export interface QuickTickTableRow {
     rowData: (string|JSX.Element)[]
@@ -42,7 +43,7 @@ export default function QuickTickTable(props: QuickTickTableProps) : JSX.Element
     }
 
     return (
-        <Table>
+        <Table highlightOnHover={true} className="quick-tick-table">
             <thead>
             <tr>
                 {buildHeaders()}

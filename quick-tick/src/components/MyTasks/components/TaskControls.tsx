@@ -73,6 +73,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                         color={"#a5d8ff"}
                         onMouseOver={()=> setIsHoveringOverComplete(true)} 
                         onMouseOut={() => setIsHoveringOverComplete(false)}
+                        onMouseLeave={() => setIsHoveringOverComplete(false)}
                         onClick={() => completeTask()}
                     >
                         {isHoveringOverComplete ? <IconCircleCheck/> : <IconCircleDashed/>}
@@ -81,6 +82,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                         color={"#a5d8ff"}
                         onMouseOver={()=> setIsHoveringOverTrash(true)} 
                         onMouseOut={() => setIsHoveringOverTrash(false)}
+                        onMouseLeave={() => setIsHoveringOverTrash(false)}
                         onClick={() => deleteTask()}
                     >
                         {isHoveringOverTrash ? <IconTrashX/> : <IconTrash/>}
