@@ -1,8 +1,8 @@
-.navbar-link-stack {
-  float: left;
+.navbar-link-stack a,
+.navbar-link-stack button {
   text-align: left;
-  height: 100%;
   display: flex;
+  width: 100%;
 }
 
 .nav-accordion .mantine-Accordion-control {

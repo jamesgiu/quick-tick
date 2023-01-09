@@ -33,7 +33,7 @@ interface TaskListProps {
 // Source: https://weeknumber.net/how-to/javascript
 
 // Returns the ISO week of the date.
-const getWeek = (date: Date) : number => {
+export const getWeek = (date: Date) : number => {
     var date = new Date(date.getTime());
     date.setHours(0, 0, 0, 0);
     // Thursday in current week decides the year.
@@ -53,7 +53,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     const usePluralPhrasing = activeTasks && (activeTasks?.length === 0 || activeTasks?.length > 1);
 
     const generateShardsForTask = (task: Task): JSX.Element => {
-        const now = new Date(Date.now());
+        const now = new Date(Date.now()) ;
         const nowWeek = getWeek(now);
         const nowMonth = now.getMonth();
         const taskDueDate = new Date(task.due);
@@ -95,7 +95,6 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
         }
 
         return <></>;
-        
     }
 
     const getTasksAsRows = () : QuickTickTableRow[] => {

@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Home.css";
-import { Avatar, Center, Text } from "@mantine/core";
-import { IconBrandGithub, IconChecks } from "@tabler/icons";
+import { Alert, Avatar, Blockquote, Card, Center, Divider, Text, Title } from "@mantine/core";
+import { IconBrandGithub, IconChecks, IconBulb } from "@tabler/icons";
 import { LOGO } from "../AppShell/components/Header/QuickTickHeader";
+import { taskListsMapAtom, userInfoAtom } from "../../recoil/Atoms";
+import { useRecoilValue } from "recoil";
+import Quote from "inspirational-quotes";
+import { getWeek } from "../MyTasks/components/TaskListCard";
 
 const SVG_WAVE = (
     <svg viewBox="0 -30 500 80" width="100%" height="50" preserveAspectRatio="none" className={"svg-wave"}>
@@ -27,6 +31,34 @@ const SVG_WAVE_BOTTOM = (
 );
 
 export default function Home(): JSX.Element {
+    const userInfo = useRecoilValue(userInfoAtom);
+    const taskListMap = useRecoilValue(taskListsMapAtom);
+    const [inspirationalQuote, setInspirationalQuote] = useState<{text: string, author: string}>();
+
+    useEffect(()=> {
+        setInspirationalQuote(Quote.getQuote());
+
+    }, []);
+
+    function getCompletedTasksToday(): number {
+        const now = new Date(Date.now());
+        const nowWeek = getWeek(now);
+
+        const completedTasksToday = [];
+       taskListMap.forEach((tasks) => {
+ 
+        const completedTasks =        tasks.filter((task) => {
+            const taskCompletionDate = new Date(task.completed);
+            const wasTaskCompletedThisWeek = getWeek(taskCompletionDate) === nowWeek;
+            return wasTaskCompletedThisWeek && now.getDay() === taskCompletionDate.getDay();
+        });
+
+        completedTasksToday.push(...completedTasks);
+       });
+
+       return completedTasksToday.length;
+    }
+
     return (
         <div className={"home"}>
             <Center>
@@ -36,6 +68,16 @@ export default function Home(): JSX.Element {
             </Center>
             <h2>Welcome to {LOGO}</h2>
             <i>A task-management application</i>
+            {userInfo && inspirationalQuote &&
+            <Card shadow="sm" p="lg" radius="md" withBorder>
+                <Title order={3}>G'day, {userInfo.given_name}</Title>
+                <Blockquote cite={inspirationalQuote.author}>{inspirationalQuote.text}</Blockquote>
+                <Alert icon={<IconBulb size={16} />} title="Today at a glance" color="cyan">
+                    So far, you have completed {getCompletedTasksToday()} tasks today.
+                </Alert>
+            </Card>
+            }
+            <Divider my="sm" />
             {SVG_WAVE}
             <div className={"home-content-area"}>
                 <IconBrandGithub />

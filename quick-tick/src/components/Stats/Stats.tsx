@@ -5,58 +5,60 @@ import { taskListsMapAtom } from "../../recoil/Atoms";
 import {VictoryPie, VictoryChart, VictoryBar, VictoryTheme} from "victory";
 import "./Stats.css";
 import { clampUseMovePosition } from "@mantine/hooks";
+import { Task } from "../../api/Types";
 
 interface ChartValueItem {
     x: string | Date,
     y: number
 }
 
+
+export const generatePieValuesForBreakdownLastXDays = (taskListMap: Map<string, Task[]>, days: number) : ChartValueItem[] => {
+    const taskListNamesAndCount : ChartValueItem[] = [];
+     taskListMap.forEach((tasks, tasklist) => {
+        const lastXDays = new Date(Date.now() - 1000 * 60 * 60 * 24 * days);
+        // Compare the epoch of the completion date vs last 30 days epoch.
+        const completedTasks = tasks.filter(task => task.completed !== undefined && new Date(task.completed).getTime() >= lastXDays.getTime());
+
+        if (completedTasks.length > 0) {
+            const newItem = {
+                x: JSON.parse(tasklist).title + `(${completedTasks.length})`,
+                y: completedTasks.length
+            }
+            
+            taskListNamesAndCount.push(newItem);
+        }
+
+     });
+     return taskListNamesAndCount.sort();
+}
+
+
+export const generateChartValuesLastXDays = (taskListMap: Map<string, Task[]>, days: number) : ChartValueItem[] => {
+    const taskCompletionAndDate : ChartValueItem[] = [];
+     taskListMap.forEach((tasks) => {
+        const last7Days = new Date(Date.now() - 1000 * 60 * 60 * 24 * days);
+        // Compare the epoch of the completion date vs last 30 days epoch.
+        const completedTasks = tasks.filter(task => task.completed !== undefined && new Date(task.completed).getTime() >= last7Days.getTime());
+
+        for(let day=1; day < days; day++) {
+            const xVal = new Date(Date.now() - 1000 * 60 * 60 * 24 * day);
+            const newItem = {
+                x: xVal,
+                y: completedTasks.filter(task => new Date(task.completed).getDate() === xVal.getDate()).length,
+            }
+
+            if (newItem.y > 0) {
+                taskCompletionAndDate.push(newItem);
+            }
+        }
+     });
+
+     return taskCompletionAndDate
+}
+
 export default function Stats(): JSX.Element {
     const taskListMap = useRecoilValue(taskListsMapAtom);
-
-    const generatePieValuesForBreakdownLastXDays = (days: number) : ChartValueItem[] => {
-        const taskListNamesAndCount : ChartValueItem[] = [];
-         taskListMap.forEach((tasks, tasklist) => {
-            const lastXDays = new Date(Date.now() - 1000 * 60 * 60 * 24 * days);
-            // Compare the epoch of the completion date vs last 30 days epoch.
-            const completedTasks = tasks.filter(task => task.completed !== undefined && new Date(task.completed).getTime() >= lastXDays.getTime());
-
-            if (completedTasks.length > 0) {
-                const newItem = {
-                    x: JSON.parse(tasklist).title + `(${completedTasks.length})`,
-                    y: completedTasks.length
-                }
-                
-                taskListNamesAndCount.push(newItem);
-            }
-    
-         });
-         return taskListNamesAndCount.sort();
-    }
-
-    
-    const generateChartValuesLast7Days = () : ChartValueItem[] => {
-        const taskCompletionAndDate : ChartValueItem[] = [];
-         taskListMap.forEach((tasks) => {
-            const last7Days = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7);
-            // Compare the epoch of the completion date vs last 30 days epoch.
-            const completedTasks = tasks.filter(task => task.completed !== undefined && new Date(task.completed).getTime() >= last7Days.getTime());
-
-            for(let day=1; day < 7; day++) {
-                const xVal = new Date(Date.now() - 1000 * 60 * 60 * 24 * day);
-                const newItem = {
-                    x: xVal,
-                    y: completedTasks.filter(task => new Date(task.completed).getDate() === xVal.getDate()).length,
-                }
-
-                if (newItem.y > 0) {
-                    taskCompletionAndDate.push(newItem);
-                }
-            }
-         });
-
-         return taskCompletionAndDate
-    }
     
     return <div className={"stats"}>
         Stats
@@ -71,7 +73,7 @@ export default function Stats(): JSX.Element {
         </h5> 
             <span className="tasks-breakdown-pie">
                     <VictoryPie
-        data={generatePieValuesForBreakdownLastXDays(30)}
+        data={generatePieValuesForBreakdownLastXDays(taskListMap, 30)}
             theme={VictoryTheme.material}
         />
         </span>
@@ -85,7 +87,7 @@ export default function Stats(): JSX.Element {
             
             <span className="tasks-breakdown-pie">
                     <VictoryPie
-        data={generatePieValuesForBreakdownLastXDays(7)}
+        data={generatePieValuesForBreakdownLastXDays(taskListMap, 7)}
             theme={VictoryTheme.material}
         />
         </span>
@@ -99,7 +101,7 @@ export default function Stats(): JSX.Element {
             <span className="tasks-breakdown-chart">
             <VictoryChart>
         <VictoryBar
-          data={generateChartValuesLast7Days()}
+          data={generateChartValuesLastXDays(taskListMap, 7)}
           style={{
             data: {
               fill: "#c43a31",

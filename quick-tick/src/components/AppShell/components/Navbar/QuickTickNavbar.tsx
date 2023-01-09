@@ -3,14 +3,14 @@ import React from "react";
 import "./QuickTickNavbar.css";
 import { Link } from "react-router-dom";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
-import { IconClock, IconCheckupList, IconTimeline, IconUserCheck, IconTrafficCone } from "@tabler/icons";
+import { IconClock, IconCheckupList, IconTimeline, IconCalendar, IconTrafficCone, IconExternalLink } from "@tabler/icons";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import Divider = Menu.Divider;
 import { AccordionItem } from "@mantine/core/lib/Accordion/AccordionItem/AccordionItem";
 
 export const getNavbarLinks = (mobile: boolean, onClickCallback?: ()=> void): JSX.Element => {
     return (
-        <Stack className={"navbar-link-stack"} align={"stretch"} justify={"center"}>
+        <Stack className={"navbar-link-stack"} align={"stretch"}>
             <Link to={QuickTickPage.MY_TASKS} onClick={onClickCallback}>
                 <Button leftIcon={<IconCheckupList />} variant="subtle" size={mobile ? "xl" : "sm" }>
                     My tasks
@@ -20,7 +20,10 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: ()=> void): JS
                     <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
                         Stats
                     </Button>
-            </Link>
+            </Link>        
+            <Button leftIcon={<IconCalendar />} variant="subtle" size={mobile ? "xl" : "sm"} onClick={() => { window.open("https://calendar.google.com/calendar/", "_blank", "popup=true, width=500, height=800"); }}>
+                Calendar <IconExternalLink size={16}/>
+            </Button>
             <Accordion className="nav-accordion">
                 <Accordion.Item value="coming-soon">
                 <Divider />
@@ -28,11 +31,6 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: ()=> void): JS
                         <Button leftIcon={<IconTrafficCone/>} variant="subtle" size={mobile ? "xl" : "sm"}>Under construction</Button>
                     </Accordion.Control>
                     <Accordion.Panel>
-                        <Link to={QuickTickPage.DAILY} onClick={onClickCallback}>
-                            <Button leftIcon={<IconUserCheck />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                                Daily check-in
-                            </Button>
-                        </Link>
                         <Link to={QuickTickPage.TIMECHARGING} onClick={onClickCallback}>
                             <Button leftIcon={<IconClock />} variant="subtle" size={mobile ? "xl" : "sm"}>
                                 Timecharging

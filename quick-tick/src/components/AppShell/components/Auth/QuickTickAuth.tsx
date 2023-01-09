@@ -120,7 +120,6 @@ export default function QuickTickAuth(): JSX.Element {
                         </Accordion.Control>
                         <Accordion.Panel>
                             <Stack className="auth-actions" align={"stretch"} spacing={1}>
-                                <Button variant="subtle" size="sm"><Anchor variant="text" underline={false} href={"https://calendar.google.com/calendar/"} type="button" size="sm"> <IconCalendar/> Google Calendar <IconExternalLink size={16}/></Anchor></Button>
                                 <Button variant="subtle" size="sm" onClick={(): void => logout()} leftIcon={<IconLogout/>}>Log out</Button>
                              </Stack>
                         </Accordion.Panel>
