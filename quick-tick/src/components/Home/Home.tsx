@@ -37,7 +37,6 @@ export default function Home(): JSX.Element {
 
     useEffect(()=> {
         setInspirationalQuote(Quote.getQuote());
-
     }, []);
 
     function getCompletedTasksToday(): number {
@@ -59,6 +58,8 @@ export default function Home(): JSX.Element {
        return completedTasksToday.length;
     }
 
+    const completedTasksToday = getCompletedTasksToday();
+
     return (
         <div className={"home"}>
             <Center>
@@ -73,7 +74,7 @@ export default function Home(): JSX.Element {
                 <Title order={3}>G'day, {userInfo.given_name}</Title>
                 <Blockquote cite={inspirationalQuote.author}>{inspirationalQuote.text}</Blockquote>
                 <Alert icon={<IconBulb size={16} />} title="Today at a glance" color="cyan">
-                    So far, you have completed {getCompletedTasksToday()} tasks today.
+                    So far, you have completed {completedTasksToday} task{completedTasksToday === 1 ? "" : "s"} today.
                 </Alert>
             </Card>
             }
