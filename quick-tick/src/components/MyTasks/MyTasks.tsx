@@ -9,11 +9,12 @@ import {IconBug, IconUserX} from "@tabler/icons";
 import {Layout} from "react-grid-layout";
 import { Responsive, WidthProvider } from "react-grid-layout";
 const ResponsiveGridLayout = WidthProvider(Responsive);
-import TaskListCard from "./components/TaskListCard";
+import TaskListCard, { TaskListFilter } from "./components/TaskListCard";
 import "./MyTasks.css";
 import { LoadingOverlay } from "@mantine/core";
 import NewTaskList from "../Tasks/NewTasklist/NewTasklist";
 import NewTask from "../Tasks/NewTask/NewTask";
+import { useSearchParams } from "react-router-dom";
 
 
 // TODO
@@ -26,7 +27,10 @@ import NewTask from "../Tasks/NewTask/NewTask";
 
 
 export default function MyTasks(): JSX.Element {
+    let [searchParams, setSearchParams] = useSearchParams();
     const taskLists = useRecoilValue<TaskList[]>(taskListsAtom);
+
+    const whenParam: TaskListFilter | null = searchParams.get("when") as unknown as TaskListFilter; 
 
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
 
@@ -41,7 +45,7 @@ export default function MyTasks(): JSX.Element {
 
             taskListPanels.push(
                 <div key={taskList.id} className="panel">
-                    <TaskListCard taskList={taskList}/>
+                    <TaskListCard taskList={taskList} filter={whenParam ? whenParam as TaskListFilter : undefined}/>
                 </div>
             )
 
@@ -64,6 +68,7 @@ export default function MyTasks(): JSX.Element {
     return (
     <div className={"my-tasks"}>
         <div>My Tasks</div>
+        {searchParams.get("when") && <div>Filtered by: {whenParam}</div>}
         <NewTaskList/>
         <NewTask/>
         <ResponsiveGridLayout
