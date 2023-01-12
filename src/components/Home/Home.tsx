@@ -45,6 +45,10 @@ export default function Home(): JSX.Element {
         setLiveTaskStats();
     }, []);
 
+    useEffect(()=> {
+        setLiveTaskStats();
+    }, [taskListMap]);
+
     function getCompletedTasksToday(): number {
         const now = new Date(Date.now());
         const nowWeek = TaskUtil.getWeek(now);
