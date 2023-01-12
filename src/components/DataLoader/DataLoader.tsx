@@ -2,7 +2,7 @@ import { NotificationProps, showNotification } from "@mantine/notifications";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../api/GoogleAPI";
-import { Task, TaskList } from "../../api/Types";
+import { Task, TaskList, TaskListIdTitle } from "../../api/Types";
 import { credentialAtom, taskListsAtom, tasksAtom, taskListsMapAtom, dataLoadingAtom, tasksMapAtom } from "../../recoil/Atoms";
 import {IconBug, IconRefresh, IconRefreshAlert} from "@tabler/icons";
 import { ActionIcon, LoadingOverlay, Group, Text, Loader } from "@mantine/core";
@@ -25,7 +25,7 @@ function DataLoader(): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const [taskLists, setTaskLists] = useRecoilState<TaskList[]>(taskListsAtom);
     const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
-    const [taskMap, setTaskMap] = useRecoilState<Map<string, TaskList>>(tasksMapAtom);
+    const [taskMap, setTaskMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
     const [loading, setLoading] = useRecoilState<boolean>(dataLoadingAtom);
     const [pollCountdown, setPollCountdown] = useState<number>(DEFAULT_POLL_COUNTDOWN);
 
@@ -45,8 +45,12 @@ function DataLoader(): JSX.Element {
                     }
                     GoogleAPI.getTasks(credential, taskList.id, (response) => {
                         setLoading(false);
-                        setTaskListMap(taskListMap.set(JSON.stringify(taskList), response.items));
-                        response.items.forEach((task) => setTaskMap(taskMap.set(JSON.stringify(task), taskList)));
+                        const taskListIdTitle : TaskListIdTitle = {
+                            id: taskList.id,
+                            title: taskList.title
+                        }
+                        setTaskListMap(taskListMap.set(JSON.stringify(taskListIdTitle), response.items));
+                        response.items.forEach((task) => setTaskMap(taskMap.set(JSON.stringify(task), taskListIdTitle)));
                     }, () => { showNotification(genErrorNotificationProps("Tasks")); setLoading(false)});
                 });
             },

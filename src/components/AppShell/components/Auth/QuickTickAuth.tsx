@@ -36,7 +36,8 @@ export default function QuickTickAuth(): JSX.Element {
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse) : void=> {
         const expiryDateEpoch = Date.now() + response.expires_in * 1000;
         // Setting the credential with a date for when the access token expires.
-        setCredential({...response, accessTokenExpiryEpoch: expiryDateEpoch})
+        setCredential({...response, accessTokenExpiryEpoch: expiryDateEpoch});
+        window.location.reload();
     }
 
     const login = useGoogleLogin({
@@ -45,7 +46,7 @@ export default function QuickTickAuth(): JSX.Element {
             if (oauthResponse) {
                 GoogleAPI.getTokens(oauthResponse.code,
                     (response)=> {
-                        generateExpirationTimeAndSetCredentials(response)
+                        generateExpirationTimeAndSetCredentials(response);
                         },
                     ()=>showNotification(errorNotification));
             }
@@ -58,8 +59,8 @@ export default function QuickTickAuth(): JSX.Element {
     });
 
     useEffect((): void => {
-        // If the previous access token has expired, get a new access token...
-        if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
+        // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
+        if (credential && credential.refresh_token ) {
             GoogleAPI.refreshToken(credential,
             (response)=> {
                     generateExpirationTimeAndSetCredentials(response)

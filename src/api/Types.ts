@@ -29,11 +29,14 @@ export interface TaskResponse {
     items: Task[]
 }
 
-export interface TaskList {
-    kind: string,
+export interface TaskListIdTitle {
     id: string,
+    title: string
+}
+
+export interface TaskList extends TaskListIdTitle {
+    kind: string,
     etag: string,
-    title: string,
     updated: string,
     selfLink: string
 }

@@ -18,13 +18,8 @@ import { useSearchParams } from "react-router-dom";
 
 
 // TODO
-// New task form  -> Assign a category which will create a task list
-// ** Create Task List
 // ** Create Task - maybe use "notes" to extend functionality?
-// Investigate the other task object types
-// Automatic emoji assignment to task list + colour??
-// For stats page => pie chart of categories of task
-
+// dropdown for Filtered by 
 
 export default function MyTasks(): JSX.Element {
     let [searchParams, setSearchParams] = useSearchParams();
@@ -42,10 +37,14 @@ export default function MyTasks(): JSX.Element {
     
         for(let i = 0; i < taskLists.length; i++) {
             const taskList = taskLists.at(i)!;
+            const taskListIdTitle = {
+                id: taskList.id,
+                title: taskList.title
+            }
 
             taskListPanels.push(
                 <div key={taskList.id} className="panel">
-                    <TaskListCard taskList={taskList} filter={whenParam ? whenParam as TaskListFilter : undefined}/>
+                    <TaskListCard taskList={taskListIdTitle} filter={whenParam ? whenParam as TaskListFilter : undefined}/>
                 </div>
             )
 

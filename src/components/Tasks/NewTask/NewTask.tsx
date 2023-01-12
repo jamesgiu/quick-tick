@@ -6,7 +6,7 @@ import { IconSquarePlus, IconCheckbox  } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
-import { TaskList } from "../../../api/Types";
+import { TaskList, TaskListIdTitle } from "../../../api/Types";
 import { credentialAtom, taskListsAtom, taskListsMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 
@@ -19,7 +19,7 @@ export interface NewTaskFormFields {
 };
 
 export interface NewTaskProps {
-  defaultTaskList?: TaskList,
+  defaultTaskList?: TaskListIdTitle,
 }
 
 function NewTask(props: NewTaskProps): JSX.Element {
@@ -51,7 +51,6 @@ function NewTask(props: NewTaskProps): JSX.Element {
       setLoading(false);
     }, () => { showNotification(genErrorNotificationProps("Task creation")); setLoading(false)});
     }
-
 
     const buildSelectValuesFromTaskLists = (): SelectItem[] => {
       const selectItems : SelectItem[] = [];

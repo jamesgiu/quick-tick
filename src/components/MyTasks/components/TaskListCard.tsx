@@ -3,7 +3,7 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import {credentialAtom, taskListsAtom, taskListsMapAtom, tasksAtom} from "../../../recoil/Atoms";
 import {showNotification} from "@mantine/notifications";
 import {IconBug, IconUserX, IconHourglassLow, IconHourglassHigh, IconMoodSad, IconAlarm, IconClock, IconCalendar, IconDotsVertical, IconListCheck} from "@tabler/icons";
-import { Task, TaskList } from "../../../api/Types";
+import { Task, TaskList, TaskListIdTitle } from "../../../api/Types";
 import QuickTickTable, { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
 import { ActionIcon, Badge, Card, Group, Text, ThemeIcon, Tooltip } from "@mantine/core";
 import "./TaskListCard.css";
@@ -22,15 +22,19 @@ export enum TaskListFilter {
 // completed tasks not shown here
 
 interface TaskListProps {
-    taskList: TaskList,
+    taskList: TaskListIdTitle,
     filter?: TaskListFilter
 }
 
 export default function TaskListCard(props: TaskListProps): JSX.Element {
     const taskListMap = useRecoilValue<Map<string, Task[]>>(taskListsMapAtom);
 
-    const activeTasks = taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed);
-    const usePluralPhrasing = activeTasks && (activeTasks?.length === 0 || activeTasks?.length > 1);
+    const getActiveTasks = () : Task[] => taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed) ?? [];
+    const getTaskRows = () : QuickTickTableRow[] => TaskUtil.getTasksAsRows(getActiveTasks(), props.filter);
+    
+    const taskRows = getTaskRows();
+    
+    const usePluralPhrasing = () : boolean => taskRows && (taskRows?.length === 0 || taskRows?.length > 1);
 
     return (
     <Card shadow="sm" p="lg" radius="md" withBorder className="task-list">
@@ -39,14 +43,13 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
             <IconDotsVertical color={"#a5d8ff"}/>
             <Text weight={500}>{props.taskList.title}</Text>
             <Badge color="pink" variant="light">
-               {activeTasks?.length ?? 0} task{usePluralPhrasing ? "s" : ""}
+               {taskRows?.length ?? 0} task{usePluralPhrasing() ? "s" : ""}
             </Badge>
             <NewTask defaultTaskList={props.taskList}/>
          </Group>
       </span>
       <div className="task-list-table">
-        {activeTasks && 
-        <QuickTickTable headers={["Title", "Due", "Controls"]} rows={TaskUtil.getTasksAsRows(activeTasks, props.filter)}/> }
+        <QuickTickTable headers={["Title", "Due", "Controls"]} rows={taskRows}/>
       </div>
     </Card>);
 }
