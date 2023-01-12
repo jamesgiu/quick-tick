@@ -168,10 +168,6 @@ import { TaskListFilter } from "./TaskListCard";
             return new Date(row1Date as string).getTime() > new Date(row2Date as string).getTime() ? 1 : -1;
         });
 
-        if(tasks.length === 0 && sortedRows.length === 0) {
-            console.log("tasks and rows 0 here", tasks, sortedRows);
-        }
-
         return sortedRows;
     };
 
