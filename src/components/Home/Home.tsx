@@ -42,7 +42,6 @@ export default function Home(): JSX.Element {
 
     useEffect(()=> {
         setInspirationalQuote(Quote.getQuote());
-        setLiveTaskStats();
     }, []);
 
     useEffect(()=> {
