@@ -7,7 +7,7 @@ import {
     Task,
     UserInfoResponse,
     TaskListResponse,
-    TaskResponse, TokenResponse, GOOGLE_API_OAUTH, QuickTickCredential
+    TaskResponse, TokenResponse, GOOGLE_API_OAUTH, QuickTickCredential, TaskListIdTitle
 } from "./Types";
 
 export class GoogleAPI {
@@ -92,7 +92,7 @@ export class GoogleAPI {
 
     public static completeTask(
         credential: QuickTickCredential,
-        taskList: TaskList,
+        taskList: TaskListIdTitle,
         task: Task,
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
@@ -108,7 +108,7 @@ export class GoogleAPI {
 
     public static deleteTask(
         credential: QuickTickCredential,
-        taskList: TaskList,
+        taskList: TaskListIdTitle,
         task: Task,
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void

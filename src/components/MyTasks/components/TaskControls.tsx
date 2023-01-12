@@ -3,7 +3,7 @@ import {useRecoilState, useRecoilValue} from "recoil";
 import {credentialAtom, taskListsAtom, taskListsMapAtom, tasksAtom, tasksMapAtom} from "../../../recoil/Atoms";
 import {showNotification} from "@mantine/notifications";
 import {IconBug, IconUserX, IconCircleDashed, IconMoodSmileBeam, IconGhost, IconCheckbox, IconCircleCheck, IconTrash, IconTrashX} from "@tabler/icons";
-import { Task, TaskList } from "../../../api/Types";
+import { Task, TaskList, TaskListIdTitle } from "../../../api/Types";
 import { ActionIcon, Button, Group, Loader, LoadingOverlay } from "@mantine/core";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
@@ -21,7 +21,7 @@ interface TaskControlsProps {
 }
 
 export default function TaskControls(props: TaskControlsProps): JSX.Element {
-    const tasksMap = useRecoilValue<Map<string, TaskList>>(tasksMapAtom);
+    const tasksMap = useRecoilValue<Map<string, TaskListIdTitle>>(tasksMapAtom);
     const credential = useRecoilValue(credentialAtom);
 
     const [loading, setLoading] = useState<boolean>(false);
