@@ -22,6 +22,7 @@ export interface NewTaskProps {
   defaultTaskList?: TaskListIdTitle,
 }
 
+
 function NewTask(props: NewTaskProps): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const taskLists = useRecoilValue(taskListsAtom);
@@ -34,14 +35,12 @@ function NewTask(props: NewTaskProps): JSX.Element {
         title: '',
         notes: '',
         // One week from now, by default.
-        due: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)).toISOString()
+        due: new Date(Date.now() + (1000 * 60 * 60 * 24 * 7)).toString()
       }});
 
     const submit = (values: NewTaskFormFields) : void => {
       setLoading(true);
-
-       // Transform the given date to ISO if it is not already
-      form.setFieldValue('due', new Date(form.values.due).toISOString())
+      form.setFieldValue('due', new Date(form.values.due).toString())
       GoogleAPI.createNewTask(credential, values, () => { showNotification({
       title: "Task created!",
       message: values.title + " successfully created!",

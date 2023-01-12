@@ -76,7 +76,12 @@ export class GoogleAPI {
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios.post(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + newTaskValues.taskListId + "/tasks", newTaskValues, {
+        // TODO refactor
+        const buildDateStringRFC3339 = (date: Date) : string => {
+            return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T23:59:00.000Z`
+        }
+
+        axios.post(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + newTaskValues.taskListId + "/tasks", {...newTaskValues, due: buildDateStringRFC3339(new Date(newTaskValues.due))}, {
             headers: {
                 Authorization: `Bearer ${credential.access_token}`,
             },
