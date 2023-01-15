@@ -1,57 +1,48 @@
-import React from "react";
-import {Table} from "@mantine/core";
+import { Table } from "@mantine/core";
 import "./QuickTickTable.css";
 
 export interface QuickTickTableRow {
-    rowData: (string|JSX.Element)[]
+    rowData: (string | JSX.Element)[];
 }
 interface QuickTickTableProps {
-    headers: string[],
-    rows: QuickTickTableRow[]
+    headers: string[];
+    rows: QuickTickTableRow[];
 }
-export default function QuickTickTable(props: QuickTickTableProps) : JSX.Element {
-    const buildHeaders = () : JSX.Element[] => {
-        let headers: JSX.Element[] = [];
+export default function QuickTickTable(props: QuickTickTableProps): JSX.Element {
+    const buildHeaders = (): JSX.Element[] => {
+        const headers: JSX.Element[] = [];
 
         {
-            props.headers.forEach(header => {
-                headers.push(<th>{header}</th>)
-            })
+            props.headers.forEach((header) => {
+                headers.push(<th>{header}</th>);
+            });
         }
 
         return headers;
-    }
+    };
 
     const buildRows = (): JSX.Element[] => {
-        let rows : JSX.Element[] = [];
+        const rows: JSX.Element[] = [];
 
-        props.rows.forEach(row => {
+        props.rows.forEach((row) => {
             rows.push(
                 <tr>
-                    {
-                     row.rowData.map(rowItem =>
-                        <td>
-                            {rowItem}
-                        </td>
-                     )
-                    }
+                    {row.rowData.map((rowItem) => (
+                        <td>{rowItem}</td>
+                    ))}
                 </tr>
             );
         });
 
         return rows;
-    }
+    };
 
     return (
         <Table highlightOnHover={true} className="quick-tick-table">
             <thead>
-            <tr>
-                {buildHeaders()}
-            </tr>
+                <tr>{buildHeaders()}</tr>
             </thead>
-            <tbody>
-                {buildRows()}
-            </tbody>
+            <tbody>{buildRows()}</tbody>
         </Table>
     );
 }

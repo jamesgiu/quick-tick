@@ -1,17 +1,15 @@
-import { Burger, Button, Group, Header, MediaQuery, Stack } from "@mantine/core";
-import React, { useState } from "react";
-import "./QuickTickHeader.css";
-import { Link } from "react-router-dom";
-import { QuickTickPage } from "../../../../util/QuickTickPage";
-import { IconChecks, IconChevronRight, IconHandStop, IconLogout, IconSettings } from "@tabler/icons";
-import { useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState } from "recoil";
-import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
+import { Burger, Button, Group, Header, MediaQuery } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
+import { IconChecks, IconChevronRight, IconHandStop, IconLogout } from "@tabler/icons";
+import { useState } from "react";
 import { fallDown as BurgerMenu } from "react-burger-menu";
-import { getNavbarLinks } from "../Navbar/QuickTickNavbar";
-import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
-import NewTask from "../../../Tasks/NewTask/NewTask";
+import { Link } from "react-router-dom";
+import { useRecoilValue, useResetRecoilState } from "recoil";
+import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
+import { QuickTickPage } from "../../../../util/QuickTickPage";
 import DataLoader from "../../../DataLoader/DataLoader";
+import { getNavbarLinks } from "../Navbar/QuickTickNavbar";
+import "./QuickTickHeader.css";
 interface WindowSize {
     width: number;
     height: number;
@@ -60,13 +58,11 @@ export default function QuickTickHeader(): JSX.Element {
                     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
                         <Burger opened={burgerOpen} onClick={(): void => setBurgerOpen((o) => !o)} />
                     </MediaQuery>
-                    <Link to={QuickTickPage.HOME}>{LOGO}</Link>        
+                    <Link to={QuickTickPage.HOME}>{LOGO}</Link>
                 </Group>
                 <Group position={"right"} className={"header-group-2"}>
                     <Group className="header-main-actions">
-                        <NewTask/>
-                        <NewTaskList/>
-                        <DataLoader/>
+                        <DataLoader />
                     </Group>
                     {userInfo && (
                         <Button leftIcon={<IconLogout size={30} />} variant={"subtle"} onClick={(): void => logout()} />
@@ -80,9 +76,7 @@ export default function QuickTickHeader(): JSX.Element {
                         overlayClassName={"burger-overlay"}
                         burgerButtonClassName={"burger-button"}
                     >
-                        <span className={"burger-menu"}>
-                            {getNavbarLinks(true, ()=>setBurgerOpen(false))}
-                        </span>
+                        <span className={"burger-menu"}>{getNavbarLinks(true, () => setBurgerOpen(false))}</span>
                     </BurgerMenu>
                 )}
             </Header>

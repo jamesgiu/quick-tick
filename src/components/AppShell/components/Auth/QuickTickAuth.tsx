@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
-import { Accordion, Anchor, Avatar, Box, Button, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
-import { IconBrandGoogle, IconMoodSmileDizzy, IconUserX, IconCalendar, IconChevronRight, IconHandStop, IconLogout, IconExternalLink } from "@tabler/icons";
-import { useGoogleLogin } from "@react-oauth/google";
+import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
+import { useGoogleLogin } from "@react-oauth/google";
+import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
+import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
-import {QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse} from "../../../../api/Types";
+import { QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse } from "../../../../api/Types";
+import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
 
 const errorNotification = {
     title: "Login failed",
@@ -33,38 +33,43 @@ export default function QuickTickAuth(): JSX.Element {
         location.reload();
     };
 
-    const generateExpirationTimeAndSetCredentials = (response: TokenResponse) : void=> {
+    const generateExpirationTimeAndSetCredentials = (response: TokenResponse): void => {
         const expiryDateEpoch = Date.now() + response.expires_in * 1000;
         // Setting the credential with a date for when the access token expires.
-        setCredential({...response, accessTokenExpiryEpoch: expiryDateEpoch});
+        setCredential({ ...response, accessTokenExpiryEpoch: expiryDateEpoch });
         window.location.reload();
-    }
+    };
 
     const login = useGoogleLogin({
         onSuccess: (oauthResponse): void => {
             // After successful oauth response, get the user's tokens
             if (oauthResponse) {
-                GoogleAPI.getTokens(oauthResponse.code,
-                    (response)=> {
+                GoogleAPI.getTokens(
+                    oauthResponse.code,
+                    (response) => {
                         generateExpirationTimeAndSetCredentials(response);
-                        },
-                    ()=>showNotification(errorNotification));
+                    },
+                    () => showNotification(errorNotification)
+                );
             }
         },
         onError: (): void => {
             showNotification(errorNotification);
         },
         scope: REQUIRED_SCOPES,
-        flow: "auth-code"
+        flow: "auth-code",
     });
 
     useEffect((): void => {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
-        if (credential && credential.refresh_token ) {
-            GoogleAPI.refreshToken(credential,
-            (response)=> {
-                    generateExpirationTimeAndSetCredentials(response)
-            }, ()=>showNotification(errorNotification));
+        if (credential && credential.refresh_token) {
+            GoogleAPI.refreshToken(
+                credential,
+                (response) => {
+                    generateExpirationTimeAndSetCredentials(response);
+                },
+                () => showNotification(errorNotification)
+            );
         }
     }, []);
 
@@ -77,13 +82,19 @@ export default function QuickTickAuth(): JSX.Element {
         // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
         const TWO_MINUTES_MS = 2 * 60 * 1000;
         if (credential) {
-            setTimeout(()=> GoogleAPI.refreshToken(credential,
-                (response)=> {
-                    generateExpirationTimeAndSetCredentials(response)
-                }, ()=>showNotification(errorNotification)), (credential.expires_in * 1000) - TWO_MINUTES_MS)
+            setTimeout(
+                () =>
+                    GoogleAPI.refreshToken(
+                        credential,
+                        (response) => {
+                            generateExpirationTimeAndSetCredentials(response);
+                        },
+                        () => showNotification(errorNotification)
+                    ),
+                credential.expires_in * 1000 - TWO_MINUTES_MS
+            );
         }
     }, [credential]);
-
 
     const getUserInfo = (): void => {
         if (credential) {
@@ -100,7 +111,7 @@ export default function QuickTickAuth(): JSX.Element {
                 },
                 () => showNotification(errorNotification)
             );
-        }       
+        }
     };
 
     return (
@@ -108,9 +119,19 @@ export default function QuickTickAuth(): JSX.Element {
             {userInfo ? (
                 <Group className="profile-area">
                     <Accordion>
-                    <Accordion.Item value="profile-controls">
-                    <Accordion.Control icon={<Avatar src={userInfo.picture} color="blue" radius="xl" variant={"light"} size={"md"} />}>
-                            <Box sx={{ flex: 1 }}>
+                        <Accordion.Item value="profile-controls">
+                            <Accordion.Control
+                                icon={
+                                    <Avatar
+                                        src={userInfo.picture}
+                                        color="blue"
+                                        radius="xl"
+                                        variant={"light"}
+                                        size={"md"}
+                                    />
+                                }
+                            >
+                                <Box sx={{ flex: 1 }}>
                                     <Text size="sm" weight={500}>
                                         {userInfo.name}
                                     </Text>
@@ -118,14 +139,21 @@ export default function QuickTickAuth(): JSX.Element {
                                         {userInfo.email}
                                     </Text>
                                 </Box>
-                        </Accordion.Control>
-                        <Accordion.Panel>
-                            <Stack className="auth-actions" align={"stretch"} spacing={1}>
-                                <Button variant="subtle" size="sm" onClick={(): void => logout()} leftIcon={<IconLogout/>}>Log out</Button>
-                             </Stack>
-                        </Accordion.Panel>
+                            </Accordion.Control>
+                            <Accordion.Panel>
+                                <Stack className="auth-actions" align={"stretch"} spacing={1}>
+                                    <Button
+                                        variant="subtle"
+                                        size="sm"
+                                        onClick={(): void => logout()}
+                                        leftIcon={<IconLogout />}
+                                    >
+                                        Log out
+                                    </Button>
+                                </Stack>
+                            </Accordion.Panel>
                         </Accordion.Item>
-                        </Accordion>
+                    </Accordion>
                 </Group>
             ) : (
                 <Button onClick={(): void => login()} leftIcon={<IconBrandGoogle />}>

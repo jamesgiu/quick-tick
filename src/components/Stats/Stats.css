@@ -1,22 +1,22 @@
 .stats .tasks-breakdown-pie .VictoryContainer {
-    margin: auto;
-    min-width: 100px;
-    max-width: 400px;
+  margin: auto;
+  min-width: 100px;
+  max-width: 400px;
 }
 
 .stats .tasks-breakdown-pie .VictoryContainer svg {
-    overflow: visible;
+  overflow: visible;
 }
 
 .stats .pie-grid {
-    margin: auto;
+  margin: auto;
 }
 
 .stats .tasks-breakdown-chart .VictoryContainer {
-    max-width: 400px;
-    margin: auto;
+  max-width: 400px;
+  margin: auto;
 }
 
 .stats .tasks-breakdown-chart .VictoryContainer text tspan {
-    fill: rgb(69, 90, 100) !important;
+  fill: rgb(69, 90, 100) !important;
 }

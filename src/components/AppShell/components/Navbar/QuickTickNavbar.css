@@ -8,3 +8,7 @@
 .nav-accordion .mantine-Accordion-control {
   padding: 0;
 }
+
+.nav-accordion {
+  width: 95%;
+}

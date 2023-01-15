@@ -1,7 +1,7 @@
-import { recoilPersist } from "recoil-persist";
+import { Layout } from "react-grid-layout";
 import { atom } from "recoil";
+import { recoilPersist } from "recoil-persist";
 import { QuickTickCredential, Task, TaskList, TaskListIdTitle, UserInfoResponse } from "../api/Types";
-import {Layout} from "react-grid-layout";
 
 const { persistAtom } = recoilPersist();
 
@@ -24,26 +24,26 @@ export const userInfoAtom = atom<UserInfoResponse>({
 
 export const tasksAtom = atom<Task[]>({
     key: "tasks",
-    default: [] as Task[]
+    default: [] as Task[],
 });
 
 export const taskListsAtom = atom<TaskList[]>({
     key: "tasklists",
-    default: [] as TaskList[]
+    default: [] as TaskList[],
 });
 
 export const taskListsMapAtom = atom({
     key: "tasklistsMap",
-    default: new Map<string, Task[]>()
-})
+    default: new Map<string, Task[]>(),
+});
 
 export const tasksMapAtom = atom({
     key: "tasksMap",
-    default: new Map<string, TaskListIdTitle>()
-})
+    default: new Map<string, TaskListIdTitle>(),
+});
 
-export const taskListLayoutAtom =  atom<Layout[]>({
+export const taskListLayoutAtom = atom<Layout[]>({
     key: "tasklistLayout",
     default: [],
-    effects_UNSTABLE: [persistAtom]
-})
+    effects_UNSTABLE: [persistAtom],
+});

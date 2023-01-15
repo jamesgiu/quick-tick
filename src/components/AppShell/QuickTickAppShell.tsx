@@ -1,12 +1,11 @@
 import { AppShell, LoadingOverlay } from "@mantine/core";
-import React from "react";
-import "./QuickTickAppShell.css";
-import QuickTickNavbar from "./components/Navbar/QuickTickNavbar";
-import QuickTickHeader from "./components/Header/QuickTickHeader";
 import { Outlet } from "react-router";
-import QuickTickFooter from "./components/Footer/QuickTickFooter";
 import { useRecoilValue } from "recoil";
 import { dataLoadingAtom } from "../../recoil/Atoms";
+import QuickTickFooter from "./components/Footer/QuickTickFooter";
+import QuickTickHeader from "./components/Header/QuickTickHeader";
+import QuickTickNavbar from "./components/Navbar/QuickTickNavbar";
+import "./QuickTickAppShell.css";
 
 export default function QuickTickAppShell(): JSX.Element {
     const dataLoading = useRecoilValue(dataLoadingAtom);
@@ -20,8 +19,7 @@ export default function QuickTickAppShell(): JSX.Element {
             header={<QuickTickHeader />}
             footer={<QuickTickFooter />}
         >
-            {dataLoading ? <LoadingOverlay overlayBlur={2} visible={true}/> :
-            <Outlet />}
+            {dataLoading ? <LoadingOverlay overlayBlur={2} visible={true} /> : <Outlet />}
         </AppShell>
     );
 }

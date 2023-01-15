@@ -1,4 +1,4 @@
-import axios, {AxiosPromise} from "axios";
+import axios, { AxiosPromise } from "axios";
 import { NewTaskFormFields } from "../components/Tasks/NewTask/NewTask";
 import {
     GOOGLE_API_ACTIONS,
@@ -7,7 +7,11 @@ import {
     Task,
     UserInfoResponse,
     TaskListResponse,
-    TaskResponse, TokenResponse, GOOGLE_API_OAUTH, QuickTickCredential, TaskListIdTitle
+    TaskResponse,
+    TokenResponse,
+    GOOGLE_API_OAUTH,
+    QuickTickCredential,
+    TaskListIdTitle,
 } from "./Types";
 
 export class GoogleAPI {
@@ -46,11 +50,17 @@ export class GoogleAPI {
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskListId + "/tasks?showCompleted=true&showHidden=true&maxResults=100", {
-            headers: {
-                Authorization: `Bearer ${credential.access_token}`,
-            },
-        })
+        axios(
+            TASK_API_ACTIONS.TASK_URL +
+                TASK_API_ACTIONS.TASKLIST +
+                taskListId +
+                "/tasks?showCompleted=true&showHidden=true&maxResults=100",
+            {
+                headers: {
+                    Authorization: `Bearer ${credential.access_token}`,
+                },
+            }
+        )
             .then((response) => onSuccess(response.data))
             .catch((error) => onFailure(error.message));
     }
@@ -61,11 +71,16 @@ export class GoogleAPI {
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios.post(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS, { title: taskListTitle }, {
-            headers: {
-                Authorization: `Bearer ${credential.access_token}`,
-            },
-        })
+        axios
+            .post(
+                TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS,
+                { title: taskListTitle },
+                {
+                    headers: {
+                        Authorization: `Bearer ${credential.access_token}`,
+                    },
+                }
+            )
             .then((response) => onSuccess(response.data))
             .catch((error) => onFailure(error.message));
     }
@@ -77,15 +92,20 @@ export class GoogleAPI {
         onFailure: (error: string) => void
     ): void {
         // TODO refactor
-        const buildDateStringRFC3339 = (date: Date) : string => {
-            return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T23:59:00.000Z`
-        }
+        const buildDateStringRFC3339 = (date: Date): string => {
+            return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T23:59:00.000Z`;
+        };
 
-        axios.post(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + newTaskValues.taskListId + "/tasks", {...newTaskValues, due: buildDateStringRFC3339(new Date(newTaskValues.due))}, {
-            headers: {
-                Authorization: `Bearer ${credential.access_token}`,
-            },
-        })
+        axios
+            .post(
+                TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + newTaskValues.taskListId + "/tasks",
+                { ...newTaskValues, due: buildDateStringRFC3339(new Date(newTaskValues.due)) },
+                {
+                    headers: {
+                        Authorization: `Bearer ${credential.access_token}`,
+                    },
+                }
+            )
             .then((response) => onSuccess(response.data))
             .catch((error) => onFailure(error.message));
     }
@@ -97,11 +117,12 @@ export class GoogleAPI {
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios.put(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskList.id + "/tasks/" + task.id, task, {
-            headers: {
-                Authorization: `Bearer ${credential.access_token}`,
-            },
-        })
+        axios
+            .put(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskList.id + "/tasks/" + task.id, task, {
+                headers: {
+                    Authorization: `Bearer ${credential.access_token}`,
+                },
+            })
             .then((response) => onSuccess(response.data))
             .catch((error) => onFailure(error.message));
     }
@@ -113,11 +134,12 @@ export class GoogleAPI {
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios.delete(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskList.id + "/tasks/" + task.id, {
-            headers: {
-                Authorization: `Bearer ${credential.access_token}`,
-            },
-        })
+        axios
+            .delete(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskList.id + "/tasks/" + task.id, {
+                headers: {
+                    Authorization: `Bearer ${credential.access_token}`,
+                },
+            })
             .then((response) => onSuccess(response.data))
             .catch((error) => onFailure(error.message));
     }
@@ -127,16 +149,16 @@ export class GoogleAPI {
         onSuccess: (response: TokenResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios.post(GOOGLE_API_OAUTH.BASE_URL + GOOGLE_API_OAUTH.TOKEN,
-            {
+        axios
+            .post(GOOGLE_API_OAUTH.BASE_URL + GOOGLE_API_OAUTH.TOKEN, {
                 client_id: import.meta.env.VITE_GC_CLIENT_ID,
                 client_secret: import.meta.env.VITE_GC_CLIENT_SECRET,
                 code: oauthCode,
                 grant_type: "authorization_code",
-                redirect_uri: window.location.protocol + "//" + window.location.host
-            }
-        ).then((response) => onSuccess(response.data))
-         .catch((error) => onFailure(error.message));
+                redirect_uri: window.location.protocol + "//" + window.location.host,
+            })
+            .then((response) => onSuccess(response.data))
+            .catch((error) => onFailure(error.message));
     }
 
     public static refreshToken(
@@ -144,14 +166,14 @@ export class GoogleAPI {
         onSuccess: (response: TokenResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios.post(GOOGLE_API_OAUTH.BASE_URL + GOOGLE_API_OAUTH.TOKEN,
-            {
+        axios
+            .post(GOOGLE_API_OAUTH.BASE_URL + GOOGLE_API_OAUTH.TOKEN, {
                 client_id: import.meta.env.VITE_GC_CLIENT_ID,
                 client_secret: import.meta.env.VITE_GC_CLIENT_SECRET,
                 refresh_token: credentials.refresh_token,
                 grant_type: "refresh_token",
-            }
-        ).then((response) => onSuccess(response.data))
+            })
+            .then((response) => onSuccess(response.data))
             .catch((error) => onFailure(error.message));
     }
 }

@@ -1,29 +1,29 @@
 .task-list {
-    overflow: hidden;
-    height: 100%;
-    padding: 0 0 0 0;
+  overflow: hidden;
+  height: 100%;
+  padding: 0 0 0 0;
 }
 
 .task-list-table {
-    overflow-y: auto;
-    height: 100%;
-    scrollbar-width: thin;
-    padding-bottom: 20px;
+  overflow-y: auto;
+  height: 100%;
+  scrollbar-width: thin;
+  padding-bottom: 20px;
 }
 
 .draggable-area:hover {
-    cursor: grab;
+  cursor: grab;
 }
 
 .draggable-area:active {
-    cursor: grabbing;
+  cursor: grabbing;
 }
 
 .task-list-table .mantine-ActionIcon-root {
-    display: inline;
+  display: inline;
 }
 
 .task-list-table .mantine-ActionIcon-root:hover {
-    cursor: default;
-    border: unset;
+  cursor: default;
+  border: unset;
 }

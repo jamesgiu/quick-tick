@@ -1,21 +1,19 @@
+import { ActionIcon, Group, Text } from "@mantine/core";
 import { NotificationProps, showNotification } from "@mantine/notifications";
+import { IconBug, IconRefresh, IconRefreshAlert } from "@tabler/icons";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../api/GoogleAPI";
 import { Task, TaskList, TaskListIdTitle } from "../../api/Types";
-import { credentialAtom, taskListsAtom, tasksAtom, taskListsMapAtom, dataLoadingAtom, tasksMapAtom } from "../../recoil/Atoms";
-import {IconBug, IconRefresh, IconRefreshAlert} from "@tabler/icons";
-import { ActionIcon, LoadingOverlay, Group, Text, Loader } from "@mantine/core";
-import { ListItem } from "@mantine/core/lib/List/ListItem/ListItem";
-import NewTask from "../Tasks/NewTask/NewTask";
+import { credentialAtom, dataLoadingAtom, taskListsAtom, taskListsMapAtom, tasksMapAtom } from "../../recoil/Atoms";
 
-export function genErrorNotificationProps(resource: string) : NotificationProps {
+export function genErrorNotificationProps(resource: string): NotificationProps {
     return {
         title: `${resource} process failed`,
         message: `Could not process ${resource}! 😥`,
         color: "red",
         icon: <IconBug />,
-    }
+    };
 }
 
 const DEFAULT_POLL_COUNTDOWN = 5;
@@ -29,48 +27,63 @@ function DataLoader(): JSX.Element {
     const [loading, setLoading] = useRecoilState<boolean>(dataLoadingAtom);
     const [pollCountdown, setPollCountdown] = useState<number>(DEFAULT_POLL_COUNTDOWN);
 
-    const getTasks = (fromPoller?: boolean) : void => {
-        if (!fromPoller)  {
+    const getTasks = (fromPoller?: boolean): void => {
+        if (!fromPoller) {
             setLoading(true);
         }
-        GoogleAPI.getTaskLists(credential,
-            (response)=> {
+        GoogleAPI.getTaskLists(
+            credential,
+            (response) => {
                 const taskLists = response.items;
                 setTaskLists(taskLists);
-        
+
                 // Now get the tasks for each task list
-                taskLists.forEach(taskList => {  
-                    if (!fromPoller)  {
+                taskLists.forEach((taskList) => {
+                    if (!fromPoller) {
                         setLoading(true);
                     }
-                    GoogleAPI.getTasks(credential, taskList.id, (response) => {
-                        setLoading(false);
-                        const taskListIdTitle : TaskListIdTitle = {
-                            id: taskList.id,
-                            title: taskList.title
+                    GoogleAPI.getTasks(
+                        credential,
+                        taskList.id,
+                        (response) => {
+                            setLoading(false);
+                            const taskListIdTitle: TaskListIdTitle = {
+                                id: taskList.id,
+                                title: taskList.title,
+                            };
+                            setTaskListMap(taskListMap.set(JSON.stringify(taskListIdTitle), response.items));
+                            response.items.forEach((task) =>
+                                setTaskMap(taskMap.set(JSON.stringify(task), taskListIdTitle))
+                            );
+                        },
+                        () => {
+                            showNotification(genErrorNotificationProps("Tasks"));
+                            setLoading(false);
                         }
-                        setTaskListMap(taskListMap.set(JSON.stringify(taskListIdTitle), response.items));
-                        response.items.forEach((task) => setTaskMap(taskMap.set(JSON.stringify(task), taskListIdTitle)));
-                    }, () => { showNotification(genErrorNotificationProps("Tasks")); setLoading(false)});
+                    );
                 });
             },
-            ()=>{showNotification(genErrorNotificationProps("TaskLists")); setLoading(false)})
-    }
+            () => {
+                showNotification(genErrorNotificationProps("TaskLists"));
+                setLoading(false);
+            }
+        );
+    };
 
     // When the credentail atom is set, then retrieve and set tasks + tasklists.
-    useEffect(()=> {
+    useEffect(() => {
         if (credential) {
             getTasks();
         }
     }, [credential]);
 
-    useEffect(()=> {
-        setTimeout(()=> setPollCountdown(pollCountdown - 1), 1000);
+    useEffect(() => {
+        setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
     }, []);
 
-    useEffect(()=> {
+    useEffect(() => {
         if (pollCountdown > 0) {
-            setTimeout(()=> setPollCountdown(pollCountdown - 1), 1000);
+            setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
         } else {
             getTasks(true);
             setPollCountdown(DEFAULT_POLL_COUNTDOWN);
@@ -78,14 +91,21 @@ function DataLoader(): JSX.Element {
     }, [pollCountdown]);
 
     return (
-        <Group>     
-        <ActionIcon color="#a5d8ff" onClick={() =>{ getTasks(); setPollCountdown(DEFAULT_POLL_COUNTDOWN)}}>
-            <Text size="xs" color="#a5d8ff">
-                {pollCountdown}
-            </Text>
-            { pollCountdown > 1 ? <IconRefresh size={18}/> : <IconRefreshAlert size={18}/> }
-        </ActionIcon>
-        </Group>);
+        <Group>
+            <ActionIcon
+                color="#a5d8ff"
+                onClick={() => {
+                    getTasks();
+                    setPollCountdown(DEFAULT_POLL_COUNTDOWN);
+                }}
+            >
+                <Text size="xs" color="#a5d8ff">
+                    {pollCountdown}
+                </Text>
+                {pollCountdown > 1 ? <IconRefresh size={18} /> : <IconRefreshAlert size={18} />}
+            </ActionIcon>
+        </Group>
+    );
 }
 
 export default DataLoader;
