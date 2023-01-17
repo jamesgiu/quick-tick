@@ -109,9 +109,7 @@ export default function Home(): JSX.Element {
     return (
         <div className={"home"}>
             <Center>
-                <Avatar radius={"xl"}>
-                    <IconChecks size={30} />
-                </Avatar>
+                <img src="/qtlogo_bulb.png"/>
             </Center>
             <h2>Welcome to {LOGO}</h2>
             <i>A task-management application</i>

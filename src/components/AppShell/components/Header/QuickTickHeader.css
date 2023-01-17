@@ -2,6 +2,10 @@
   margin-right: -5px;
 }
 
+.header-logo img {
+  margin-bottom: 10px;
+}
+
 .header-text {
   font-family: "Rage";
   font-size: 2rem;

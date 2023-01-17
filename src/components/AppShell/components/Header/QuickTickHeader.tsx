@@ -19,6 +19,7 @@ export const LOGO = (
     <span>
         {" "}
         <span className={"header-logo"}>
+            <img src="/qtlogo.png" width={40}/>
             <IconChevronRight />
         </span>
         <span className={"header-text"}>

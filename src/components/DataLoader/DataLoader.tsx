@@ -74,19 +74,18 @@ function DataLoader(): JSX.Element {
     useEffect(() => {
         if (credential) {
             getTasks();
+            setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
         }
     }, [credential]);
 
     useEffect(() => {
-        setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
-    }, []);
-
-    useEffect(() => {
-        if (pollCountdown > 0) {
-            setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
-        } else {
-            getTasks(true);
-            setPollCountdown(DEFAULT_POLL_COUNTDOWN);
+        if (credential) {
+            if (pollCountdown > 0) {
+                setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
+            } else {
+                getTasks(true);
+                setPollCountdown(DEFAULT_POLL_COUNTDOWN);
+            }
         }
     }, [pollCountdown]);
 
