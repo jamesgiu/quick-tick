@@ -109,7 +109,7 @@ export default function Home(): JSX.Element {
     return (
         <div className={"home"}>
             <Center>
-                <img src="/qtlogo_bulb.png"/>
+                <img src={"/quick-tick/qtlogo_bulb.png"}/>
             </Center>
             <h2>Welcome to {LOGO}</h2>
             <i>A task-management application</i>
