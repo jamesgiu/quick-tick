@@ -3,7 +3,7 @@ import { showNotification } from "@mantine/notifications";
 import { useGoogleLogin } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState, waitForNone } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
 import { QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse } from "../../../../api/Types";
 import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
@@ -36,8 +36,7 @@ export default function QuickTickAuth(): JSX.Element {
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse): void => {
         const expiryDateEpoch = Date.now() + response.expires_in * 1000;
         // Setting the credential with a date for when the access token expires.
-        setCredential({ ...response, accessTokenExpiryEpoch: expiryDateEpoch });
-        window.location.reload();
+        setCredential({ ...response, accessTokenExpiryEpoch: expiryDateEpoch, refresh_token: response.refresh_token });
     };
 
     const login = useGoogleLogin({
@@ -57,12 +56,13 @@ export default function QuickTickAuth(): JSX.Element {
             showNotification(errorNotification);
         },
         scope: REQUIRED_SCOPES,
-        flow: "auth-code",
+        flow: "auth-code"
     });
 
     useEffect((): void => {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
         if (credential && credential.refresh_token) {
+            console.log("Refreshing token...");
             GoogleAPI.refreshToken(
                 credential,
                 (response) => {
