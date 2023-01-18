@@ -1,12 +1,13 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useGoogleLogin } from "@react-oauth/google";
+import { CodeResponse, CredentialResponse, GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState, waitForNone } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
 import { QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse } from "../../../../api/Types";
 import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
+import "./QuickTickAuth.css";
 
 const errorNotification = {
     title: "Login failed",
@@ -161,6 +162,9 @@ export default function QuickTickAuth(): JSX.Element {
                     Sign-in via Google{" "}
                 </Button>
             )}
+               <div className="google-one-tap">
+                    <GoogleLogin useOneTap auto_select={true} onSuccess={(credentialResponse: CredentialResponse) => setCredential({...credential, id_token: credentialResponse.credential ?? credential.id_token})}/>
+                </div>
         </div>
     );
 }

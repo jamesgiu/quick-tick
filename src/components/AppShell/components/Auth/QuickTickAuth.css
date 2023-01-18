@@ -3,3 +3,7 @@
   text-align: left;
   display: flex;
 }
+
+.quick-tick-auth .google-one-tap {
+  opacity: 0;
+}
