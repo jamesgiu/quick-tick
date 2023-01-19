@@ -37,7 +37,7 @@ export default function QuickTickAuth(): JSX.Element {
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse): void => {
         const expiryDateEpoch = Date.now() + response.expires_in * 1000;
         // Setting the credential with a date for when the access token expires.
-        setCredential({ ...response, accessTokenExpiryEpoch: expiryDateEpoch, refresh_token: response.refresh_token });
+        setCredential({ ...response, accessTokenExpiryEpoch: expiryDateEpoch, refresh_token: response.refresh_token ?? credential.refresh_token });
     };
 
     const login = useGoogleLogin({
@@ -78,22 +78,6 @@ export default function QuickTickAuth(): JSX.Element {
     useEffect((): void => {
         if (!userInfo && credential && credential.access_token) {
             getUserInfo();
-        }
-
-        // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
-        const TWO_MINUTES_MS = 2 * 60 * 1000;
-        if (credential) {
-            setTimeout(
-                () =>
-                    GoogleAPI.refreshToken(
-                        credential,
-                        (response) => {
-                            generateExpirationTimeAndSetCredentials(response);
-                        },
-                        () => showNotification(errorNotification)
-                    ),
-                credential.expires_in * 1000 - TWO_MINUTES_MS
-            );
         }
     }, [credential]);
 
@@ -162,9 +146,6 @@ export default function QuickTickAuth(): JSX.Element {
                     Sign-in via Google{" "}
                 </Button>
             )}
-               <div className="google-one-tap">
-                    <GoogleLogin useOneTap auto_select={true} onSuccess={(credentialResponse: CredentialResponse) => setCredential({...credential, id_token: credentialResponse.credential ?? credential.id_token})}/>
-                </div>
         </div>
     );
 }
