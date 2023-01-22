@@ -1,5 +1,14 @@
-import { Alert, Avatar, Blockquote, Card, Center, Divider, Text, Title } from "@mantine/core";
-import { IconBrandGithub, IconBulb, IconChecks, IconMoodSad } from "@tabler/icons";
+import { Alert, Avatar, Blockquote, Card, Center, Divider, List, Text, ThemeIcon, Title } from "@mantine/core";
+import {
+    IconBrandGithub,
+    IconBulb,
+    IconInfoCircle,
+    IconLogout,
+    IconWreckingBall,
+    IconBackhoe,
+    IconBulldozer,
+    IconMoodSad,
+} from "@tabler/icons";
 import Quote from "inspirational-quotes";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -117,7 +126,7 @@ export default function Home(): JSX.Element {
                 <Card shadow="sm" p="lg" radius="md" withBorder>
                     <Title order={3}>G'day, {userInfo.given_name}</Title>
                     <Blockquote cite={inspirationalQuote.author}>{inspirationalQuote.text}</Blockquote>
-                    <Alert icon={<IconBulb size={16} />} title="Today at a glance" color="cyan">
+                    <Alert icon={<IconBulb size={32} />} title="Today at a glance" color="cyan">
                         So far, you have completed {completedTasksToday} task{completedTasksToday === 1 ? "" : "s"}{" "}
                         today. There's {numberTasksDueToday} task{numberTasksDueToday === 1 ? "" : "s"} left for today.{" "}
                         {numberTasksDueTomorrow} task{numberTasksDueTomorrow === 1 ? "" : "s"} due for tomorrow. In
@@ -139,6 +148,39 @@ export default function Home(): JSX.Element {
                     <a href={"https://github.com/jamesgiu/quick-tick"}>gander</a>.
                 </Text>
             </div>
+            <Alert icon={<IconInfoCircle size={32} />} title="Whoa there!" color="teal">
+                Thanks for playing! QuickTick is a work in progress - you may experience some turbulence.
+                <h4>
+                    <IconBackhoe /> For recurring tasks...
+                </h4>
+                <List spacing="xs" size="xs" center icon={<IconInfoCircle size={16} />}>
+                    <List.Item>
+                        you'll have to set them in <a href="https://calendar.google.com/calendar">Google Tasks</a> (also
+                        accessible via the "Calendar" link in the navbar)
+                    </List.Item>
+                </List>
+                <h4>
+                    <IconBulldozer /> For Android widgets...
+                </h4>
+                <List spacing="xs" size="xs" center icon={<IconInfoCircle size={16} />}>
+                    <List.Item>
+                        Download the{" "}
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.tasks">
+                            Google Tasks Android Application
+                        </a>
+                    </List.Item>
+                    <i>This site is mobile-friendly, but does not currently provide widgets.</i>
+                </List>
+                <h4>
+                    <IconWreckingBall /> Help! I can't load my tasks...
+                </h4>
+                <List spacing="xs" size="xs" center icon={<IconInfoCircle size={16} />}>
+                    <List.Item>
+                        Try signing out and back in again using the logout buttons located either in the top-right (
+                        <IconLogout size={20} />) or via selecting the profile in the navbar.
+                    </List.Item>
+                </List>
+            </Alert>
             {SVG_WAVE_BOTTOM}
         </div>
     );

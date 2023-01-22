@@ -1,7 +1,7 @@
 import React from "react";
 import "./QuickTickFooter.css";
-import { Button, Footer } from "@mantine/core";
-import { IconBrandGithub, IconBug } from "@tabler/icons";
+import { Alert, Button, Footer } from "@mantine/core";
+import { IconBrandGithub, IconBug, IconBulldozer } from "@tabler/icons";
 
 export default function QuickTickFooter(): JSX.Element {
     return (

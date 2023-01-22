@@ -21,6 +21,9 @@ function NewTaskList(): JSX.Element {
         initialValues: {
             title: "",
         },
+        validate: {
+            title: (value) => (value == "" ? "Required field" : null),
+        },
     });
 
     const submit = (values: NewTaskListFormFields): void => {
@@ -42,6 +45,8 @@ function NewTaskList(): JSX.Element {
                 setLoading(false);
             }
         );
+
+        setOpened(false);
     };
 
     return (
@@ -57,7 +62,9 @@ function NewTaskList(): JSX.Element {
                             {...form.getInputProps("title")}
                         />
                         <Group position="right" mt="md">
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit" disabled={!form.isValid()}>
+                                Submit
+                            </Button>
                         </Group>
                     </form>
                 </Box>
