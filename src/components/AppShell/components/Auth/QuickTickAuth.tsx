@@ -76,14 +76,21 @@ export default function QuickTickAuth(): JSX.Element {
             );
         }
 
-         // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
-         const TWO_MINUTES_MS = 2 * 60 * 1000;
-         if (credential) {
-             setTimeout(()=> GoogleAPI.refreshToken(credential,
-                 (response)=> {
-                     generateExpirationTimeAndSetCredentials(response)
-                 }, ()=>showNotification(errorNotification)), (credential.expires_in * 1000) - TWO_MINUTES_MS)
-         }
+        // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
+        const TWO_MINUTES_MS = 2 * 60 * 1000;
+        if (credential) {
+            setTimeout(
+                () =>
+                    GoogleAPI.refreshToken(
+                        credential,
+                        (response) => {
+                            generateExpirationTimeAndSetCredentials(response);
+                        },
+                        () => showNotification(errorNotification)
+                    ),
+                credential.expires_in * 1000 - TWO_MINUTES_MS
+            );
+        }
     }, []);
 
     // When the credential changes, get the user info again.
