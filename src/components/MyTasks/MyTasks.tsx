@@ -69,6 +69,7 @@ export default function MyTasks(): JSX.Element {
                 className="layout"
                 layouts={{ lg: layout, md: layout, sm: layout, xs: layout, xxs: layout }}
                 draggableHandle=".draggable-area"
+                draggableCancel=".draggable-cancel"
                 onDragStop={(layout) => setLayout(layout)}
                 onResizeStop={(layout) => setLayout(layout)}
                 rowHeight={5}

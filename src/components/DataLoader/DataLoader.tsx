@@ -16,7 +16,7 @@ export function genErrorNotificationProps(resource: string): NotificationProps {
     };
 }
 
-const DEFAULT_POLL_COUNTDOWN = 5;
+const DEFAULT_POLL_COUNTDOWN = 3;
 
 // Will populate atoms containing the logged in user's tasks and tasklist, for instant-access purposes across the app.
 function DataLoader(): JSX.Element {

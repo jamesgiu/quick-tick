@@ -11,6 +11,10 @@
   padding-bottom: 20px;
 }
 
+.task-list .draggable-cancel button {
+  display: inline;
+}
+
 .draggable-area:hover {
   cursor: grab;
 }

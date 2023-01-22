@@ -68,7 +68,7 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                 variant="subtle"
                 size={mobile ? "xl" : "sm"}
                 onClick={() => {
-                    window.open("https://calendar.google.com/calendar/", "_blank", "popup=true, width=500, height=800");
+                    window.open("https://calendar.google.com/calendar/", "_blank", "popup=true, width=800, height=800");
                 }}
             >
                 Calendar <IconExternalLink size={16} />

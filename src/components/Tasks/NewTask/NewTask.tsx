@@ -90,7 +90,7 @@ function NewTask(props: NewTaskProps): JSX.Element {
                                 placeholder="Talk to Frank"
                                 {...form.getInputProps("title")}
                             />
-                            <TextInput label="Task notes" placeholder="Be brave" {...form.getInputProps("notes")} />
+                            {/* <TextInput label="Task notes" placeholder="Be brave" {...form.getInputProps("notes")} /> */}
                             <DatePicker
                                 placeholder="Due date (defaults to 7 days if unsupplied)"
                                 label="Due date"

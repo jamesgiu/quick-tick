@@ -119,9 +119,9 @@ export default function Home(): JSX.Element {
                     <Blockquote cite={inspirationalQuote.author}>{inspirationalQuote.text}</Blockquote>
                     <Alert icon={<IconBulb size={16} />} title="Today at a glance" color="cyan">
                         So far, you have completed {completedTasksToday} task{completedTasksToday === 1 ? "" : "s"}{" "}
-                        today. There's {numberTasksDueToday} task{numberTasksDueToday === 1 ? "" : "s"} due today.{" "}
+                        today. There's {numberTasksDueToday} task{numberTasksDueToday === 1 ? "" : "s"} left for today.{" "}
                         {numberTasksDueTomorrow} task{numberTasksDueTomorrow === 1 ? "" : "s"} due for tomorrow. In
-                        total, {numberTasksDueThisWeek} task{numberTasksDueThisWeek === 1 ? "" : "s"} due this week.
+                        total, {numberTasksDueThisWeek} task{numberTasksDueThisWeek === 1 ? "" : "s"} left this week.
                     </Alert>
                     {numberTasksOverdue > 0 && (
                         <Alert icon={<IconMoodSad size={16} />} title="Tasks overdue" color="red">
