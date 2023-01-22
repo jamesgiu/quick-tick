@@ -1,0 +1,14 @@
+.navbar-link-stack a,
+.navbar-link-stack button {
+  text-align: left;
+  display: flex;
+  width: 100%;
+}
+
+.nav-accordion .mantine-Accordion-control {
+  padding: 0;
+}
+
+.nav-accordion {
+  width: 95%;
+}

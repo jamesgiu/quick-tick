@@ -1,0 +1,9 @@
+.quick-tick-auth .profile-area .auth-actions {
+  float: left;
+  text-align: left;
+  display: flex;
+}
+
+.quick-tick-auth .google-one-tap {
+  opacity: 0;
+}

@@ -1,0 +1,7 @@
+.quick-tick-table {
+  overflow: scroll;
+}
+
+.quick-tick-table tbody {
+  text-align: left;
+}
