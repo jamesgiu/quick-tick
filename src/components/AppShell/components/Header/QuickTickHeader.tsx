@@ -19,10 +19,7 @@ export const LOGO = (
     <span>
         {" "}
         <span className={"header-logo"}>
-            {
-                // TODO base path env
-            }
-            <img src="/quick-tick/qtlogo.png" width={40} />
+            <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo.png"} width={40} />
             <IconChevronRight />
         </span>
         <span className={"header-text"}>

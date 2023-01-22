@@ -1,7 +1,6 @@
-import { ActionIcon, Badge, Button, Card, Group, Popover, Text } from "@mantine/core";
+import { Badge, Button, Card, Group, Popover, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { IconDotsVertical, IconTrash, IconTrashOff, IconTrashX } from "@tabler/icons";
-import { useState } from "react";
+import { IconDotsVertical, IconTrash, IconTrashX } from "@tabler/icons";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
@@ -16,9 +15,6 @@ export enum TaskListFilter {
     TODAY = "today",
     WEEKLY = "weekly",
 }
-// have "next week", "next month", "next year" flags
-// have "legend" to separate next week, next month, etc. on combined view (e.g. little squares in title)
-// completed tasks not shown here
 
 interface TaskListProps {
     taskList: TaskListIdTitle;
@@ -26,8 +22,6 @@ interface TaskListProps {
 }
 
 export default function TaskListCard(props: TaskListProps): JSX.Element {
-    const [isHoveringOverComplete, setIsHoveringOverComplete] = useState<boolean>(false);
-    const [isHoveringOverTrash, setIsHoveringOverTrash] = useState<boolean>(false);
     const [loading, setLoading] = useRecoilState(dataLoadingAtom);
     const credential = useRecoilValue(credentialAtom);
 

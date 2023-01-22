@@ -17,6 +17,8 @@
   margin: auto;
 }
 
+/* stylelint-disable */
 .stats .tasks-breakdown-chart .VictoryContainer text tspan {
   fill: rgb(69, 90, 100) !important;
 }
+/* stylelint-enable */

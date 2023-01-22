@@ -7,7 +7,6 @@ import { TaskListFilter } from "./TaskListCard";
 import "./TaskListCard.css";
 
 // TODO
-
 // flag button (edit notes to store extra detail on a task)
 
 export class TaskUtil {
@@ -16,8 +15,8 @@ export class TaskUtil {
     // Source: https://weeknumber.net/how-to/javascript
 
     // Returns the ISO week of the date.
-    public static getWeek = (date: Date): number => {
-        var date = new Date(date.getTime());
+    public static getWeek = (givenDate: Date): number => {
+        const date = new Date(givenDate.getTime());
         date.setHours(0, 0, 0, 0);
         // Thursday in current week decides the year.
         date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
