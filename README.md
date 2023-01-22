@@ -2,12 +2,20 @@
 [![Node.js CI](https://github.com/jamesgiu/quick-tick/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/jamesgiu/quick-tick/actions/workflows/node.js.yml)
 
 <div align="center">
-   <img src="https://user-images.githubusercontent.com/13777223/213909639-0fed3778-9caf-49df-a3f1-22baa79efa49.png" alt="Logo">
+   <img src="https://user-images.githubusercontent.com/13777223/213909887-ccb17d6b-b203-4796-b1e7-f99e0ef8524e.png" alt="Logo">
 </div>
 
-# Quick Tick
+<h3 align="center">QuickTick <img src="https://user-images.githubusercontent.com/13777223/213909639-0fed3778-9caf-49df-a3f1-22baa79efa49.png" alt="Logo" width=20>
+</h3>
+  <p align="center">
+   Task-management application using React and Google Tasks
+    <br />
+    <a href="https://jamesgiu.github.io/quick-tick/">Try it out</a>
+  </p>
+</div>
+<hr/>
 
-Task-management application using React and Google Tasks
+# QuickTick
 
 Hosted at: https://jamesgiu.github.io/quick-tick/
 
