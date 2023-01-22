@@ -37,5 +37,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: quick-tick/dist
+          folder: dist
           ssh-key: ${{ secrets.GH_ACTIONS_KEY }}
