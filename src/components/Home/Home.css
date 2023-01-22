@@ -14,3 +14,17 @@
 .home .github-buttons {
   font-size: 0.8rem;
 }
+
+.home a {
+  padding: 2px;
+}
+
+.home .mantine-Alert-root .mantine-Alert-title {
+  text-align: center;
+  margin: auto;
+  width: 120px;
+}
+
+.home .mantine-Alert-root .mantine-Alert-icon {
+  margin: auto;
+}

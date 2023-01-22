@@ -33,8 +33,11 @@ function NewTask(props: NewTaskProps): JSX.Element {
             taskListId: props.defaultTaskList ? props.defaultTaskList.id : "",
             title: "",
             notes: "",
-            // One week from now, by default.
-            due: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toString(),
+            due: new Date(Date.now()).toString(),
+        },
+        validate: {
+            taskListId: (value) => (value == "" ? "Required field" : null),
+            title: (value) => (value == "" ? "Required field" : null),
         },
     });
 
@@ -58,6 +61,8 @@ function NewTask(props: NewTaskProps): JSX.Element {
                 setLoading(false);
             }
         );
+
+        setOpened(false);
     };
 
     const buildSelectValuesFromTaskLists = (): SelectItem[] => {
@@ -85,26 +90,28 @@ function NewTask(props: NewTaskProps): JSX.Element {
                     <form onSubmit={form.onSubmit(submit)}>
                         <span>
                             <TextInput
-                                withAsterisk
+                                required
                                 label="Task title"
-                                placeholder="Talk to Frank"
+                                placeholder="Do something nice"
                                 {...form.getInputProps("title")}
                             />
                             {/* <TextInput label="Task notes" placeholder="Be brave" {...form.getInputProps("notes")} /> */}
                             <DatePicker
-                                placeholder="Due date (defaults to 7 days if unsupplied)"
+                                placeholder="Due date (default: today if unsupplied)"
                                 label="Due date"
                                 {...form.getInputProps("due")}
                             />
                             <Select
-                                withAsterisk
+                                required
                                 label="Task list"
                                 placeholder="Pick a task list"
                                 data={buildSelectValuesFromTaskLists()}
                                 {...form.getInputProps("taskListId")}
                             />
                             <Group position="right" mt="md">
-                                <Button type="submit">Submit</Button>
+                                <Button type="submit" disabled={!form.isValid()}>
+                                    Submit
+                                </Button>
                             </Group>
                         </span>
                     </form>
