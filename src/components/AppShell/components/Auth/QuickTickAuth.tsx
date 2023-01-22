@@ -67,7 +67,6 @@ export default function QuickTickAuth(): JSX.Element {
     useEffect((): void => {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
         if (credential && credential.refresh_token) {
-            console.log("Refreshing token...");
             GoogleAPI.refreshToken(
                 credential,
                 (response) => {
@@ -76,6 +75,15 @@ export default function QuickTickAuth(): JSX.Element {
                 () => showNotification(errorNotification)
             );
         }
+
+         // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
+         const TWO_MINUTES_MS = 2 * 60 * 1000;
+         if (credential) {
+             setTimeout(()=> GoogleAPI.refreshToken(credential,
+                 (response)=> {
+                     generateExpirationTimeAndSetCredentials(response)
+                 }, ()=>showNotification(errorNotification)), (credential.expires_in * 1000) - TWO_MINUTES_MS)
+         }
     }, []);
 
     // When the credential changes, get the user info again.
