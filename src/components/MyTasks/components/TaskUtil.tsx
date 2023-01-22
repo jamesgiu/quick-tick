@@ -1,8 +1,5 @@
 import { Badge, Tooltip } from "@mantine/core";
-import {
-    IconAlarm, IconCalendar, IconClock, IconHourglassHigh,
-    IconMoodSad, IconUrgent
-} from "@tabler/icons";
+import { IconAlarm, IconCalendar, IconClock, IconHourglassHigh, IconMoodSad, IconUrgent } from "@tabler/icons";
 import { Task } from "../../../api/Types";
 import { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
 import TaskControls from "./TaskControls";

@@ -151,14 +151,11 @@ export class GoogleAPI {
         onFailure: (error: string) => void
     ): void {
         axios
-            .delete(
-                TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS + taskList.id,
-                {
-                    headers: {
-                        Authorization: `Bearer ${credential.access_token}`,
-                    },
-                }
-            )
+            .delete(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS + taskList.id, {
+                headers: {
+                    Authorization: `Bearer ${credential.access_token}`,
+                },
+            })
             .then((response) => onSuccess(response.data))
             .catch((error) => onFailure(error.message));
     }

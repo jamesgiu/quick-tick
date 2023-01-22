@@ -37,7 +37,11 @@ export default function QuickTickAuth(): JSX.Element {
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse): void => {
         const expiryDateEpoch = Date.now() + response.expires_in * 1000;
         // Setting the credential with a date for when the access token expires.
-        setCredential({ ...response, accessTokenExpiryEpoch: expiryDateEpoch, refresh_token: response.refresh_token ?? credential.refresh_token });
+        setCredential({
+            ...response,
+            accessTokenExpiryEpoch: expiryDateEpoch,
+            refresh_token: response.refresh_token ?? credential.refresh_token,
+        });
     };
 
     const login = useGoogleLogin({
@@ -57,7 +61,7 @@ export default function QuickTickAuth(): JSX.Element {
             showNotification(errorNotification);
         },
         scope: REQUIRED_SCOPES,
-        flow: "auth-code"
+        flow: "auth-code",
     });
 
     useEffect((): void => {

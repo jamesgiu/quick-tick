@@ -1,9 +1,6 @@
-import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text} from "@mantine/core";
+import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-    IconCircleCheck, IconCircleDashed, IconGhost, IconMoodSmileBeam, IconTrash,
-    IconTrashX
-} from "@tabler/icons";
+import { IconCircleCheck, IconCircleDashed, IconGhost, IconMoodSmileBeam, IconTrash, IconTrashX } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
@@ -100,31 +97,25 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                 >
                     {isHoveringOverComplete ? <IconCircleCheck /> : <IconCircleDashed />}
                 </ActionIcon>
-        <Popover width={200} position="bottom" withArrow shadow="md">
-        <Popover.Target>
-        <ActionIcon
-                    color={"#a5d8ff"}
-                    onMouseOver={() => setIsHoveringOverTrash(true)}
-                    onMouseOut={() => setIsHoveringOverTrash(false)}
-                    onMouseLeave={() => setIsHoveringOverTrash(false)}
-                    onClick={() => deleteTask()}
-                >
-                    {isHoveringOverTrash ? <IconTrashX /> : <IconTrash />}
-                </ActionIcon>
-    </Popover.Target>
-    <Popover.Dropdown>
-        <Text size="sm">Delete your task? This action cannot be undone.</Text>
-        <Button
-        color={"red"}
-        onClick={deleteTask}
-        leftIcon={<IconTrashX/>}
-        >
-       Delete
-    </Button>
-      </Popover.Dropdown>
-    </Popover>
-
-               
+                <Popover width={200} position="bottom" withArrow shadow="md">
+                    <Popover.Target>
+                        <ActionIcon
+                            color={"#a5d8ff"}
+                            onMouseOver={() => setIsHoveringOverTrash(true)}
+                            onMouseOut={() => setIsHoveringOverTrash(false)}
+                            onMouseLeave={() => setIsHoveringOverTrash(false)}
+                            onClick={() => deleteTask()}
+                        >
+                            {isHoveringOverTrash ? <IconTrashX /> : <IconTrash />}
+                        </ActionIcon>
+                    </Popover.Target>
+                    <Popover.Dropdown>
+                        <Text size="sm">Delete your task? This action cannot be undone.</Text>
+                        <Button color={"red"} onClick={deleteTask} leftIcon={<IconTrashX />}>
+                            Delete
+                        </Button>
+                    </Popover.Dropdown>
+                </Popover>
             </Group>
         );
     }

@@ -1,8 +1,6 @@
 import { ActionIcon, Badge, Button, Card, Group, Popover, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-    IconDotsVertical, IconTrash, IconTrashOff, IconTrashX
-} from "@tabler/icons";
+import { IconDotsVertical, IconTrash, IconTrashOff, IconTrashX } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
@@ -32,7 +30,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     const [isHoveringOverTrash, setIsHoveringOverTrash] = useState<boolean>(false);
     const [loading, setLoading] = useRecoilState(dataLoadingAtom);
     const credential = useRecoilValue(credentialAtom);
-    
+
     const taskListMap = useRecoilValue<Map<string, Task[]>>(taskListsMapAtom);
 
     const getActiveTasks = (): Task[] =>
@@ -51,7 +49,12 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
             props.taskList,
             () => {
                 setLoading(false);
-                showNotification({title: "Tasklist deleted!", message: `${props.taskList.title} was deleted`, color: "green", icon: <IconTrash/>});
+                showNotification({
+                    title: "Tasklist deleted!",
+                    message: `${props.taskList.title} was deleted`,
+                    color: "green",
+                    icon: <IconTrash />,
+                });
             },
             () => {
                 showNotification(genErrorNotificationProps("Tasklist deletion"));
@@ -60,24 +63,24 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
         );
     };
 
-    const deleteListBtn = () : JSX.Element => {
+    const deleteListBtn = (): JSX.Element => {
         return (
-        <Popover width={200} position="bottom" withArrow shadow="md">
-        <Popover.Target>
-        <Button variant="subtle" leftIcon={<IconTrash />} size="sm"> Delete </Button>
-    </Popover.Target>
-    <Popover.Dropdown>
-        <Text size="sm">Delete your list? This action cannot be undone.</Text>
-        <Button
-        color={"red"}
-        onClick={deleteList}
-        leftIcon={<IconTrashX/>}
-        >
-       Delete
-    </Button>
-      </Popover.Dropdown>
-    </Popover> );
-    }
+            <Popover width={200} position="bottom" withArrow shadow="md">
+                <Popover.Target>
+                    <Button variant="subtle" leftIcon={<IconTrash />} size="sm">
+                        {" "}
+                        Delete{" "}
+                    </Button>
+                </Popover.Target>
+                <Popover.Dropdown>
+                    <Text size="sm">Delete your list? This action cannot be undone.</Text>
+                    <Button color={"red"} onClick={deleteList} leftIcon={<IconTrashX />}>
+                        Delete
+                    </Button>
+                </Popover.Dropdown>
+            </Popover>
+        );
+    };
 
     return (
         <Card shadow="sm" p="lg" radius="md" withBorder className="task-list">
@@ -89,8 +92,8 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                         {taskRows?.length ?? 0} task{usePluralPhrasing() ? "s" : ""}
                     </Badge>
                     <span className="draggable-cancel">
-                       <NewTask defaultTaskList={props.taskList} />
-                       {deleteListBtn()}
+                        <NewTask defaultTaskList={props.taskList} />
+                        {deleteListBtn()}
                     </span>
                 </Group>
             </div>
