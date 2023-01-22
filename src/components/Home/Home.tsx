@@ -8,6 +8,7 @@ import {
     IconBackhoe,
     IconBulldozer,
     IconMoodSad,
+    IconGlassFull,
 } from "@tabler/icons";
 import Quote from "inspirational-quotes";
 import { useEffect, useState } from "react";
@@ -178,6 +179,19 @@ export default function Home(): JSX.Element {
                     <List.Item>
                         Try signing out and back in again using the logout buttons located either in the top-right (
                         <IconLogout size={20} />) or via selecting the profile in the navbar.
+                    </List.Item>
+                </List>
+                <h4>
+                    <IconGlassFull /> Pairing notes...
+                </h4>
+                <List spacing="xs" size="xs" center icon={<IconInfoCircle size={16} />}>
+                    <List.Item>
+                        Whilst useable standalone, QuickTick is designed to be paired with{" "}
+                        <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.tasks">
+                            Google Tasks
+                        </a>
+                        . Anything you do here will be replicated in Google Tasks and in your{" "}
+                        <a href="https://calendar.google.com/calendar">Google Calendar</a>.
                     </List.Item>
                 </List>
             </Alert>
