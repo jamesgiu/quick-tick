@@ -1,7 +1,7 @@
 [![Deploy to GH Pages](https://github.com/jamesgiu/quick-tick/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/jamesgiu/quick-tick/actions/workflows/deploy.yml)
 [![Node.js CI](https://github.com/jamesgiu/quick-tick/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/jamesgiu/quick-tick/actions/workflows/node.js.yml)
 
-![img.png](quick-tick/src/assets/splash.png)
+![image](https://user-images.githubusercontent.com/13777223/213909299-390f0ca6-bd7b-4bb7-b2db-4408016a0bc1.png)
 
 # Quick Tick
 
@@ -53,4 +53,10 @@ The guidelines are as follows:
 Retrieved from https://console.cloud.google.com/apis/credentials
 
 ## Screenshots
-![img.png](quick-tick/src/assets/screenshot.png)
+![image](https://user-images.githubusercontent.com/13777223/213909303-c43b6d0f-b5de-4f54-876d-b34cb91f14fd.png)
+![image](https://user-images.githubusercontent.com/13777223/213909368-c4fc3d8a-5608-4b67-ab30-6ff79b833469.png)
+![image](https://user-images.githubusercontent.com/13777223/213909486-2da0258f-a7d6-493b-b82d-ddbd27705b52.png)
+![image](https://user-images.githubusercontent.com/13777223/213909490-a54300b9-011b-4a0f-9720-46ae5891606c.png)
+![image](https://user-images.githubusercontent.com/13777223/213909524-361c063d-a0b4-4806-808f-2afcb7c76081.png)
+
+
