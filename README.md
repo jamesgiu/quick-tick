@@ -1,7 +1,9 @@
 [![Deploy to GH Pages](https://github.com/jamesgiu/quick-tick/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/jamesgiu/quick-tick/actions/workflows/deploy.yml)
 [![Node.js CI](https://github.com/jamesgiu/quick-tick/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/jamesgiu/quick-tick/actions/workflows/node.js.yml)
 
-![image](https://user-images.githubusercontent.com/13777223/213909299-390f0ca6-bd7b-4bb7-b2db-4408016a0bc1.png)
+<div align="center">
+   <img src="https://user-images.githubusercontent.com/13777223/213909639-0fed3778-9caf-49df-a3f1-22baa79efa49.png" alt="Logo">
+</div>
 
 # Quick Tick
 
@@ -38,7 +40,6 @@ Runs `stylelint` over the project.
 
 Runs `prettier` over the project.
 
-
 ## Contributing
 
 Feel free to contribute to any [Issues](https://github.com/jamesgiu/quick-tick/issues) or [make your own](https://github.com/jamesgiu/quick-tick/issues/new/choose)!
@@ -58,5 +59,3 @@ Retrieved from https://console.cloud.google.com/apis/credentials
 ![image](https://user-images.githubusercontent.com/13777223/213909486-2da0258f-a7d6-493b-b82d-ddbd27705b52.png)
 ![image](https://user-images.githubusercontent.com/13777223/213909490-a54300b9-011b-4a0f-9720-46ae5891606c.png)
 ![image](https://user-images.githubusercontent.com/13777223/213909524-361c063d-a0b4-4806-808f-2afcb7c76081.png)
-
-
