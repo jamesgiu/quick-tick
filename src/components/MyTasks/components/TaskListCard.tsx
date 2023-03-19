@@ -7,7 +7,7 @@ import { Task, TaskListIdTitle } from "../../../api/Types";
 import { credentialAtom, dataLoadingAtom, taskListsMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 import QuickTickTable, { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
-import NewTask from "../../Tasks/NewTask/NewTask";
+import TaskForm from "../../Tasks/TaskForm/TaskForm";
 import "./TaskListCard.css";
 import { TaskUtil } from "./TaskUtil";
 
@@ -86,7 +86,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                         {taskRows?.length ?? 0} task{usePluralPhrasing() ? "s" : ""}
                     </Badge>
                     <span className="draggable-cancel">
-                        <NewTask defaultTaskList={props.taskList} />
+                        <TaskForm defaultTaskList={props.taskList} />
                         {deleteListBtn()}
                     </span>
                 </Group>

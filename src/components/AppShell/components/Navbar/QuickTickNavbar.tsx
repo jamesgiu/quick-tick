@@ -13,7 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { TaskListFilter } from "../../../MyTasks/components/TaskListCard";
-import NewTask from "../../../Tasks/NewTask/NewTask";
+import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import "./QuickTickNavbar.css";
@@ -53,7 +53,7 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                         </Button>
                     </Accordion.Control>
                     <Accordion.Panel>
-                        <NewTask />
+                        <TaskForm />
                         <NewTaskList />
                     </Accordion.Panel>
                 </Accordion.Item>

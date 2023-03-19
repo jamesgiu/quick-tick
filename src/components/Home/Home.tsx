@@ -157,7 +157,7 @@ export default function Home(): JSX.Element {
                 <List spacing="xs" size="xs" center icon={<IconInfoCircle size={16} />}>
                     <List.Item>
                         you'll have to set them in <a href="https://calendar.google.com/calendar">Google Tasks</a> (also
-                        accessible via the "Calendar" link in the navbar)
+                        accessible via the "Calendar" link in the navbar).
                     </List.Item>
                 </List>
                 <h4>

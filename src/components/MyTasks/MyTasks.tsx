@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { TaskList } from "../../api/Types";
 import { taskListLayoutAtom, taskListsAtom } from "../../recoil/Atoms";
-import NewTask from "../Tasks/NewTask/NewTask";
+import TaskForm from "../Tasks/TaskForm/TaskForm";
 import NewTaskList from "../Tasks/NewTasklist/NewTasklist";
 import TaskListCard, { TaskListFilter } from "./components/TaskListCard";
 import "./MyTasks.css";
@@ -64,7 +64,7 @@ export default function MyTasks(): JSX.Element {
             <div>My Tasks</div>
             {searchParams.get("when") && <div>Filtered by: {whenParam}</div>}
             <NewTaskList />
-            <NewTask />
+            <TaskForm />
             <ResponsiveGridLayout
                 className="layout"
                 layouts={{ lg: layout, md: layout, sm: layout, xs: layout, xxs: layout }}

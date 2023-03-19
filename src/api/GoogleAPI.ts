@@ -1,5 +1,5 @@
 import axios, { AxiosPromise } from "axios";
-import { NewTaskFormFields } from "../components/Tasks/NewTask/NewTask";
+import { TaskFormFields } from "../components/Tasks/TaskForm/TaskForm";
 import {
     GOOGLE_API_ACTIONS,
     TASK_API_ACTIONS,
@@ -12,6 +12,7 @@ import {
     GOOGLE_API_OAUTH,
     QuickTickCredential,
     TaskListIdTitle,
+    buildDateStringRFC3339,
 } from "./Types";
 
 export class GoogleAPI {
@@ -87,15 +88,10 @@ export class GoogleAPI {
 
     public static createNewTask(
         credential: QuickTickCredential,
-        newTaskValues: NewTaskFormFields,
+        newTaskValues: TaskFormFields,
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        // TODO refactor
-        const buildDateStringRFC3339 = (date: Date): string => {
-            return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T23:59:00.000Z`;
-        };
-
         axios
             .post(
                 TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + newTaskValues.taskListId + "/tasks",
@@ -110,15 +106,15 @@ export class GoogleAPI {
             .catch((error) => onFailure(error.message));
     }
 
-    public static completeTask(
+    public static updateTask(
         credential: QuickTickCredential,
-        taskList: TaskListIdTitle,
+        taskListId: string,
         task: Task,
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
         axios
-            .put(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskList.id + "/tasks/" + task.id, task, {
+            .put(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskListId + "/tasks/" + task.id, task, {
                 headers: {
                     Authorization: `Bearer ${credential.access_token}`,
                 },
