@@ -1,17 +1,24 @@
 import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { IconCircleCheck, IconCircleDashed, IconGhost, IconMoodSmileBeam, IconTrash, IconTrashX } from "@tabler/icons";
+import {
+    IconCircleCheck,
+    IconCircleDashed,
+    IconGhost,
+    IconMoodSmileBeam,
+    IconTrash,
+    IconTrashX,
+    IconPencil,
+} from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
 import { credentialAtom, tasksMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
+import TaskForm from "../../Tasks/TaskForm/TaskForm";
 
 // TODO
 
-// check-box to complete
-// edit/delete buttons
 // flag button (edit notes to store extra detail on a task)
 // automatic emoji/icon assignment, can change it too
 
@@ -40,9 +47,9 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             status: "completed",
         };
 
-        GoogleAPI.completeTask(
+        GoogleAPI.updateTask(
             credential,
-            tasksMap.get(JSON.stringify(props.targetTask))!,
+            tasksMap.get(JSON.stringify(props.targetTask))!.id,
             completedTask,
             () => {
                 showNotification({
@@ -96,6 +103,13 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                     onClick={() => completeTask()}
                 >
                     {isHoveringOverComplete ? <IconCircleCheck /> : <IconCircleDashed />}
+                </ActionIcon>
+                <ActionIcon color={"#a5d8ff"}>
+                    <TaskForm
+                        targetTaskIfEditing={props.targetTask}
+                        customTarget={<IconPencil />}
+                        defaultTaskList={tasksMap.get(JSON.stringify(props.targetTask))}
+                    />
                 </ActionIcon>
                 <Popover width={200} position="bottom" withArrow shadow="md">
                     <Popover.Target>

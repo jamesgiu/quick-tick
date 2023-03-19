@@ -6,11 +6,11 @@ import { IconCheckbox, IconSquarePlus } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
-import { TaskListIdTitle } from "../../../api/Types";
-import { credentialAtom, taskListsAtom } from "../../../recoil/Atoms";
+import { buildDateStringRFC3339, Task, TaskListIdTitle } from "../../../api/Types";
+import { credentialAtom, taskListsAtom, taskListsMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 
-export interface NewTaskFormFields {
+export interface TaskFormFields {
     taskListId: string;
     title: string;
     notes: string;
@@ -18,22 +18,26 @@ export interface NewTaskFormFields {
     due: string;
 }
 
-export interface NewTaskProps {
+export interface TaskFormProps {
     defaultTaskList?: TaskListIdTitle;
+    targetTaskIfEditing?: Task;
+    customTarget?: JSX.Element;
 }
 
-function NewTask(props: NewTaskProps): JSX.Element {
+function TaskForm(props: TaskFormProps): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const taskLists = useRecoilValue(taskListsAtom);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const form = useForm<NewTaskFormFields>({
+    const taskActionText = props.targetTaskIfEditing ? "Update" : "Create";
+
+    const form = useForm<TaskFormFields>({
         initialValues: {
             taskListId: props.defaultTaskList ? props.defaultTaskList.id : "",
-            title: "",
+            title: props.targetTaskIfEditing?.title ?? "",
             notes: "",
-            due: new Date(Date.now()).toString(),
+            due: props.targetTaskIfEditing?.due ?? new Date(Date.now()).toString(),
         },
         validate: {
             taskListId: (value) => (value == "" ? "Required field" : null),
@@ -41,26 +45,36 @@ function NewTask(props: NewTaskProps): JSX.Element {
         },
     });
 
-    const submit = (values: NewTaskFormFields): void => {
+    const submit = (values: TaskFormFields): void => {
         setLoading(true);
         form.setFieldValue("due", new Date(form.values.due).toString());
-        GoogleAPI.createNewTask(
-            credential,
-            values,
-            () => {
-                showNotification({
-                    title: "Task created!",
-                    message: values.title + " successfully created!",
-                    color: "green",
-                    icon: <IconCheckbox />,
-                });
-                setLoading(false);
-            },
-            () => {
-                showNotification(genErrorNotificationProps("Task creation"));
-                setLoading(false);
-            }
-        );
+
+        const onSuccess = () => {
+            showNotification({
+                title: `Task ${taskActionText}d!`,
+                message: `${values.title} successfully ${taskActionText}d!`,
+                color: "green",
+                icon: <IconCheckbox />,
+            });
+            setLoading(false);
+        };
+
+        const onFailure = () => {
+            showNotification(genErrorNotificationProps(`Task ${taskActionText}`));
+            setLoading(false);
+        };
+
+        if (props.targetTaskIfEditing) {
+            const editedTask: Task = {
+                ...props.targetTaskIfEditing,
+                due: buildDateStringRFC3339(new Date(values.due as string)),
+                title: values.title,
+            };
+
+            GoogleAPI.updateTask(credential, values.taskListId, editedTask, onSuccess, onFailure);
+        } else {
+            GoogleAPI.createNewTask(credential, values, onSuccess, onFailure);
+        }
 
         setOpened(false);
     };
@@ -83,7 +97,11 @@ function NewTask(props: NewTaskProps): JSX.Element {
             <Modal
                 opened={opened}
                 onClose={() => setOpened(false)}
-                title={props.defaultTaskList ? `New task for ${props.defaultTaskList.title}` : "New task"}
+                title={
+                    props.defaultTaskList
+                        ? `${taskActionText} task for ${props.defaultTaskList.title}`
+                        : `${taskActionText} task`
+                }
             >
                 {loading && <LoadingOverlay visible={true} overlayBlur={2} />}
                 <Box sx={{ maxWidth: 300 }} mx="auto">
@@ -97,7 +115,11 @@ function NewTask(props: NewTaskProps): JSX.Element {
                             />
                             {/* <TextInput label="Task notes" placeholder="Be brave" {...form.getInputProps("notes")} /> */}
                             <DatePicker
-                                placeholder="Due date (default: today if unsupplied)"
+                                placeholder={
+                                    props.targetTaskIfEditing
+                                        ? new Date(props.targetTaskIfEditing?.due as string).toDateString()
+                                        : new Date(Date.now()).toDateString()
+                                }
                                 label="Due date"
                                 {...form.getInputProps("due")}
                             />
@@ -118,11 +140,15 @@ function NewTask(props: NewTaskProps): JSX.Element {
                 </Box>
             </Modal>
 
-            <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconSquarePlus />} size="sm">
-                Task
-            </Button>
+            {props.customTarget ? (
+                <span onClick={() => setOpened(true)}>{props.customTarget}</span>
+            ) : (
+                <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconSquarePlus />} size="sm">
+                    Task
+                </Button>
+            )}
         </>
     );
 }
 
-export default NewTask;
+export default TaskForm;

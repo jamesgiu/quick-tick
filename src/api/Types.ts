@@ -85,3 +85,7 @@ export const REQUIRED_SCOPES =
     "https://www.googleapis.com/auth/tasks.readonly " +
     "https://www.googleapis.com/auth/admin.directory.resource.calendar " +
     "https://www.googleapis.com/auth/admin.directory.resource.calendar.readonly";
+
+export const buildDateStringRFC3339 = (date: Date): string => {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T23:59:00.000Z`;
+};
