@@ -45,6 +45,7 @@ export const tasksMapAtom = atom({
 export const navbarCollapsedAtom = atom({
     key: "navbarCollapsed",
     default: false,
+    effects_UNSTABLE: [persistAtom],
 });
 
 export const taskListLayoutAtom = atom<Layout[]>({

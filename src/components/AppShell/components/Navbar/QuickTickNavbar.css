@@ -20,13 +20,15 @@
 .collapse-button {
   width: 30px;
   z-index: 200;
-  margin-top: 50px;
+  position: fixed;
+  top: 50px;
   /* Navbar width - 5px */
-  margin-left: 245px;
+  left: 245px;
 }
 
 .expand-button {
   width: 30px;
   z-index: 200;
-  margin-top: 50px;
+  position: fixed;
+  top: 50px;
 }

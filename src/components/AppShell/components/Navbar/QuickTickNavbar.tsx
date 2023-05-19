@@ -108,7 +108,7 @@ export default function QuickTickNavbar(): JSX.Element {
 
     return (
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-            <>
+            <div>
             <Button 
                 variant="subtle"
                 size="sm"
@@ -121,7 +121,7 @@ export default function QuickTickNavbar(): JSX.Element {
                     <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
                 </Navbar>
             </Collapse>
-            </>
+            </div>
         </MediaQuery>
     );
 }
