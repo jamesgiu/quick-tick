@@ -53,3 +53,9 @@ export const taskListLayoutAtom = atom<Layout[]>({
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
+
+export const collapsedTaskListIds = atom<string[]>({
+    key: "collapsedTaskListIds",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});

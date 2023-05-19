@@ -5,8 +5,8 @@ import {
     IconCheckupList,
     IconClock,
     IconExternalLink,
-    IconLayoutSidebarLeftCollapse,
-    IconLayoutSidebarLeftExpand,
+    IconArrowBadgeRight,
+    IconArrowBadgeLeft,
     IconPlaylistAdd,
     IconTimeline,
     IconTrafficCone,
@@ -112,7 +112,7 @@ export default function QuickTickNavbar(): JSX.Element {
                 <Button
                     variant="subtle"
                     size="sm"
-                    leftIcon={collapsed ? <IconLayoutSidebarLeftExpand /> : <IconLayoutSidebarLeftCollapse />}
+                    leftIcon={collapsed ? <IconArrowBadgeRight /> : <IconArrowBadgeLeft />}
                     onClick={() => setCollapsed(!collapsed)}
                     className={!collapsed ? "collapse-button" : "expand-button"}
                 />

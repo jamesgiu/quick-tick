@@ -43,6 +43,7 @@ export default function MyTasks(): JSX.Element {
                 </div>
             );
 
+            // FIXME should this be a contains?
             if (JSON.stringify(layoutIds) !== JSON.stringify(taskListIds)) {
                 // If we haven't seen this tasklist id before, add it to our layouts array.
                 if (!layoutIds.includes(taskList.id)) {
