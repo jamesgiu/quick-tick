@@ -109,18 +109,18 @@ export default function QuickTickNavbar(): JSX.Element {
     return (
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
             <div>
-            <Button 
-                variant="subtle"
-                size="sm"
-                leftIcon={collapsed ? <IconLayoutSidebarLeftExpand/> : <IconLayoutSidebarLeftCollapse/>} 
-                onClick={()=>setCollapsed(!collapsed)}
-                className={!collapsed ? "collapse-button": "expand-button"}
-            />
-            <Collapse in={!collapsed}>
-                <Navbar width={{ sm: !collapsed ? 250 : 0  }} p="xs">
-                    <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
-                </Navbar>
-            </Collapse>
+                <Button
+                    variant="subtle"
+                    size="sm"
+                    leftIcon={collapsed ? <IconLayoutSidebarLeftExpand /> : <IconLayoutSidebarLeftCollapse />}
+                    onClick={() => setCollapsed(!collapsed)}
+                    className={!collapsed ? "collapse-button" : "expand-button"}
+                />
+                <Collapse in={!collapsed}>
+                    <Navbar width={{ sm: !collapsed ? 250 : 0 }} p="xs">
+                        <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
+                    </Navbar>
+                </Collapse>
             </div>
         </MediaQuery>
     );
