@@ -1,10 +1,12 @@
-import { Accordion, Button, MediaQuery, Menu, Navbar, Stack } from "@mantine/core";
+import { Accordion, Button, Collapse, MediaQuery, Menu, Navbar, Stack } from "@mantine/core";
 import {
     IconAlarm,
     IconCalendar,
     IconCheckupList,
     IconClock,
     IconExternalLink,
+    IconLayoutSidebarLeftCollapse,
+    IconLayoutSidebarLeftExpand,
     IconPlaylistAdd,
     IconTimeline,
     IconTrafficCone,
@@ -18,6 +20,8 @@ import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import "./QuickTickNavbar.css";
 import Divider = Menu.Divider;
+import { navbarCollapsedAtom } from "../../../../recoil/Atoms";
+import { useRecoilState } from "recoil";
 
 export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): JSX.Element => {
     return (
@@ -100,11 +104,24 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
 };
 
 export default function QuickTickNavbar(): JSX.Element {
+    const [collapsed, setCollapsed] = useRecoilState(navbarCollapsedAtom);
+
     return (
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-            <Navbar width={{ sm: 250 }} p="xs">
-                <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
-            </Navbar>
+            <>
+            <Button 
+                variant="subtle"
+                size="sm"
+                leftIcon={collapsed ? <IconLayoutSidebarLeftExpand/> : <IconLayoutSidebarLeftCollapse/>} 
+                onClick={()=>setCollapsed(!collapsed)}
+                className={!collapsed ? "collapse-button": "expand-button"}
+            />
+            <Collapse in={!collapsed}>
+                <Navbar width={{ sm: !collapsed ? 250 : 0  }} p="xs">
+                    <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
+                </Navbar>
+            </Collapse>
+            </>
         </MediaQuery>
     );
 }
