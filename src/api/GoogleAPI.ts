@@ -1,17 +1,16 @@
-import axios, { AxiosPromise } from "axios";
+import axios from "axios";
 import { TaskFormFields } from "../components/Tasks/TaskForm/TaskForm";
 import {
     GOOGLE_API_ACTIONS,
+    GOOGLE_API_OAUTH,
+    QuickTickCredential,
     TASK_API_ACTIONS,
-    TaskList,
     Task,
-    UserInfoResponse,
+    TaskListIdTitle,
     TaskListResponse,
     TaskResponse,
     TokenResponse,
-    GOOGLE_API_OAUTH,
-    QuickTickCredential,
-    TaskListIdTitle,
+    UserInfoResponse,
     buildDateStringRFC3339,
 } from "./Types";
 

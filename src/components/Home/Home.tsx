@@ -1,14 +1,14 @@
-import { Alert, Avatar, Blockquote, Card, Center, Divider, List, Text, ThemeIcon, Title } from "@mantine/core";
+import { Alert, Blockquote, Card, Center, Divider, List, Text, Title } from "@mantine/core";
 import {
+    IconBackhoe,
     IconBrandGithub,
     IconBulb,
+    IconBulldozer,
+    IconGlassFull,
     IconInfoCircle,
     IconLogout,
-    IconWreckingBall,
-    IconBackhoe,
-    IconBulldozer,
     IconMoodSad,
-    IconGlassFull,
+    IconWreckingBall,
 } from "@tabler/icons";
 import Quote from "inspirational-quotes";
 import { useEffect, useState } from "react";

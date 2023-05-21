@@ -31,7 +31,7 @@ function NewTaskList(): JSX.Element {
         GoogleAPI.createNewTaskList(
             credential,
             values.title,
-            () => {
+            (): void => {
                 showNotification({
                     title: "Tasklist created!",
                     message: values.title + " successfully created!",
@@ -40,7 +40,7 @@ function NewTaskList(): JSX.Element {
                 });
                 setLoading(false);
             },
-            () => {
+            (): void => {
                 showNotification(genErrorNotificationProps("Tasklist creation"));
                 setLoading(false);
             }
@@ -51,7 +51,7 @@ function NewTaskList(): JSX.Element {
 
     return (
         <>
-            <Modal opened={opened} onClose={() => setOpened(false)} title="New tasklist">
+            <Modal opened={opened} onClose={(): void => setOpened(false)} title="New tasklist">
                 {loading && <LoadingOverlay visible={true} overlayBlur={2} />}
                 <Box sx={{ maxWidth: 300 }} mx="auto">
                     <form onSubmit={form.onSubmit(submit)}>
@@ -70,7 +70,7 @@ function NewTaskList(): JSX.Element {
                 </Box>
             </Modal>
 
-            <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconFilePlus />} size="sm">
+            <Button variant="subtle" onClick={(): void => setOpened(true)} leftIcon={<IconFilePlus />} size="sm">
                 Tasklist
             </Button>
         </>

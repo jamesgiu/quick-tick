@@ -42,8 +42,20 @@ export const tasksMapAtom = atom({
     default: new Map<string, TaskListIdTitle>(),
 });
 
+export const navbarCollapsedAtom = atom({
+    key: "navbarCollapsed",
+    default: false,
+    effects_UNSTABLE: [persistAtom],
+});
+
 export const taskListLayoutAtom = atom<Layout[]>({
     key: "tasklistLayout",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});
+
+export const collapsedTaskListIds = atom<string[]>({
+    key: "collapsedTaskListIds",
     default: [],
     effects_UNSTABLE: [persistAtom],
 });

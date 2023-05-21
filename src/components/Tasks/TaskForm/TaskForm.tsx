@@ -6,8 +6,8 @@ import { IconCheckbox, IconSquarePlus } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
-import { buildDateStringRFC3339, Task, TaskListIdTitle } from "../../../api/Types";
-import { credentialAtom, taskListsAtom, taskListsMapAtom } from "../../../recoil/Atoms";
+import { Task, TaskListIdTitle, buildDateStringRFC3339 } from "../../../api/Types";
+import { credentialAtom, taskListsAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 
 export interface TaskFormFields {
@@ -49,7 +49,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
         setLoading(true);
         form.setFieldValue("due", new Date(form.values.due).toString());
 
-        const onSuccess = () => {
+        const onSuccess = (): void => {
             showNotification({
                 title: `Task ${taskActionText}d!`,
                 message: `${values.title} successfully ${taskActionText}d!`,
@@ -59,7 +59,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
             setLoading(false);
         };
 
-        const onFailure = () => {
+        const onFailure = (): void => {
             showNotification(genErrorNotificationProps(`Task ${taskActionText}`));
             setLoading(false);
         };
@@ -96,7 +96,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
         <>
             <Modal
                 opened={opened}
-                onClose={() => setOpened(false)}
+                onClose={(): void => setOpened(false)}
                 title={
                     props.defaultTaskList
                         ? `${taskActionText} task for ${props.defaultTaskList.title}`
@@ -141,9 +141,9 @@ function TaskForm(props: TaskFormProps): JSX.Element {
             </Modal>
 
             {props.customTarget ? (
-                <span onClick={() => setOpened(true)}>{props.customTarget}</span>
+                <span onClick={(): void => setOpened(true)}>{props.customTarget}</span>
             ) : (
-                <Button variant="subtle" onClick={() => setOpened(true)} leftIcon={<IconSquarePlus />} size="sm">
+                <Button variant="subtle" onClick={(): void => setOpened(true)} leftIcon={<IconSquarePlus />} size="sm">
                     Task
                 </Button>
             )}

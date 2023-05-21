@@ -9,6 +9,27 @@
   padding: 0;
 }
 
+.mantine-Navbar-root {
+  padding: 0;
+}
+
 .nav-accordion {
   width: 95%;
+}
+
+.collapse-button {
+  width: 30px;
+  z-index: 200;
+  position: fixed;
+  top: 50px;
+
+  /* Navbar width - 5px */
+  left: 245px;
+}
+
+.expand-button {
+  width: 30px;
+  z-index: 200;
+  position: fixed;
+  top: 50px;
 }

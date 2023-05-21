@@ -1,9 +1,9 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { CodeResponse, CredentialResponse, GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
-import { useRecoilState, useResetRecoilState, waitForNone } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
 import { QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse } from "../../../../api/Types";
 import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";

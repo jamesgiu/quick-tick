@@ -1,6 +1,8 @@
-import { Accordion, Button, MediaQuery, Menu, Navbar, Stack } from "@mantine/core";
+import { Accordion, Button, Collapse, MediaQuery, Menu, Navbar, Stack } from "@mantine/core";
 import {
     IconAlarm,
+    IconArrowBadgeLeft,
+    IconArrowBadgeRight,
     IconCalendar,
     IconCheckupList,
     IconClock,
@@ -11,10 +13,12 @@ import {
     IconUrgent,
 } from "@tabler/icons";
 import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { navbarCollapsedAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { TaskListFilter } from "../../../MyTasks/components/TaskListCard";
-import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
+import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import "./QuickTickNavbar.css";
 import Divider = Menu.Divider;
@@ -67,7 +71,7 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                 leftIcon={<IconCalendar />}
                 variant="subtle"
                 size={mobile ? "xl" : "sm"}
-                onClick={() => {
+                onClick={(): void => {
                     window.open(
                         "https://calendar.google.com/calendar/",
                         "_blank",
@@ -100,11 +104,24 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
 };
 
 export default function QuickTickNavbar(): JSX.Element {
+    const [collapsed, setCollapsed] = useRecoilState(navbarCollapsedAtom);
+
     return (
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-            <Navbar width={{ sm: 250 }} p="xs">
-                <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
-            </Navbar>
+            <div>
+                <Button
+                    variant="subtle"
+                    size="sm"
+                    leftIcon={collapsed ? <IconArrowBadgeRight /> : <IconArrowBadgeLeft />}
+                    onClick={(): void => setCollapsed(!collapsed)}
+                    className={!collapsed ? "collapse-button" : "expand-button"}
+                />
+                <Collapse in={!collapsed}>
+                    <Navbar width={{ sm: !collapsed ? 250 : 0 }} p="xs">
+                        <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
+                    </Navbar>
+                </Collapse>
+            </div>
         </MediaQuery>
     );
 }

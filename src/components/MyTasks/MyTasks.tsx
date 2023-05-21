@@ -3,10 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { TaskList } from "../../api/Types";
 import { taskListLayoutAtom, taskListsAtom } from "../../recoil/Atoms";
-import TaskForm from "../Tasks/TaskForm/TaskForm";
 import NewTaskList from "../Tasks/NewTasklist/NewTasklist";
-import TaskListCard, { TaskListFilter } from "./components/TaskListCard";
+import TaskForm from "../Tasks/TaskForm/TaskForm";
 import "./MyTasks.css";
+import TaskListCard, { TaskListFilter } from "./components/TaskListCard";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 // TODO
@@ -14,7 +14,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 // dropdown for Filtered by
 
 export default function MyTasks(): JSX.Element {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const taskLists = useRecoilValue<TaskList[]>(taskListsAtom);
 
     const whenParam: TaskListFilter | null = searchParams.get("when") as unknown as TaskListFilter;
@@ -43,6 +43,7 @@ export default function MyTasks(): JSX.Element {
                 </div>
             );
 
+            // FIXME should this be a contains?
             if (JSON.stringify(layoutIds) !== JSON.stringify(taskListIds)) {
                 // If we haven't seen this tasklist id before, add it to our layouts array.
                 if (!layoutIds.includes(taskList.id)) {
@@ -70,10 +71,10 @@ export default function MyTasks(): JSX.Element {
                 layouts={{ lg: layout, md: layout, sm: layout, xs: layout, xxs: layout }}
                 draggableHandle=".draggable-area"
                 draggableCancel=".draggable-cancel"
-                onDragStop={(layout) => setLayout(layout)}
-                onResizeStop={(layout) => setLayout(layout)}
+                onDragStop={(layout): void => setLayout(layout)}
+                onResizeStop={(layout): void => setLayout(layout)}
                 rowHeight={5}
-                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                cols={{ lg: 32, md: 32, sm: 24, xs: 12, xxs: 12 }}
             >
                 {getTaskListPanels()}
             </ResponsiveGridLayout>
