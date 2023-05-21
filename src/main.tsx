@@ -13,6 +13,7 @@ import "/node_modules/react-resizable/css/styles.css";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
+        <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet"></link>
         <RecoilRoot>
             <GoogleOAuthProvider clientId={import.meta.env.VITE_GC_CLIENT_ID}>
                 <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: "dark" }}>

@@ -26,7 +26,7 @@ import Divider = Menu.Divider;
 export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): JSX.Element => {
     return (
         <Stack className={"navbar-link-stack"} align={"stretch"}>
-            <Accordion className="nav-accordion">
+            <Accordion className="nav-accordion" value={"my-tasks-filters"} chevron={null}>
                 <Accordion.Item value="my-tasks-filters">
                     <Accordion.Control>
                         <Link to={QuickTickPage.MY_TASKS} onClick={onClickCallback}>
@@ -37,19 +37,27 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                     </Accordion.Control>
                     <Accordion.Panel>
                         <Link to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.TODAY}`} onClick={onClickCallback}>
-                            <Button leftIcon={<IconUrgent />} variant="subtle" size={mobile ? "xl" : "sm"}>
+                            <Button
+                                leftIcon={<IconUrgent color="orange" />}
+                                variant="subtle"
+                                size={mobile ? "xl" : "sm"}
+                            >
                                 Today
                             </Button>
                         </Link>
                         <Link to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.WEEKLY}`} onClick={onClickCallback}>
-                            <Button leftIcon={<IconAlarm />} variant="subtle" size={mobile ? "xl" : "sm"}>
+                            <Button
+                                leftIcon={<IconAlarm color="#f5ff70c1" />}
+                                variant="subtle"
+                                size={mobile ? "xl" : "sm"}
+                            >
                                 This week
                             </Button>
                         </Link>
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
-            <Accordion className="nav-accordion">
+            <Accordion className="nav-accordion" value="create-new" chevron={null}>
                 <Accordion.Item value="create-new">
                     <Accordion.Control>
                         <Button leftIcon={<IconPlaylistAdd />} variant="subtle" size={mobile ? "xl" : "sm"}>
@@ -62,11 +70,6 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
-            <Link to={QuickTickPage.STATS} onClick={onClickCallback}>
-                <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                    Stats
-                </Button>
-            </Link>
             <Button
                 leftIcon={<IconCalendar />}
                 variant="subtle"
@@ -81,23 +84,11 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
             >
                 Calendar <IconExternalLink size={16} />
             </Button>
-            <Accordion className="nav-accordion">
-                <Accordion.Item value="coming-soon">
-                    <Divider />
-                    <Accordion.Control>
-                        <Button leftIcon={<IconTrafficCone />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                            Under construction
-                        </Button>
-                    </Accordion.Control>
-                    <Accordion.Panel>
-                        <Link to={QuickTickPage.TIMECHARGING} onClick={onClickCallback}>
-                            <Button leftIcon={<IconClock />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                                Timecharging
-                            </Button>
-                        </Link>
-                    </Accordion.Panel>
-                </Accordion.Item>
-            </Accordion>
+            <Link to={QuickTickPage.STATS} onClick={onClickCallback}>
+                <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
+                    Stats
+                </Button>
+            </Link>
             <QuickTickAuth />
         </Stack>
     );

@@ -18,6 +18,9 @@ export function genErrorNotificationProps(resource: string): NotificationProps {
 
 const DEFAULT_POLL_COUNTDOWN = 3;
 
+// FIXME QT-37
+// Try remove all cached data types from global state? Instead, fetch as required?
+// More requests that way but perhaps less buggy? idk
 // Will populate atoms containing the logged in user's tasks and tasklist, for instant-access purposes across the app.
 function DataLoader(): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
