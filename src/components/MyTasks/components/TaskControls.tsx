@@ -5,9 +5,9 @@ import {
     IconCircleDashed,
     IconGhost,
     IconMoodSmileBeam,
+    IconPencil,
     IconTrash,
     IconTrashX,
-    IconPencil,
 } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -38,7 +38,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
     // Local copy of task obj
     const [localTask, setLocalTask] = useState<Task>(props.targetTask);
 
-    const completeTask = () => {
+    const completeTask = (): void => {
         setLoading(true);
         const completedTask = {
             ...localTask,
@@ -51,7 +51,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             credential,
             tasksMap.get(JSON.stringify(props.targetTask))!.id,
             completedTask,
-            () => {
+            (): void => {
                 showNotification({
                     title: "Task completed!",
                     message: "Well done!",
@@ -61,14 +61,14 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                 setLoading(false);
                 setLocalTask(completedTask);
             },
-            () => {
+            (): void => {
                 showNotification(genErrorNotificationProps("Task completion"));
                 setLoading(false);
             }
         );
     };
 
-    const deleteTask = () => {
+    const deleteTask = (): void => {
         setLoading(true);
         const deletedTask = { ...localTask, deleted: true };
 
@@ -76,11 +76,11 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             credential,
             tasksMap.get(JSON.stringify(props.targetTask))!,
             deletedTask,
-            () => {
+            (): void => {
                 setLocalTask(deletedTask);
                 setLoading(false);
             },
-            () => {
+            (): void => {
                 showNotification(genErrorNotificationProps("Task deletion"));
                 setLoading(false);
             }
@@ -97,10 +97,10 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             <Group className={"task-controls"}>
                 <ActionIcon
                     color={"#a5d8ff"}
-                    onMouseOver={() => setIsHoveringOverComplete(true)}
-                    onMouseOut={() => setIsHoveringOverComplete(false)}
-                    onMouseLeave={() => setIsHoveringOverComplete(false)}
-                    onClick={() => completeTask()}
+                    onMouseOver={(): void => setIsHoveringOverComplete(true)}
+                    onMouseOut={(): void => setIsHoveringOverComplete(false)}
+                    onMouseLeave={(): void => setIsHoveringOverComplete(false)}
+                    onClick={(): void => completeTask()}
                 >
                     {isHoveringOverComplete ? <IconCircleCheck /> : <IconCircleDashed />}
                 </ActionIcon>
@@ -115,10 +115,10 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                     <Popover.Target>
                         <ActionIcon
                             color={"#a5d8ff"}
-                            onMouseOver={() => setIsHoveringOverTrash(true)}
-                            onMouseOut={() => setIsHoveringOverTrash(false)}
-                            onMouseLeave={() => setIsHoveringOverTrash(false)}
-                            onClick={() => deleteTask()}
+                            onMouseOver={(): void => setIsHoveringOverTrash(true)}
+                            onMouseOut={(): void => setIsHoveringOverTrash(false)}
+                            onMouseLeave={(): void => setIsHoveringOverTrash(false)}
+                            onClick={(): void => deleteTask()}
                         >
                             {isHoveringOverTrash ? <IconTrashX /> : <IconTrash />}
                         </ActionIcon>

@@ -1,6 +1,6 @@
-import { Alert, Burger, Button, Group, Header, MediaQuery } from "@mantine/core";
+import { Burger, Button, Group, Header, MediaQuery } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { IconChecks, IconBulldozer, IconChevronRight, IconHandStop, IconLogout } from "@tabler/icons";
+import { IconChecks, IconChevronRight, IconHandStop, IconLogout } from "@tabler/icons";
 import { useState } from "react";
 import { fallDown as BurgerMenu } from "react-burger-menu";
 import { Link } from "react-router-dom";

@@ -2,7 +2,7 @@ import { ActionIcon, Group, Text } from "@mantine/core";
 import { NotificationProps, showNotification } from "@mantine/notifications";
 import { IconBug, IconRefresh, IconRefreshAlert } from "@tabler/icons";
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../api/GoogleAPI";
 import { Task, TaskList, TaskListIdTitle } from "../../api/Types";
 import { credentialAtom, dataLoadingAtom, taskListsAtom, taskListsMapAtom, tasksMapAtom } from "../../recoil/Atoms";
@@ -21,10 +21,10 @@ const DEFAULT_POLL_COUNTDOWN = 3;
 // Will populate atoms containing the logged in user's tasks and tasklist, for instant-access purposes across the app.
 function DataLoader(): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
-    const [taskLists, setTaskLists] = useRecoilState<TaskList[]>(taskListsAtom);
+    const setTaskLists = useSetRecoilState<TaskList[]>(taskListsAtom);
     const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
     const [taskMap, setTaskMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
-    const [loading, setLoading] = useRecoilState<boolean>(dataLoadingAtom);
+    const setLoading = useSetRecoilState<boolean>(dataLoadingAtom);
     const [pollCountdown, setPollCountdown] = useState<number>(DEFAULT_POLL_COUNTDOWN);
 
     const getTasks = (fromPoller?: boolean): void => {
@@ -93,7 +93,7 @@ function DataLoader(): JSX.Element {
         <Group>
             <ActionIcon
                 color="#a5d8ff"
-                onClick={() => {
+                onClick={(): void => {
                     getTasks();
                     setPollCountdown(DEFAULT_POLL_COUNTDOWN);
                 }}

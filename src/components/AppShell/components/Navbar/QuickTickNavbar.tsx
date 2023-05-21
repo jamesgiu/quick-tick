@@ -1,27 +1,27 @@
 import { Accordion, Button, Collapse, MediaQuery, Menu, Navbar, Stack } from "@mantine/core";
 import {
     IconAlarm,
+    IconArrowBadgeLeft,
+    IconArrowBadgeRight,
     IconCalendar,
     IconCheckupList,
     IconClock,
     IconExternalLink,
-    IconArrowBadgeRight,
-    IconArrowBadgeLeft,
     IconPlaylistAdd,
     IconTimeline,
     IconTrafficCone,
     IconUrgent,
 } from "@tabler/icons";
 import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { navbarCollapsedAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { TaskListFilter } from "../../../MyTasks/components/TaskListCard";
-import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
+import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import "./QuickTickNavbar.css";
 import Divider = Menu.Divider;
-import { navbarCollapsedAtom } from "../../../../recoil/Atoms";
-import { useRecoilState } from "recoil";
 
 export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): JSX.Element => {
     return (
@@ -71,7 +71,7 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                 leftIcon={<IconCalendar />}
                 variant="subtle"
                 size={mobile ? "xl" : "sm"}
-                onClick={() => {
+                onClick={(): void => {
                     window.open(
                         "https://calendar.google.com/calendar/",
                         "_blank",
@@ -113,7 +113,7 @@ export default function QuickTickNavbar(): JSX.Element {
                     variant="subtle"
                     size="sm"
                     leftIcon={collapsed ? <IconArrowBadgeRight /> : <IconArrowBadgeLeft />}
-                    onClick={() => setCollapsed(!collapsed)}
+                    onClick={(): void => setCollapsed(!collapsed)}
                     className={!collapsed ? "collapse-button" : "expand-button"}
                 />
                 <Collapse in={!collapsed}>

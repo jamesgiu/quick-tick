@@ -1,7 +1,8 @@
 import { Badge, Button, Card, Collapse, Group, Popover, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { IconDotsVertical, IconTrash, IconTrashX, IconChevronRight, IconChevronDown } from "@tabler/icons";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { IconChevronDown, IconChevronRight, IconTrash, IconTrashX } from "@tabler/icons";
+import { Layout } from "react-grid-layout";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
 import {
@@ -16,7 +17,6 @@ import QuickTickTable, { QuickTickTableRow } from "../../QuickTickTable/QuickTic
 import TaskForm from "../../Tasks/TaskForm/TaskForm";
 import "./TaskListCard.css";
 import { TaskUtil } from "./TaskUtil";
-import { Layout } from "react-grid-layout";
 
 export enum TaskListFilter {
     TODAY = "today",
@@ -29,7 +29,7 @@ interface TaskListProps {
 }
 
 export default function TaskListCard(props: TaskListProps): JSX.Element {
-    const [loading, setLoading] = useRecoilState(dataLoadingAtom);
+    const setLoading = useSetRecoilState(dataLoadingAtom);
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
     const [collapsedTasklists, setCollapsedTasklists] = useRecoilState(collapsedTaskListIds);
     const credential = useRecoilValue(credentialAtom);
@@ -46,13 +46,13 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
 
     const usePluralPhrasing = (): boolean => taskRows && (taskRows?.length === 0 || taskRows?.length > 1);
 
-    const deleteList = () => {
+    const deleteList = (): void => {
         setLoading(true);
 
         GoogleAPI.deleteTaskList(
             credential,
             props.taskList,
-            () => {
+            (): void => {
                 setLoading(false);
                 showNotification({
                     title: "Tasklist deleted!",
@@ -61,7 +61,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                     icon: <IconTrash />,
                 });
             },
-            () => {
+            (): void => {
                 showNotification(genErrorNotificationProps("Tasklist deletion"));
                 setLoading(false);
             }
@@ -94,9 +94,10 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                     <Button
                         variant="subtle"
                         size="sm"
+                        className="draggable-cancel"
                         color={"#a5d8ff"}
                         leftIcon={isCollapsed ? <IconChevronRight /> : <IconChevronDown />}
-                        onClick={() => {
+                        onClick={(): void => {
                             // Find and toggle collapse on the internal tracking...
                             let newCollapsedTaskListIds = [];
                             if (isCollapsed) {
@@ -107,22 +108,19 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                                 newCollapsedTaskListIds = [...collapsedTasklists, props.taskList.id];
                             }
 
-                            // If it wasn't collapsed before, then we are collapsing, so set the height to 0.
-                            if (!isCollapsed) {
-                                // If we are collapsing, then set the height to 0 for this task list.
-                                const newLayout: Layout[] = [];
+                            // If we are collapsing, then set the height to 5 for this task list, otherwise expand with 15.
+                            const newLayout: Layout[] = [];
 
-                                layout.forEach((layoutItem) => {
-                                    if (layoutItem.i === props.taskList.id) {
-                                        const newLayoutItem = { ...layoutItem, h: 5, w: 5 };
-                                        newLayout.push(newLayoutItem);
-                                    } else {
-                                        newLayout.push(layoutItem);
-                                    }
-                                });
+                            layout.forEach((layoutItem) => {
+                                if (layoutItem.i === props.taskList.id) {
+                                    const newLayoutItem = { ...layoutItem, h: !isCollapsed ? 5 : 30, w: layoutItem.w };
+                                    newLayout.push(newLayoutItem);
+                                } else {
+                                    newLayout.push(layoutItem);
+                                }
+                            });
 
-                                setLayout(newLayout);
-                            }
+                            setLayout(newLayout);
 
                             setCollapsedTasklists(newCollapsedTaskListIds);
                         }}

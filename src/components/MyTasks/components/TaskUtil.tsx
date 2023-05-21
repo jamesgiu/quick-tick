@@ -79,8 +79,6 @@ export class TaskUtil {
     };
 
     public static generateShardsForTask = (task: Task): JSX.Element => {
-        const now = new Date(Date.now());
-
         if (TaskUtil.isTaskOverDue(task)) {
             return (
                 <Tooltip label="Task is overdue!">
