@@ -21,6 +21,7 @@ import { TaskUtil } from "./TaskUtil";
 export enum TaskListFilter {
     TODAY = "today",
     WEEKLY = "weekly",
+    OVERDUE = "overdue",
 }
 
 interface TaskListProps {

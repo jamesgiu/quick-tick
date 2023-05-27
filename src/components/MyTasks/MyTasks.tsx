@@ -1,3 +1,5 @@
+import { Select } from "@mantine/core";
+import { useState } from "react";
 import { Layout, Responsive, WidthProvider } from "react-grid-layout";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -17,7 +19,7 @@ export default function MyTasks(): JSX.Element {
     const [searchParams] = useSearchParams();
     const taskLists = useRecoilValue<TaskList[]>(taskListsAtom);
 
-    const whenParam: TaskListFilter | null = searchParams.get("when") as unknown as TaskListFilter;
+    const [filter, setFilter] = useState<TaskListFilter | undefined>(searchParams.get("when") as TaskListFilter);
 
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
 
@@ -36,10 +38,7 @@ export default function MyTasks(): JSX.Element {
 
             taskListPanels.push(
                 <div key={taskList.id} className="panel">
-                    <TaskListCard
-                        taskList={taskListIdTitle}
-                        filter={whenParam ? (whenParam as TaskListFilter) : undefined}
-                    />
+                    <TaskListCard taskList={taskListIdTitle} filter={filter} />
                 </div>
             );
 
@@ -63,7 +62,23 @@ export default function MyTasks(): JSX.Element {
     return (
         <div className={"my-tasks"}>
             <div>My Tasks</div>
-            {searchParams.get("when") && <div>Filtered by: {whenParam}</div>}
+            <div className="task-filter-select-wrapper">
+                <Select
+                    className="task-filter-select"
+                    label="Filtered by:"
+                    placeholder={filter ?? "Select..."}
+                    data={[
+                        { value: "", label: "All" },
+                        { value: TaskListFilter.TODAY, label: "today" },
+                        { value: TaskListFilter.WEEKLY, label: "weekly" },
+                        { value: TaskListFilter.OVERDUE, label: "overdue" },
+                    ]}
+                    onChange={(newValue) => {
+                        // Set filter off if "All" is selected.
+                        setFilter(newValue === "" ? undefined : (newValue as TaskListFilter));
+                    }}
+                />
+            </div>
             <NewTaskList />
             <TaskForm />
             <ResponsiveGridLayout

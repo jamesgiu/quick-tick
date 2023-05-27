@@ -5,25 +5,30 @@ import {
     IconArrowBadgeRight,
     IconCalendar,
     IconCheckupList,
-    IconClock,
+    IconExclamationMark,
     IconExternalLink,
     IconPlaylistAdd,
     IconTimeline,
-    IconTrafficCone,
     IconUrgent,
 } from "@tabler/icons";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { navbarCollapsedAtom } from "../../../../recoil/Atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { TaskNumbers, navbarCollapsedAtom, taskListsMapAtom, taskNumbersAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { TaskListFilter } from "../../../MyTasks/components/TaskListCard";
+import { TaskUtil } from "../../../MyTasks/components/TaskUtil";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
 import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import "./QuickTickNavbar.css";
 import Divider = Menu.Divider;
 
-export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): JSX.Element => {
+export const getNavbarLinks = (
+    mobile: boolean,
+    taskNumbers: TaskNumbers,
+    onClickCallback?: () => void
+): JSX.Element => {
     return (
         <Stack className={"navbar-link-stack"} align={"stretch"}>
             <Accordion className="nav-accordion" value={"my-tasks-filters"} chevron={null}>
@@ -36,24 +41,48 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                         </Link>
                     </Accordion.Control>
                     <Accordion.Panel>
-                        <Link to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.TODAY}`} onClick={onClickCallback}>
-                            <Button
-                                leftIcon={<IconUrgent color="orange" />}
-                                variant="subtle"
-                                size={mobile ? "xl" : "sm"}
+                        {taskNumbers.overdue > 0 && (
+                            <Link
+                                to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.OVERDUE}`}
+                                onClick={onClickCallback}
                             >
-                                Today
-                            </Button>
-                        </Link>
-                        <Link to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.WEEKLY}`} onClick={onClickCallback}>
-                            <Button
-                                leftIcon={<IconAlarm color="#f5ff70c1" />}
-                                variant="subtle"
-                                size={mobile ? "xl" : "sm"}
+                                <Button
+                                    leftIcon={<IconExclamationMark color="red" />}
+                                    variant="subtle"
+                                    size={mobile ? "xl" : "sm"}
+                                >
+                                    Overdue ({taskNumbers.overdue})
+                                </Button>
+                            </Link>
+                        )}
+                        {taskNumbers.dueToday > 0 && (
+                            <Link
+                                to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.TODAY}`}
+                                onClick={onClickCallback}
                             >
-                                This week
-                            </Button>
-                        </Link>
+                                <Button
+                                    leftIcon={<IconUrgent color="orange" />}
+                                    variant="subtle"
+                                    size={mobile ? "xl" : "sm"}
+                                >
+                                    Today ({taskNumbers.dueToday})
+                                </Button>
+                            </Link>
+                        )}
+                        {taskNumbers.dueThisWeek > 0 && (
+                            <Link
+                                to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.WEEKLY}`}
+                                onClick={onClickCallback}
+                            >
+                                <Button
+                                    leftIcon={<IconAlarm color="#f5ff70c1" />}
+                                    variant="subtle"
+                                    size={mobile ? "xl" : "sm"}
+                                >
+                                    This week ({taskNumbers.dueThisWeek})
+                                </Button>
+                            </Link>
+                        )}
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
@@ -95,7 +124,57 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
 };
 
 export default function QuickTickNavbar(): JSX.Element {
+    const [taskNumbers, setTaskNumbers] = useRecoilState<TaskNumbers>(taskNumbersAtom);
+    const taskListMap = useRecoilValue(taskListsMapAtom);
     const [collapsed, setCollapsed] = useRecoilState(navbarCollapsedAtom);
+
+    function setLiveTaskStats(): void {
+        let numberTasksOverdue = 0;
+        let numberTasksDueToday = 0;
+        let numberTasksDueTomorrow = 0;
+        let numberTasksDueThisWeek = 0;
+
+        taskListMap.forEach((tasks) => {
+            tasks.forEach((task) => {
+                if (!task.completed) {
+                    if (TaskUtil.isTaskOverDue(task)) {
+                        numberTasksOverdue++;
+                    }
+
+                    if (TaskUtil.isTaskDueToday(task)) {
+                        numberTasksDueToday++;
+                    }
+
+                    if (TaskUtil.isTaskDueTomorrow(task)) {
+                        numberTasksDueTomorrow++;
+                    }
+
+                    if (
+                        TaskUtil.isTaskDueThisWeek(task) ||
+                        TaskUtil.isTaskDueToday(task) ||
+                        TaskUtil.isTaskDueTomorrow(task)
+                    ) {
+                        numberTasksDueThisWeek++;
+                    }
+                }
+            });
+        });
+
+        setTaskNumbers({
+            overdue: numberTasksOverdue,
+            dueToday: numberTasksDueToday,
+            dueTomorrow: numberTasksDueTomorrow,
+            dueThisWeek: numberTasksDueThisWeek,
+        });
+    }
+
+    useEffect(() => {
+        setLiveTaskStats();
+    }, []);
+
+    useEffect(() => {
+        setLiveTaskStats();
+    }, [taskListMap]);
 
     return (
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
@@ -109,7 +188,7 @@ export default function QuickTickNavbar(): JSX.Element {
                 />
                 <Collapse in={!collapsed}>
                     <Navbar width={{ sm: !collapsed ? 250 : 0 }} p="xs">
-                        <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
+                        <Navbar.Section>{getNavbarLinks(false, taskNumbers)}</Navbar.Section>
                     </Navbar>
                 </Collapse>
             </div>

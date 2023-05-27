@@ -16,7 +16,7 @@ export function genErrorNotificationProps(resource: string): NotificationProps {
     };
 }
 
-const DEFAULT_POLL_COUNTDOWN = 3;
+const DEFAULT_POLL_COUNTDOWN = 30;
 
 // FIXME QT-37
 // Try remove all cached data types from global state? Instead, fetch as required?

@@ -59,3 +59,20 @@ export const collapsedTaskListIds = atom<string[]>({
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
+
+export interface TaskNumbers {
+    overdue: number;
+    dueToday: number;
+    dueTomorrow: number;
+    dueThisWeek: number;
+}
+
+export const taskNumbersAtom = atom<TaskNumbers>({
+    key: "taskNumbers",
+    default: {
+        overdue: 0,
+        dueToday: 0,
+        dueTomorrow: 0,
+        dueThisWeek: 0,
+    },
+});
