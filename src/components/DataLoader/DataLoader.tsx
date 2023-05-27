@@ -5,7 +5,16 @@ import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../api/GoogleAPI";
 import { Task, TaskList, TaskListIdTitle } from "../../api/Types";
-import { credentialAtom, dataLoadingAtom, taskListsAtom, taskListsMapAtom, tasksMapAtom } from "../../recoil/Atoms";
+import {
+    TaskNumbers,
+    credentialAtom,
+    dataLoadingAtom,
+    taskListsAtom,
+    taskListsMapAtom,
+    taskNumbersAtom,
+    tasksMapAtom,
+} from "../../recoil/Atoms";
+import { TaskUtil } from "../MyTasks/components/TaskUtil";
 
 export function genErrorNotificationProps(resource: string): NotificationProps {
     return {
@@ -27,6 +36,7 @@ function DataLoader(): JSX.Element {
     const setTaskLists = useSetRecoilState<TaskList[]>(taskListsAtom);
     const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
     const [taskMap, setTaskMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
+    const setTaskNumbers = useSetRecoilState<TaskNumbers>(taskNumbersAtom);
     const setLoading = useSetRecoilState<boolean>(dataLoadingAtom);
     const [pollCountdown, setPollCountdown] = useState<number>(DEFAULT_POLL_COUNTDOWN);
 
@@ -55,6 +65,7 @@ function DataLoader(): JSX.Element {
                                 title: taskList.title,
                             };
                             setTaskListMap(taskListMap.set(JSON.stringify(taskListIdTitle), response.items));
+                            setLiveTaskStats();
                             response.items.forEach((task) =>
                                 setTaskMap(taskMap.set(JSON.stringify(task), taskListIdTitle))
                             );
@@ -71,6 +82,48 @@ function DataLoader(): JSX.Element {
                 setLoading(false);
             }
         );
+    };
+
+    const setLiveTaskStats = (): void => {
+        let numberTasksOverdue = 0;
+        let numberTasksDueToday = 0;
+        let numberTasksDueTomorrow = 0;
+        let numberTasksDueThisWeek = 0;
+
+        taskListMap.forEach((tasks) => {
+            tasks.forEach((task) => {
+                if (!task.completed) {
+                    if (TaskUtil.isTaskOverDue(task)) {
+                        numberTasksOverdue++;
+                    }
+
+                    if (TaskUtil.isTaskDueToday(task)) {
+                        numberTasksDueToday++;
+                    }
+
+                    if (TaskUtil.isTaskDueTomorrow(task)) {
+                        numberTasksDueTomorrow++;
+                    }
+
+                    if (
+                        TaskUtil.isTaskDueThisWeek(task) ||
+                        TaskUtil.isTaskDueToday(task) ||
+                        TaskUtil.isTaskDueTomorrow(task)
+                    ) {
+                        numberTasksDueThisWeek++;
+                    }
+                }
+            });
+        });
+
+        const newTaskNumbers = {
+            overdue: numberTasksOverdue,
+            dueToday: numberTasksDueToday,
+            dueTomorrow: numberTasksDueTomorrow,
+            dueThisWeek: numberTasksDueThisWeek,
+        };
+
+        setTaskNumbers(newTaskNumbers);
     };
 
     // When the credentail atom is set, then retrieve and set tasks + tasklists.
@@ -91,6 +144,10 @@ function DataLoader(): JSX.Element {
             }
         }
     }, [pollCountdown]);
+
+    useEffect(() => {
+        setLiveTaskStats();
+    }, [taskListMap]);
 
     return (
         <Group>
