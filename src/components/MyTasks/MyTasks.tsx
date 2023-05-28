@@ -4,7 +4,7 @@ import { Layout, Responsive, WidthProvider } from "react-grid-layout";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { TaskList } from "../../api/Types";
-import { forceRefreshAtom, taskListLayoutAtom, taskListsAtom } from "../../recoil/Atoms";
+import { taskListLayoutAtom, taskListsAtom } from "../../recoil/Atoms";
 import NewTaskList from "../Tasks/NewTasklist/NewTasklist";
 import TaskForm from "../Tasks/TaskForm/TaskForm";
 import "./MyTasks.css";
@@ -77,7 +77,7 @@ export default function MyTasks(): JSX.Element {
                         { value: TaskListFilter.WEEKLY, label: "weekly" },
                         { value: TaskListFilter.OVERDUE, label: "overdue" },
                     ]}
-                    onChange={(newValue) => {
+                    onChange={(newValue) : void => {
                         // Set filter off if "All" is selected.
                         setFilter(newValue === "" ? undefined : (newValue as TaskListFilter));
                     }}
