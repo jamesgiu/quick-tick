@@ -122,7 +122,7 @@ export default function QuickTickAuth(): JSX.Element {
     // Force login if credential expired.
     if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
         login();
-    } 
+    }
 
     return (
         <div className={"quick-tick-auth"}>
@@ -166,7 +166,7 @@ export default function QuickTickAuth(): JSX.Element {
                     </Accordion>
                 </Group>
             ) : (
-                <Button onClick={() : void => login()} leftIcon={<IconBrandGoogle />}>
+                <Button onClick={(): void => login()} leftIcon={<IconBrandGoogle />}>
                     {" "}
                     Sign-in via Google{" "}
                 </Button>
