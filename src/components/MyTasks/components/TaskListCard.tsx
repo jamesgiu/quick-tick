@@ -1,6 +1,7 @@
 import { Badge, Button, Card, Collapse, Group, Popover, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconChevronDown, IconChevronRight, IconTrash, IconTrashX } from "@tabler/icons";
+import { useEffect, useState } from "react";
 import { Layout } from "react-grid-layout";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
@@ -9,11 +10,12 @@ import {
     collapsedTaskListIds,
     credentialAtom,
     dataLoadingAtom,
+    forceRefreshAtom,
     taskListLayoutAtom,
     taskListsMapAtom,
 } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
-import QuickTickTable, { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
+import QuickTickTable from "../../QuickTickTable/QuickTickTable";
 import TaskForm from "../../Tasks/TaskForm/TaskForm";
 import "./TaskListCard.css";
 import { TaskUtil } from "./TaskUtil";
@@ -21,6 +23,7 @@ import { TaskUtil } from "./TaskUtil";
 export enum TaskListFilter {
     TODAY = "today",
     WEEKLY = "weekly",
+    OVERDUE = "overdue",
 }
 
 interface TaskListProps {
@@ -32,18 +35,14 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     const setLoading = useSetRecoilState(dataLoadingAtom);
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
     const [collapsedTasklists, setCollapsedTasklists] = useRecoilState(collapsedTaskListIds);
+    const [forceRefresh, setForceRefresh] = useRecoilState<boolean>(forceRefreshAtom);
     const credential = useRecoilValue(credentialAtom);
-
     const taskListMap = useRecoilValue<Map<string, Task[]>>(taskListsMapAtom);
-
     const getActiveTasks = (): Task[] =>
         taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed) ?? [];
-    const getTaskRows = (): QuickTickTableRow[] => TaskUtil.getTasksAsRows(getActiveTasks(), props.filter);
-
-    const taskRows = getTaskRows();
-
+    const [activeTasks, setActiveTasks] = useState<Task[]>(getActiveTasks());
     const isCollapsed = collapsedTasklists.includes(props.taskList.id);
-
+    const taskRows = TaskUtil.getTasksAsRows(activeTasks, props.filter);
     const usePluralPhrasing = (): boolean => taskRows && (taskRows?.length === 0 || taskRows?.length > 1);
 
     const deleteList = (): void => {
@@ -60,6 +59,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                     color: "green",
                     icon: <IconTrash />,
                 });
+                setForceRefresh(true);
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Tasklist deletion"));
@@ -86,6 +86,13 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
             </Popover>
         );
     };
+
+    // If the task list map has changed, then regenerate these lists.
+    useEffect(() => {
+        // FIXME could be !forceRefresh here
+        // Slight delay to allow the atom to load.
+        setTimeout(() => setActiveTasks(getActiveTasks()), 1500);
+    }, [forceRefresh]);
 
     return (
         <Card shadow="sm" p="lg" radius="md" withBorder className="task-list">
@@ -121,7 +128,6 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                             });
 
                             setLayout(newLayout);
-
                             setCollapsedTasklists(newCollapsedTaskListIds);
                         }}
                     />

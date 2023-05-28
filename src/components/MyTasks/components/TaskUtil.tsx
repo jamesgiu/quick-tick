@@ -147,6 +147,11 @@ export class TaskUtil {
         if (tasks?.length ?? 0 > 0) {
             tasks!.forEach((task) => {
                 if (filter) {
+                    if (filter === TaskListFilter.OVERDUE && !TaskUtil.isTaskOverDue(task)) {
+                        // Skip tasks that aren't overdue.
+                        return;
+                    }
+
                     if (
                         filter === TaskListFilter.TODAY &&
                         !TaskUtil.isTaskDueToday(task) &&

@@ -1,3 +1,13 @@
 .my-tasks {
   margin: auto;
 }
+
+.my-tasks .task-filter-select-wrapper {
+  width: 200px;
+  margin: auto;
+}
+
+.my-tasks .task-filter-select {
+  position: relative;
+  display: inline;
+}

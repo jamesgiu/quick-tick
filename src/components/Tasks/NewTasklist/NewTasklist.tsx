@@ -3,9 +3,9 @@ import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { IconCheckupList, IconFilePlus } from "@tabler/icons";
 import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
-import { credentialAtom } from "../../../recoil/Atoms";
+import { credentialAtom, forceRefreshAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 
 interface NewTaskListFormFields {
@@ -16,6 +16,7 @@ function NewTaskList(): JSX.Element {
     const credential = useRecoilValue(credentialAtom);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
+    const setForceRefresh = useSetRecoilState<boolean>(forceRefreshAtom);
 
     const form = useForm<NewTaskListFormFields>({
         initialValues: {
@@ -39,6 +40,7 @@ function NewTaskList(): JSX.Element {
                     icon: <IconCheckupList />,
                 });
                 setLoading(false);
+                setForceRefresh(true);
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Tasklist creation"));

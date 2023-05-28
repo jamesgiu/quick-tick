@@ -5,7 +5,7 @@ import { useState } from "react";
 import { fallDown as BurgerMenu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import { useRecoilValue, useResetRecoilState } from "recoil";
-import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
+import { TaskNumbers, credentialAtom, taskNumbersAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import DataLoader from "../../../DataLoader/DataLoader";
 import { getNavbarLinks } from "../Navbar/QuickTickNavbar";
@@ -31,6 +31,7 @@ export const LOGO = (
 );
 
 export default function QuickTickHeader(): JSX.Element {
+    const taskNumbers = useRecoilValue<TaskNumbers>(taskNumbersAtom);
     const resetCredentials = useResetRecoilState(credentialAtom);
     const resetUserState = useResetRecoilState(userInfoAtom);
     const userInfo = useRecoilValue(userInfoAtom);
@@ -77,7 +78,9 @@ export default function QuickTickHeader(): JSX.Element {
                         overlayClassName={"burger-overlay"}
                         burgerButtonClassName={"burger-button"}
                     >
-                        <span className={"burger-menu"}>{getNavbarLinks(true, () => setBurgerOpen(false))}</span>
+                        <span className={"burger-menu"}>
+                            {getNavbarLinks(true, taskNumbers, () => setBurgerOpen(false))}
+                        </span>
                     </BurgerMenu>
                 )}
             </Header>

@@ -3,14 +3,27 @@
   text-align: left;
   display: flex;
   width: 100%;
+  border-radius: 20px;
+  color: #ffff;
 }
 
-.nav-accordion .mantine-Accordion-control {
+.navbar-link-stack svg {
+  color: #93edf9c1;
+}
+
+.nav-accordion .mantine-Accordion-control,
+.nav-accordion .mantine-Accordion-label {
   padding: 0;
+  width: 100%;
+}
+
+.navbar-link-stack .nav-accordion .mantine-Accordion-control:hover {
+  background-color: unset;
 }
 
 .mantine-Navbar-root {
   padding: 0;
+  background-color: #24242426;
 }
 
 .nav-accordion {

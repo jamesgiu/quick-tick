@@ -1,32 +1,34 @@
-import { Accordion, Button, Collapse, MediaQuery, Menu, Navbar, Stack } from "@mantine/core";
+import { Accordion, Button, Collapse, MediaQuery, Navbar, Stack } from "@mantine/core";
 import {
     IconAlarm,
-    IconArrowBadgeLeft,
-    IconArrowBadgeRight,
+    IconArrowBarLeft,
+    IconArrowBarRight,
     IconCalendar,
     IconCheckupList,
-    IconClock,
+    IconExclamationMark,
     IconExternalLink,
     IconPlaylistAdd,
     IconTimeline,
-    IconTrafficCone,
     IconUrgent,
 } from "@tabler/icons";
 import { Link } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { navbarCollapsedAtom } from "../../../../recoil/Atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { TaskNumbers, navbarCollapsedAtom, taskNumbersAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { TaskListFilter } from "../../../MyTasks/components/TaskListCard";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
 import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import "./QuickTickNavbar.css";
-import Divider = Menu.Divider;
 
-export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): JSX.Element => {
+export const getNavbarLinks = (
+    mobile: boolean,
+    taskNumbers: TaskNumbers,
+    onClickCallback?: () => void
+): JSX.Element => {
     return (
         <Stack className={"navbar-link-stack"} align={"stretch"}>
-            <Accordion className="nav-accordion">
+            <Accordion className="nav-accordion" value={"my-tasks-filters"} chevron={null}>
                 <Accordion.Item value="my-tasks-filters">
                     <Accordion.Control>
                         <Link to={QuickTickPage.MY_TASKS} onClick={onClickCallback}>
@@ -35,21 +37,55 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                             </Button>
                         </Link>
                     </Accordion.Control>
-                    <Accordion.Panel>
-                        <Link to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.TODAY}`} onClick={onClickCallback}>
-                            <Button leftIcon={<IconUrgent />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                                Today
-                            </Button>
-                        </Link>
-                        <Link to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.WEEKLY}`} onClick={onClickCallback}>
-                            <Button leftIcon={<IconAlarm />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                                This week
-                            </Button>
-                        </Link>
-                    </Accordion.Panel>
+                    {(taskNumbers.overdue > 0 || taskNumbers.dueToday > 0 || taskNumbers.dueThisWeek > 0) && (
+                        <Accordion.Panel>
+                            {taskNumbers.overdue > 0 && (
+                                <Link
+                                    to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.OVERDUE}`}
+                                    onClick={onClickCallback}
+                                >
+                                    <Button
+                                        leftIcon={<IconExclamationMark color="red" />}
+                                        variant="subtle"
+                                        size={mobile ? "xl" : "sm"}
+                                    >
+                                        Overdue ({taskNumbers.overdue})
+                                    </Button>
+                                </Link>
+                            )}
+                            {taskNumbers.dueToday > 0 && (
+                                <Link
+                                    to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.TODAY}`}
+                                    onClick={onClickCallback}
+                                >
+                                    <Button
+                                        leftIcon={<IconUrgent color="orange" />}
+                                        variant="subtle"
+                                        size={mobile ? "xl" : "sm"}
+                                    >
+                                        Today ({taskNumbers.dueToday})
+                                    </Button>
+                                </Link>
+                            )}
+                            {taskNumbers.dueThisWeek > 0 && (
+                                <Link
+                                    to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.WEEKLY}`}
+                                    onClick={onClickCallback}
+                                >
+                                    <Button
+                                        leftIcon={<IconAlarm color="#f5ff70c1" />}
+                                        variant="subtle"
+                                        size={mobile ? "xl" : "sm"}
+                                    >
+                                        This week ({taskNumbers.dueThisWeek})
+                                    </Button>
+                                </Link>
+                            )}
+                        </Accordion.Panel>
+                    )}
                 </Accordion.Item>
             </Accordion>
-            <Accordion className="nav-accordion">
+            <Accordion className="nav-accordion" value="create-new" chevron={null}>
                 <Accordion.Item value="create-new">
                     <Accordion.Control>
                         <Button leftIcon={<IconPlaylistAdd />} variant="subtle" size={mobile ? "xl" : "sm"}>
@@ -62,11 +98,6 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
-            <Link to={QuickTickPage.STATS} onClick={onClickCallback}>
-                <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                    Stats
-                </Button>
-            </Link>
             <Button
                 leftIcon={<IconCalendar />}
                 variant="subtle"
@@ -81,23 +112,11 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
             >
                 Calendar <IconExternalLink size={16} />
             </Button>
-            <Accordion className="nav-accordion">
-                <Accordion.Item value="coming-soon">
-                    <Divider />
-                    <Accordion.Control>
-                        <Button leftIcon={<IconTrafficCone />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                            Under construction
-                        </Button>
-                    </Accordion.Control>
-                    <Accordion.Panel>
-                        <Link to={QuickTickPage.TIMECHARGING} onClick={onClickCallback}>
-                            <Button leftIcon={<IconClock />} variant="subtle" size={mobile ? "xl" : "sm"}>
-                                Timecharging
-                            </Button>
-                        </Link>
-                    </Accordion.Panel>
-                </Accordion.Item>
-            </Accordion>
+            <Link to={QuickTickPage.STATS} onClick={onClickCallback}>
+                <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
+                    Stats
+                </Button>
+            </Link>
             <QuickTickAuth />
         </Stack>
     );
@@ -105,6 +124,7 @@ export const getNavbarLinks = (mobile: boolean, onClickCallback?: () => void): J
 
 export default function QuickTickNavbar(): JSX.Element {
     const [collapsed, setCollapsed] = useRecoilState(navbarCollapsedAtom);
+    const taskNumbers = useRecoilValue<TaskNumbers>(taskNumbersAtom);
 
     return (
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
@@ -112,13 +132,13 @@ export default function QuickTickNavbar(): JSX.Element {
                 <Button
                     variant="subtle"
                     size="sm"
-                    leftIcon={collapsed ? <IconArrowBadgeRight /> : <IconArrowBadgeLeft />}
+                    leftIcon={collapsed ? <IconArrowBarRight /> : <IconArrowBarLeft />}
                     onClick={(): void => setCollapsed(!collapsed)}
                     className={!collapsed ? "collapse-button" : "expand-button"}
                 />
                 <Collapse in={!collapsed}>
                     <Navbar width={{ sm: !collapsed ? 250 : 0 }} p="xs">
-                        <Navbar.Section>{getNavbarLinks(false)}</Navbar.Section>
+                        <Navbar.Section>{getNavbarLinks(false, taskNumbers)}</Navbar.Section>
                     </Navbar>
                 </Collapse>
             </div>

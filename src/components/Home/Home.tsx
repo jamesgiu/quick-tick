@@ -13,7 +13,7 @@ import {
 import Quote from "inspirational-quotes";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { taskListsMapAtom, userInfoAtom } from "../../recoil/Atoms";
+import { taskListsMapAtom, taskNumbersAtom, userInfoAtom } from "../../recoil/Atoms";
 import { LOGO } from "../AppShell/components/Header/QuickTickHeader";
 import { TaskUtil } from "../MyTasks/components/TaskUtil";
 import "./Home.css";
@@ -43,20 +43,13 @@ const SVG_WAVE_BOTTOM = (
 export default function Home(): JSX.Element {
     const userInfo = useRecoilValue(userInfoAtom);
     const taskListMap = useRecoilValue(taskListsMapAtom);
-    const [inspirationalQuote, setInspirationalQuote] = useState<{ text: string; author: string }>();
+    const taskNumbers = useRecoilValue(taskNumbersAtom);
 
-    const [numberTasksDueToday, setNumberTasksDueToday] = useState<number>(0);
-    const [numberTasksDueTomorrow, setNumberTasksDueTomorrow] = useState<number>(0);
-    const [numberTasksDueThisWeek, setNumberTasksDueThisWeek] = useState<number>(0);
-    const [numberTasksOverdue, setNumberTasksOverdue] = useState<number>(0);
+    const [inspirationalQuote, setInspirationalQuote] = useState<{ text: string; author: string }>();
 
     useEffect(() => {
         setInspirationalQuote(Quote.getQuote());
     }, []);
-
-    useEffect(() => {
-        setLiveTaskStats();
-    }, [taskListMap]);
 
     function getCompletedTasksToday(): number {
         const now = new Date(Date.now());
@@ -78,44 +71,6 @@ export default function Home(): JSX.Element {
 
     const completedTasksToday = getCompletedTasksToday();
 
-    function setLiveTaskStats(): void {
-        let numberTasksOverdue = 0;
-        let numberTasksDueToday = 0;
-        let numberTasksDueTomorrow = 0;
-        let numberTasksDueThisWeek = 0;
-
-        taskListMap.forEach((tasks) => {
-            tasks.forEach((task) => {
-                if (!task.completed) {
-                    if (TaskUtil.isTaskOverDue(task)) {
-                        numberTasksOverdue++;
-                    }
-
-                    if (TaskUtil.isTaskDueToday(task)) {
-                        numberTasksDueToday++;
-                    }
-
-                    if (TaskUtil.isTaskDueTomorrow(task)) {
-                        numberTasksDueTomorrow++;
-                    }
-
-                    if (
-                        TaskUtil.isTaskDueThisWeek(task) ||
-                        TaskUtil.isTaskDueToday(task) ||
-                        TaskUtil.isTaskDueTomorrow(task)
-                    ) {
-                        numberTasksDueThisWeek++;
-                    }
-                }
-            });
-        });
-
-        setNumberTasksOverdue(numberTasksOverdue);
-        setNumberTasksDueToday(numberTasksDueToday);
-        setNumberTasksDueTomorrow(numberTasksDueTomorrow);
-        setNumberTasksDueThisWeek(numberTasksDueThisWeek);
-    }
-
     return (
         <div className={"home"}>
             <Center>
@@ -129,13 +84,14 @@ export default function Home(): JSX.Element {
                     <Blockquote cite={inspirationalQuote.author}>{inspirationalQuote.text}</Blockquote>
                     <Alert icon={<IconBulb size={32} />} title="Today at a glance" color="cyan">
                         So far, you have completed {completedTasksToday} task{completedTasksToday === 1 ? "" : "s"}{" "}
-                        today. There's {numberTasksDueToday} task{numberTasksDueToday === 1 ? "" : "s"} left for today.{" "}
-                        {numberTasksDueTomorrow} task{numberTasksDueTomorrow === 1 ? "" : "s"} due for tomorrow. In
-                        total, {numberTasksDueThisWeek} task{numberTasksDueThisWeek === 1 ? "" : "s"} left this week.
+                        today. There's {taskNumbers.dueToday} task{taskNumbers.dueToday === 1 ? "" : "s"} left for
+                        today. {taskNumbers.dueTomorrow} task{taskNumbers.dueTomorrow === 1 ? "" : "s"} due for
+                        tomorrow. In total, {taskNumbers.dueThisWeek} task{taskNumbers.dueThisWeek === 1 ? "" : "s"}{" "}
+                        left this week.
                     </Alert>
-                    {numberTasksOverdue > 0 && (
+                    {taskNumbers.overdue > 0 && (
                         <Alert icon={<IconMoodSad size={16} />} title="Tasks overdue" color="red">
-                            {numberTasksOverdue} task{numberTasksOverdue === 1 ? "" : "s"} overdue.
+                            {taskNumbers.overdue} task{taskNumbers.overdue === 1 ? "" : "s"} overdue.
                         </Alert>
                     )}
                 </Card>

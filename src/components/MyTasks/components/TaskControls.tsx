@@ -9,11 +9,11 @@ import {
     IconTrash,
     IconTrashX,
 } from "@tabler/icons";
-import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
-import { credentialAtom, tasksMapAtom } from "../../../recoil/Atoms";
+import { credentialAtom, forceRefreshAtom, tasksMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 import TaskForm from "../../Tasks/TaskForm/TaskForm";
 
@@ -27,6 +27,7 @@ interface TaskControlsProps {
 }
 
 export default function TaskControls(props: TaskControlsProps): JSX.Element {
+    const [forceRefresh, setForceRefresh] = useRecoilState<boolean>(forceRefreshAtom);
     const tasksMap = useRecoilValue<Map<string, TaskListIdTitle>>(tasksMapAtom);
     const credential = useRecoilValue(credentialAtom);
 
@@ -60,6 +61,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                 });
                 setLoading(false);
                 setLocalTask(completedTask);
+                setForceRefresh(true);
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Task completion"));
@@ -79,6 +81,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             (): void => {
                 setLocalTask(deletedTask);
                 setLoading(false);
+                setForceRefresh(true);
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Task deletion"));
@@ -86,6 +89,14 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             }
         );
     };
+
+    useEffect(() => {
+        // FIXME could be !forceRefresh here
+        // Reset the local task if the data was refreshed.
+        setTimeout(() => {
+            setLocalTask(props.targetTask);
+        }, 1500);
+    }, [forceRefresh]);
 
     if (loading) {
         return <LoadingOverlay visible={true} overlayBlur={2} />;
