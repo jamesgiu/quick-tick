@@ -76,3 +76,8 @@ export const taskNumbersAtom = atom<TaskNumbers>({
         dueThisWeek: 0,
     },
 });
+
+export const forceRefreshAtom = atom<boolean>({
+    key: "forceRefresh",
+    default: false,
+});

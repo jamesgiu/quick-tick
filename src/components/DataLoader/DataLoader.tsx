@@ -9,6 +9,7 @@ import {
     TaskNumbers,
     credentialAtom,
     dataLoadingAtom,
+    forceRefreshAtom,
     taskListsAtom,
     taskListsMapAtom,
     taskNumbersAtom,
@@ -25,7 +26,7 @@ export function genErrorNotificationProps(resource: string): NotificationProps {
     };
 }
 
-const DEFAULT_POLL_COUNTDOWN = 30;
+const DEFAULT_POLL_COUNTDOWN = 300;
 
 // FIXME QT-37
 // Try remove all cached data types from global state? Instead, fetch as required?
@@ -38,10 +39,11 @@ function DataLoader(): JSX.Element {
     const [taskMap, setTaskMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
     const setTaskNumbers = useSetRecoilState<TaskNumbers>(taskNumbersAtom);
     const setLoading = useSetRecoilState<boolean>(dataLoadingAtom);
+    const [forceRefresh, setForceRefresh] = useRecoilState<boolean>(forceRefreshAtom);
     const [pollCountdown, setPollCountdown] = useState<number>(DEFAULT_POLL_COUNTDOWN);
 
-    const getTasks = (fromPoller?: boolean): void => {
-        if (!fromPoller) {
+    const getTasks = (showLoading?: boolean): void => {
+        if (!showLoading) {
             setLoading(true);
         }
         GoogleAPI.getTaskLists(
@@ -52,7 +54,7 @@ function DataLoader(): JSX.Element {
 
                 // Now get the tasks for each task list
                 taskLists.forEach((taskList) => {
-                    if (!fromPoller) {
+                    if (!showLoading) {
                         setLoading(true);
                     }
                     GoogleAPI.getTasks(
@@ -148,6 +150,13 @@ function DataLoader(): JSX.Element {
     useEffect(() => {
         setLiveTaskStats();
     }, [taskListMap]);
+
+    useEffect(() => {
+        if (forceRefresh) {
+            getTasks(true);
+            setForceRefresh(false);
+        }
+    }, [forceRefresh]);
 
     return (
         <Group>

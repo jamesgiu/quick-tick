@@ -4,10 +4,10 @@ import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { IconCheckbox, IconSquarePlus } from "@tabler/icons";
 import { useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle, buildDateStringRFC3339 } from "../../../api/Types";
-import { credentialAtom, taskListsAtom } from "../../../recoil/Atoms";
+import { credentialAtom, forceRefreshAtom, taskListsAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 
 export interface TaskFormFields {
@@ -29,6 +29,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
     const taskLists = useRecoilValue(taskListsAtom);
     const [opened, setOpened] = useState(false);
     const [loading, setLoading] = useState(false);
+    const setForceRefresh = useSetRecoilState<boolean>(forceRefreshAtom);
 
     const taskActionText = props.targetTaskIfEditing ? "Update" : "Create";
 
@@ -57,6 +58,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
                 icon: <IconCheckbox />,
             });
             setLoading(false);
+            setForceRefresh(true);
         };
 
         const onFailure = (): void => {

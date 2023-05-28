@@ -1,8 +1,8 @@
-import { Accordion, Button, Collapse, MediaQuery, Menu, Navbar, Stack } from "@mantine/core";
+import { Accordion, Button, Collapse, MediaQuery, Navbar, Stack } from "@mantine/core";
 import {
     IconAlarm,
-    IconArrowBadgeLeft,
-    IconArrowBadgeRight,
+    IconArrowBarLeft,
+    IconArrowBarRight,
     IconCalendar,
     IconCheckupList,
     IconExclamationMark,
@@ -11,18 +11,15 @@ import {
     IconTimeline,
     IconUrgent,
 } from "@tabler/icons";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { TaskNumbers, navbarCollapsedAtom, taskListsMapAtom, taskNumbersAtom } from "../../../../recoil/Atoms";
+import { TaskNumbers, navbarCollapsedAtom, taskNumbersAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { TaskListFilter } from "../../../MyTasks/components/TaskListCard";
-import { TaskUtil } from "../../../MyTasks/components/TaskUtil";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";
 import TaskForm from "../../../Tasks/TaskForm/TaskForm";
 import QuickTickAuth from "../Auth/QuickTickAuth";
 import "./QuickTickNavbar.css";
-import Divider = Menu.Divider;
 
 export const getNavbarLinks = (
     mobile: boolean,
@@ -135,7 +132,7 @@ export default function QuickTickNavbar(): JSX.Element {
                 <Button
                     variant="subtle"
                     size="sm"
-                    leftIcon={collapsed ? <IconArrowBadgeRight /> : <IconArrowBadgeLeft />}
+                    leftIcon={collapsed ? <IconArrowBarRight /> : <IconArrowBarLeft />}
                     onClick={(): void => setCollapsed(!collapsed)}
                     className={!collapsed ? "collapse-button" : "expand-button"}
                 />

@@ -1,5 +1,5 @@
 import { Select } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout, Responsive, WidthProvider } from "react-grid-layout";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -22,6 +22,11 @@ export default function MyTasks(): JSX.Element {
     const [filter, setFilter] = useState<TaskListFilter | undefined>(searchParams.get("when") as TaskListFilter);
 
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
+
+    // Reset the filter when searchParams is changed.
+    useEffect(()=> {
+        setFilter(searchParams.get("when") as TaskListFilter)
+    }, [searchParams]);
 
     const getTaskListPanels = (): JSX.Element[] => {
         const taskListPanels: JSX.Element[] = [];
