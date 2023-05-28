@@ -1,6 +1,6 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { useGoogleLogin } from "@react-oauth/google";
+import { UseGoogleLoginOptionsAuthCodeFlow, useGoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
@@ -62,6 +62,7 @@ export default function QuickTickAuth(): JSX.Element {
         },
         scope: REQUIRED_SCOPES,
         flow: "auth-code",
+        ux_mode: "popup",
     });
 
     useEffect((): void => {
@@ -117,6 +118,11 @@ export default function QuickTickAuth(): JSX.Element {
             );
         }
     };
+
+    // Force login if credential expired.
+    if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
+        login();
+    }
 
     return (
         <div className={"quick-tick-auth"}>
