@@ -119,9 +119,9 @@ export default function QuickTickAuth(): JSX.Element {
         }
     };
 
-    // Force login if credential expired.
+    // Force logout if credential expired.
     if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
-        login();
+        logout();
     }
 
     return (
