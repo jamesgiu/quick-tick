@@ -4,7 +4,7 @@ import { Layout, Responsive, WidthProvider } from "react-grid-layout";
 import { useSearchParams } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { TaskList } from "../../api/Types";
-import { taskListLayoutAtom, taskListsAtom } from "../../recoil/Atoms";
+import { forceRefreshAtom, taskListLayoutAtom, taskListsAtom } from "../../recoil/Atoms";
 import NewTaskList from "../Tasks/NewTasklist/NewTasklist";
 import TaskForm from "../Tasks/TaskForm/TaskForm";
 import "./MyTasks.css";
@@ -20,7 +20,6 @@ export default function MyTasks(): JSX.Element {
     const taskLists = useRecoilValue<TaskList[]>(taskListsAtom);
 
     const [filter, setFilter] = useState<TaskListFilter | undefined>(searchParams.get("when") as TaskListFilter);
-
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
 
     // Reset the filter when searchParams is changed.
