@@ -38,7 +38,8 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     const [forceRefresh, setForceRefresh] = useRecoilState<boolean>(forceRefreshAtom);
     const credential = useRecoilValue(credentialAtom);
     const taskListMap = useRecoilValue<Map<string, Task[]>>(taskListsMapAtom);
-    const getActiveTasks = () : Task[] => taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed) ?? [];
+    const getActiveTasks = (): Task[] =>
+        taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed) ?? [];
     const [activeTasks, setActiveTasks] = useState<Task[]>(getActiveTasks());
     const isCollapsed = collapsedTasklists.includes(props.taskList.id);
     const taskRows = TaskUtil.getTasksAsRows(activeTasks, props.filter);
@@ -87,10 +88,10 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     };
 
     // If the task list map has changed, then regenerate these lists.
-    useEffect(()=> {
+    useEffect(() => {
         // FIXME could be !forceRefresh here
         // Slight delay to allow the atom to load.
-        setTimeout(()=> setActiveTasks(getActiveTasks()), 1500);
+        setTimeout(() => setActiveTasks(getActiveTasks()), 1500);
     }, [forceRefresh]);
 
     return (

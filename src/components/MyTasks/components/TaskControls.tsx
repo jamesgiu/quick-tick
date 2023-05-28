@@ -90,11 +90,13 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
         );
     };
 
-    useEffect(()=> {
+    useEffect(() => {
         // FIXME could be !forceRefresh here
         // Reset the local task if the data was refreshed.
-        setTimeout(()=> {setLocalTask(props.targetTask);}, 1500);
-    }, [forceRefresh])
+        setTimeout(() => {
+            setLocalTask(props.targetTask);
+        }, 1500);
+    }, [forceRefresh]);
 
     if (loading) {
         return <LoadingOverlay visible={true} overlayBlur={2} />;

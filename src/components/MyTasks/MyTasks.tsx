@@ -23,8 +23,8 @@ export default function MyTasks(): JSX.Element {
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
 
     // Reset the filter when searchParams is changed.
-    useEffect(()=> {
-        setFilter(searchParams.get("when") as TaskListFilter)
+    useEffect(() => {
+        setFilter(searchParams.get("when") as TaskListFilter);
     }, [searchParams]);
 
     const getTaskListPanels = (): JSX.Element[] => {
@@ -77,7 +77,7 @@ export default function MyTasks(): JSX.Element {
                         { value: TaskListFilter.WEEKLY, label: "weekly" },
                         { value: TaskListFilter.OVERDUE, label: "overdue" },
                     ]}
-                    onChange={(newValue) : void => {
+                    onChange={(newValue): void => {
                         // Set filter off if "All" is selected.
                         setFilter(newValue === "" ? undefined : (newValue as TaskListFilter));
                     }}
