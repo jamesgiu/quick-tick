@@ -9,6 +9,8 @@ export interface UserInfoResponse {
 export interface QuickTickCredential extends TokenResponse {
     // The Datetime the user's token will expire
     accessTokenExpiryEpoch: number;
+    // 7 days for Google Apps in testing (https://developers.google.com/identity/protocols/oauth2#:~:text=Refresh%20token%20expiration,-You%20must%20write&text=A%20refresh%20token%20might%20stop,refresh%20token%20contains%20Gmail%20scopes.)
+    refreshTokenExpiryEpoch: number;
 }
 
 export interface TokenResponse {
