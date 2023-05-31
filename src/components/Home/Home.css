@@ -28,3 +28,83 @@
 .home .mantine-Alert-root .mantine-Alert-icon {
   margin: auto;
 }
+
+.splash-blob {
+  animation: pulse-white 4s infinite;
+  border-radius: 800px;
+  width: 80px;
+  height: 120px;
+  position: absolute;
+  top: 160px;
+}
+
+@keyframes pulse-white {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(238, 255, 2, 0.747);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+.splash-dot-1 {
+  animation: pulse-white 4s infinite;
+  border-radius: 800px;
+  position: absolute;
+  width: 3px;
+  height: 2px;
+  top: 250px;
+}
+
+.splash-dot-2 {
+  animation: pulse-white 6s infinite;
+  border-radius: 800px;
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  top: 260px;
+}
+
+.splash-dot-3 {
+  animation: pulse-white 5s infinite;
+  border-radius: 800px;
+  position: absolute;
+  width: 2px;
+  height: 3px;
+  top: 270px;
+}
+
+.splash-dot-4 {
+  animation: pulse-white 4s infinite;
+  border-radius: 800px;
+  position: absolute;
+  width: 1px;
+  height: 2px;
+  top: 280px;
+}
+
+.splash-dot-5 {
+  animation: pulse-white 3s infinite;
+  border-radius: 800px;
+  position: absolute;
+  width: 1px;
+  height: 2px;
+  top: 290px;
+}
+
+.splash-dot-6 {
+  animation: pulse-white 3s infinite;
+  border-radius: 800px;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  top: 300px;
+}

@@ -74,7 +74,13 @@ export default function Home(): JSX.Element {
     return (
         <div className={"home"}>
             <Center>
-                <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo_bulb.png"} />
+                <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo_bulb.png"}/>
+                <span className="splash-dot-1"/>
+                <span className="splash-dot-2"/>
+                <span className="splash-dot-3"/>
+                <span className="splash-dot-4"/>
+                <span className="splash-dot-5"/>
+                <span className="splash-dot-6"/>
             </Center>
             <h2>Welcome to {LOGO}</h2>
             <i>A task-management application</i>

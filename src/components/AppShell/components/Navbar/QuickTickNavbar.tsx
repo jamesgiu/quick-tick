@@ -45,7 +45,7 @@ export const getNavbarLinks = (
                                     onClick={onClickCallback}
                                 >
                                     <Button
-                                        leftIcon={<IconExclamationMark color="red" />}
+                                        leftIcon={<IconExclamationMark color="red" className="danger-blob"/>}
                                         variant="subtle"
                                         size={mobile ? "xl" : "sm"}
                                     >
