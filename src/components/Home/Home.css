@@ -62,6 +62,7 @@
   width: 3px;
   height: 2px;
   top: 250px;
+  left: 55%;
 }
 
 .splash-dot-2 {
@@ -71,6 +72,7 @@
   width: 2px;
   height: 2px;
   top: 260px;
+  left: 53.5%;
 }
 
 .splash-dot-3 {
@@ -80,6 +82,7 @@
   width: 2px;
   height: 3px;
   top: 270px;
+  left: 54%;
 }
 
 .splash-dot-4 {
@@ -88,7 +91,8 @@
   position: absolute;
   width: 1px;
   height: 2px;
-  top: 280px;
+  top: 210px;
+  left: 56%;
 }
 
 .splash-dot-5 {
@@ -97,7 +101,8 @@
   position: absolute;
   width: 1px;
   height: 2px;
-  top: 290px;
+  top: 220px;
+  left: 56%;
 }
 
 .splash-dot-6 {
@@ -106,5 +111,6 @@
   position: absolute;
   width: 1px;
   height: 1px;
-  top: 300px;
+  top: 230px;
+  left: 55%;
 }

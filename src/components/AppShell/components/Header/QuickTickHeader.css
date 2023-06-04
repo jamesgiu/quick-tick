@@ -61,26 +61,3 @@
   top: 1px;
   left: 1px;
 }
-
-.logo-blob {
-  box-shadow: 0 0 0 0 rgb(8, 72, 124);
-  animation: pulse-white 4s infinite;
-  border-radius: 30px;
-}
-
-@keyframes pulse-white {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(5, 77, 119, 0.7);
-  }
-  
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
-  }
-  
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
-}

@@ -19,7 +19,7 @@ export const LOGO = (
     <span>
         {" "}
         <span className={"header-logo"}>
-            <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo.png"} width={40} className="logo-blob" />
+            <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo.png"} width={40} />
             <IconChevronRight />
         </span>
         <span className={"header-text"}>
