@@ -151,7 +151,7 @@ export default function QuickTickAuth(): JSX.Element {
     };
 
     // Force logout if credential expired or autologin if user info present.
-    if (credential && Date.now() >= credential.refreshTokenExpiryEpoch) {
+    if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
         if (userInfo && userInfo.email) {
             setTimeout(() => autoLogin(), 1500);
         } else {

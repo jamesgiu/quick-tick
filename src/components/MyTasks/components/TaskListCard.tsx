@@ -141,7 +141,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                     </span>
                 </Group>
             </div>
-            <Collapse in={!isCollapsed}>
+            <Collapse in={!isCollapsed} className="task-list-content">
                 <div className="task-list-table">
                     <QuickTickTable headers={["Title", "Due", "Controls"]} rows={taskRows} />
                 </div>
