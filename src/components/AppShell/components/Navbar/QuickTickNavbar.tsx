@@ -10,6 +10,7 @@ import {
     IconPlaylistAdd,
     IconTimeline,
     IconUrgent,
+    IconConfetti,
 } from "@tabler/icons";
 import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -64,6 +65,20 @@ export const getNavbarLinks = (
                                         size={mobile ? "xl" : "sm"}
                                     >
                                         Today ({taskNumbers.dueToday})
+                                    </Button>
+                                </Link>
+                            )}
+                            {taskNumbers.dueThisWeekend > 0 && (
+                                <Link
+                                    to={QuickTickPage.MY_TASKS + `?when=${TaskListFilter.WEEKEND}`}
+                                    onClick={onClickCallback}
+                                >
+                                    <Button
+                                        leftIcon={<IconConfetti color="#a5ff70c1"/>}
+                                        variant="subtle"
+                                        size={mobile ? "xl" : "sm"}
+                                    >
+                                        This weekend ({taskNumbers.dueThisWeekend})
                                     </Button>
                                 </Link>
                             )}

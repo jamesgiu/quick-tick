@@ -75,6 +75,7 @@ export default function MyTasks(): JSX.Element {
                         { value: "", label: "All" },
                         { value: TaskListFilter.TODAY, label: "today" },
                         { value: TaskListFilter.WEEKLY, label: "weekly" },
+                        { value: TaskListFilter.WEEKEND, label: "weekend" },
                         { value: TaskListFilter.OVERDUE, label: "overdue" },
                     ]}
                     onChange={(newValue): void => {

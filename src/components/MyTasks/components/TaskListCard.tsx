@@ -23,6 +23,7 @@ import { TaskUtil } from "./TaskUtil";
 export enum TaskListFilter {
     TODAY = "today",
     WEEKLY = "weekly",
+    WEEKEND = "weekend",
     OVERDUE = "overdue",
 }
 

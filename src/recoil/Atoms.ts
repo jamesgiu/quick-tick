@@ -65,6 +65,7 @@ export interface TaskNumbers {
     dueToday: number;
     dueTomorrow: number;
     dueThisWeek: number;
+    dueThisWeekend: number;
 }
 
 export const taskNumbersAtom = atom<TaskNumbers>({
@@ -74,6 +75,7 @@ export const taskNumbersAtom = atom<TaskNumbers>({
         dueToday: 0,
         dueTomorrow: 0,
         dueThisWeek: 0,
+        dueThisWeekend: 0,
     },
 });
 
