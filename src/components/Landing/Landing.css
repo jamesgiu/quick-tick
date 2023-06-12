@@ -1,0 +1,44 @@
+.landing .clock {
+  margin: auto;
+  padding-top: 10vh;
+  font-family: "Satisfy";
+}
+
+.landing .welcome {
+  padding-top: 12vh;
+  font-size: 3rem;
+  font-style: italic;
+  font-family: "Satisfy";
+}
+
+.landing .landing-inner {
+  backdrop-filter: invert(30%);
+  color: white;
+}
+
+.landing .quote .mantine-Blockquote-root {
+  padding-top: 50vh;
+}
+
+.landing .quote .mantine-Blockquote-root,
+.landing .quote .mantine-Blockquote-root svg,
+.landing .quote .mantine-Blockquote-root .mantine-Blockquote-cite {
+  color: white;
+  font-style: italic;
+}
+
+.landing .today-at-a-glance {
+  width: 400px;
+  float: right;
+}
+
+.landing .today-at-a-glance .mantine-Alert-title {
+  margin: auto;
+  width: 50%;
+}
+
+.landing {
+  height: 90vh;
+  margin: auto;
+  width: 100%
+}

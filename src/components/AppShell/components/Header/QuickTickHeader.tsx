@@ -60,7 +60,7 @@ export default function QuickTickHeader(): JSX.Element {
                     <MediaQuery largerThan="sm" styles={{ display: "none" }}>
                         <Burger opened={burgerOpen} onClick={(): void => setBurgerOpen((o) => !o)} />
                     </MediaQuery>
-                    <Link to={QuickTickPage.HOME}>{LOGO}</Link>
+                    <Link to={QuickTickPage.LANDING}>{LOGO}</Link>
                 </Group>
                 <Group position={"right"} className={"header-group-2"}>
                     <Group className="header-main-actions">

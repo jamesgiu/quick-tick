@@ -6,15 +6,20 @@ import Timecharging from "../components/Timecharging/Timecharging";
 import Stats from "../components/Stats/Stats";
 import Home from "../components/Home/Home";
 import NotFound from "../components/NotFound/NotFound";
+import Landing from "../components/Landing/Landing";
 
 const router = createBrowserRouter([
     {
-        path: QuickTickPage.HOME,
+        path: QuickTickPage.LANDING,
         element: <App />,
         errorElement: <NotFound />,
         children: [
             {
                 index: true,
+                element: <Landing />,
+            },
+            {
+                path: QuickTickPage.ABOUT,
                 element: <Home />,
             },
             {

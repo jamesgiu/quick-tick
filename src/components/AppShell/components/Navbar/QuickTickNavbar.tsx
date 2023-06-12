@@ -8,6 +8,7 @@ import {
     IconExclamationMark,
     IconExternalLink,
     IconPlaylistAdd,
+    IconInfoCircle,
     IconTimeline,
     IconUrgent,
     IconConfetti,
@@ -113,6 +114,11 @@ export const getNavbarLinks = (
                     </Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
+            <Link to={QuickTickPage.ABOUT} onClick={onClickCallback}>
+                <Button leftIcon={<IconInfoCircle />} variant="subtle" size={mobile ? "xl" : "sm"}>
+                    About
+                </Button>
+            </Link>
             <Button
                 leftIcon={<IconCalendar />}
                 variant="subtle"
