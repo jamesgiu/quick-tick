@@ -37,7 +37,7 @@ export default function Landing(): JSX.Element {
 
     const getDateStr = () : string => {
         const nowDate = new Date(Date.now());
-        const timeString = `${nowDate.getHours()}:${nowDate.getMinutes()}:${nowDate.getSeconds()}`;
+        const timeString = `${nowDate.getHours() < 10 ? '0' + nowDate.getHours() : nowDate.getHours()}:${nowDate.getMinutes() < 10 ? '0' + nowDate.getMinutes() : nowDate.getMinutes()}:${nowDate.getSeconds() < 10 ? '0' + nowDate.getSeconds() : nowDate.getSeconds()}`;
 
         return timeString;
     }
