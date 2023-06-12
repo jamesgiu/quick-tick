@@ -1,5 +1,13 @@
 import { Badge, Tooltip } from "@mantine/core";
-import { IconAlarm, IconCalendar, IconClock, IconHourglassHigh, IconMoodSad, IconUrgent, IconConfetti } from "@tabler/icons";
+import {
+    IconAlarm,
+    IconCalendar,
+    IconClock,
+    IconHourglassHigh,
+    IconMoodSad,
+    IconUrgent,
+    IconConfetti,
+} from "@tabler/icons";
 import { Task } from "../../../api/Types";
 import { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
 import TaskControls from "./TaskControls";
@@ -84,10 +92,11 @@ export class TaskUtil {
 
         // 0 is Sunday, 6 is Saturday.
         // Task must be due this week and on a weekend day.
-        const isTaskDueThisWeekend = TaskUtil.isTaskDueThisWeek(task)  && (taskDueDate.getDay() === 0 || taskDueDate.getDay() === 6)
+        const isTaskDueThisWeekend =
+            TaskUtil.isTaskDueThisWeek(task) && (taskDueDate.getDay() === 0 || taskDueDate.getDay() === 6);
 
         return isTaskDueThisWeekend;
-    }
+    };
 
     public static generateShardsForTask = (task: Task): JSX.Element => {
         if (TaskUtil.isTaskOverDue(task)) {
@@ -193,11 +202,7 @@ export class TaskUtil {
                         return;
                     }
 
-                    if (
-                        filter === TaskListFilter.WEEKEND &&
-                        !TaskUtil.isTaskDueThisWeekend(task) 
-                    )
-                    {
+                    if (filter === TaskListFilter.WEEKEND && !TaskUtil.isTaskDueThisWeekend(task)) {
                         // Skip tasks that aren't due this weekend, if the filter is applied.
                         return;
                     }

@@ -75,7 +75,7 @@ export const getNavbarLinks = (
                                     onClick={onClickCallback}
                                 >
                                     <Button
-                                        leftIcon={<IconConfetti color="#a5ff70c1"/>}
+                                        leftIcon={<IconConfetti color="#a5ff70c1" />}
                                         variant="subtle"
                                         size={mobile ? "xl" : "sm"}
                                     >
