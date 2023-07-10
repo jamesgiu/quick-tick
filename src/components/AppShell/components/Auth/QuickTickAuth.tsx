@@ -1,10 +1,7 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
-    GoogleLogin,
-    UseGoogleLoginOptionsAuthCodeFlow,
-    useGoogleLogin,
-    useGoogleOneTapLogin,
+    useGoogleLogin
 } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";

@@ -1,23 +1,14 @@
-import { Alert, Blockquote, Card, Center, Divider, Header, List, Paper, Text, Title } from "@mantine/core";
+import { Alert, Blockquote, Title } from "@mantine/core";
 import {
-    IconBackhoe,
-    IconBrandGithub,
     IconBulb,
-    IconBulldozer,
-    IconGlassFull,
-    IconInfoCircle,
-    IconLogout,
-    IconMoodSad,
-    IconWreckingBall,
+    IconMoodSad
 } from "@tabler/icons";
 import Quote from "inspirational-quotes";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { taskListsMapAtom, taskNumbersAtom, userInfoAtom } from "../../recoil/Atoms";
-import { LOGO } from "../AppShell/components/Header/QuickTickHeader";
 import { TaskUtil } from "../MyTasks/components/TaskUtil";
 import "./Landing.css";
-import Clock from "react-live-clock";
 import { MOTIVATIONAL_IMAGES } from "./images";
 
 export function getRandomInt(min: number, max: number): number {

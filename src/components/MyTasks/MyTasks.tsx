@@ -20,11 +20,14 @@ export default function MyTasks(): JSX.Element {
     const taskLists = useRecoilValue<TaskList[]>(taskListsAtom);
 
     const [filter, setFilter] = useState<TaskListFilter | undefined>(searchParams.get("when") as TaskListFilter);
+    const [listFilter, setListFilter] = useState<string | null>(searchParams.get("listFilter"));
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
+    const [ephemeralLayout, setEphemeralLayout] = useState<Layout[]>([]);
 
     // Reset the filter when searchParams is changed.
     useEffect(() => {
         setFilter(searchParams.get("when") as TaskListFilter);
+        setListFilter(searchParams.get("listFilter"));
     }, [searchParams]);
 
     const getTaskListPanels = (): JSX.Element[] => {
@@ -35,6 +38,12 @@ export default function MyTasks(): JSX.Element {
 
         for (let i = 0; i < taskLists.length; i++) {
             const taskList = taskLists.at(i)!;
+
+            if (listFilter && listFilter !== taskList.id) {
+                // Early break if we have a filter on and the current taskList is not the filtered one.
+                continue;
+            }
+
             const taskListIdTitle = {
                 id: taskList.id,
                 title: taskList.title,
@@ -46,8 +55,14 @@ export default function MyTasks(): JSX.Element {
                 </div>
             );
 
-            // FIXME should this be a contains?
-            if (JSON.stringify(layoutIds) !== JSON.stringify(taskListIds)) {
+            // If we have a filter on, then clear the layout and focus on the one list.
+            if (listFilter) {
+                const layoutItem = { i: taskList.id, x: 0, y: i, h: 50, w: 50 };
+
+                if (JSON.stringify(ephemeralLayout) !== JSON.stringify([layoutItem])) {
+                    setEphemeralLayout([layoutItem]);
+                }
+            } else if (JSON.stringify(layoutIds) !== JSON.stringify(taskListIds)) {
                 // If we haven't seen this tasklist id before, add it to our layouts array.
                 if (!layoutIds.includes(taskList.id)) {
                     const layoutItem = { i: taskList.id, x: 0, y: i, h: 15, w: 5 };
@@ -62,7 +77,6 @@ export default function MyTasks(): JSX.Element {
 
         return taskListPanels;
     };
-
     return (
         <div className={"my-tasks"}>
             <div>My Tasks</div>
@@ -88,7 +102,13 @@ export default function MyTasks(): JSX.Element {
             <TaskForm />
             <ResponsiveGridLayout
                 className="layout"
-                layouts={{ lg: layout, md: layout, sm: layout, xs: layout, xxs: layout }}
+                layouts={{
+                    lg: listFilter ? ephemeralLayout : layout,
+                    md: listFilter ? ephemeralLayout : layout,
+                    sm: listFilter ? ephemeralLayout : layout,
+                    xs: listFilter ? ephemeralLayout : layout,
+                    xxs: listFilter ? ephemeralLayout : layout,
+                }}
                 draggableHandle=".draggable-area"
                 draggableCancel=".draggable-cancel"
                 onDragStop={(layout): void => setLayout(layout)}

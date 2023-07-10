@@ -3,10 +3,10 @@ import {
     IconAlarm,
     IconCalendar,
     IconClock,
+    IconConfetti,
     IconHourglassHigh,
     IconMoodSad,
     IconUrgent,
-    IconConfetti,
 } from "@tabler/icons";
 import { Task } from "../../../api/Types";
 import { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
