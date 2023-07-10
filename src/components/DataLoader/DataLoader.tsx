@@ -91,6 +91,7 @@ function DataLoader(): JSX.Element {
         let numberTasksDueToday = 0;
         let numberTasksDueTomorrow = 0;
         let numberTasksDueThisWeek = 0;
+        let numberTasksDueThisWeekend = 0;
 
         taskListMap.forEach((tasks) => {
             tasks.forEach((task) => {
@@ -114,6 +115,10 @@ function DataLoader(): JSX.Element {
                     ) {
                         numberTasksDueThisWeek++;
                     }
+
+                    if (TaskUtil.isTaskDueThisWeekend(task)) {
+                        numberTasksDueThisWeekend++;
+                    }
                 }
             });
         });
@@ -123,6 +128,7 @@ function DataLoader(): JSX.Element {
             dueToday: numberTasksDueToday,
             dueTomorrow: numberTasksDueTomorrow,
             dueThisWeek: numberTasksDueThisWeek,
+            dueThisWeekend: numberTasksDueThisWeekend,
         };
 
         setTaskNumbers(newTaskNumbers);

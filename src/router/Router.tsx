@@ -1,20 +1,25 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import { QuickTickPage } from "../util/QuickTickPage";
-import MyTasks from "../components/MyTasks/MyTasks";
-import Timecharging from "../components/Timecharging/Timecharging";
-import Stats from "../components/Stats/Stats";
 import Home from "../components/Home/Home";
+import Landing from "../components/Landing/Landing";
+import MyTasks from "../components/MyTasks/MyTasks";
 import NotFound from "../components/NotFound/NotFound";
+import Stats from "../components/Stats/Stats";
+import Timecharging from "../components/Timecharging/Timecharging";
+import { QuickTickPage } from "../util/QuickTickPage";
 
 const router = createBrowserRouter([
     {
-        path: QuickTickPage.HOME,
+        path: QuickTickPage.LANDING,
         element: <App />,
         errorElement: <NotFound />,
         children: [
             {
                 index: true,
+                element: <Landing />,
+            },
+            {
+                path: QuickTickPage.ABOUT,
                 element: <Home />,
             },
             {

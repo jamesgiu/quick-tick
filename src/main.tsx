@@ -1,11 +1,11 @@
+import { MantineProvider } from "@mantine/core";
+import { NotificationsProvider } from "@mantine/notifications";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import { MantineProvider } from "@mantine/core";
 import { RouterProvider } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { NotificationsProvider } from "@mantine/notifications";
 import { RecoilRoot } from "recoil";
+import "./index.css";
 import router from "./router/Router";
 
 import "/node_modules/react-grid-layout/css/styles.css";

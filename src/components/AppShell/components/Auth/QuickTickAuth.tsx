@@ -1,6 +1,6 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { UseGoogleLoginOptionsAuthCodeFlow, useGoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
@@ -40,9 +40,34 @@ export default function QuickTickAuth(): JSX.Element {
         setCredential({
             ...response,
             accessTokenExpiryEpoch: expiryDateEpoch,
+            // The refresh token is only returned on a fresh login.
             refresh_token: response.refresh_token ?? credential.refresh_token,
+            // 7 days in MS.
+            refreshTokenExpiryEpoch: response.refresh_token
+                ? Date.now() + 604800000
+                : credential.refreshTokenExpiryEpoch,
         });
     };
+
+    const autoLogin = useGoogleLogin({
+        onSuccess: (implicitResponse): void => {
+            console.log(implicitResponse);
+            setCredential({
+                ...credential,
+                access_token: implicitResponse.access_token,
+                accessTokenExpiryEpoch: Date.now() + implicitResponse.expires_in * 1000,
+                expires_in: implicitResponse.expires_in,
+            });
+        },
+        onError: (): void => {
+            showNotification(errorNotification);
+        },
+        scope: REQUIRED_SCOPES,
+        // Should be user info's email
+        hint: userInfo ? userInfo.email : undefined,
+        prompt: "none",
+        flow: "implicit",
+    });
 
     const login = useGoogleLogin({
         onSuccess: (oauthResponse): void => {
@@ -67,6 +92,7 @@ export default function QuickTickAuth(): JSX.Element {
 
     useEffect((): void => {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
+        // May not be required with the onload autologin.
         if (credential && credential.refresh_token) {
             GoogleAPI.refreshToken(
                 credential,
@@ -119,9 +145,13 @@ export default function QuickTickAuth(): JSX.Element {
         }
     };
 
-    // Force logout if credential expired.
+    // Force logout if credential expired or autologin if user info present.
     if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
-        logout();
+        if (userInfo && userInfo.email) {
+            setTimeout(() => autoLogin(), 1500);
+        } else {
+            logout();
+        }
     }
 
     return (

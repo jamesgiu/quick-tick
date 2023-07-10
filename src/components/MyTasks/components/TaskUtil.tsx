@@ -1,5 +1,13 @@
 import { Badge, Tooltip } from "@mantine/core";
-import { IconAlarm, IconCalendar, IconClock, IconHourglassHigh, IconMoodSad, IconUrgent } from "@tabler/icons";
+import {
+    IconAlarm,
+    IconCalendar,
+    IconClock,
+    IconConfetti,
+    IconHourglassHigh,
+    IconMoodSad,
+    IconUrgent,
+} from "@tabler/icons";
 import { Task } from "../../../api/Types";
 import { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
 import TaskControls from "./TaskControls";
@@ -78,6 +86,18 @@ export class TaskUtil {
         return isTaskDueThisMonth;
     };
 
+    public static isTaskDueThisWeekend = (task: Task): boolean => {
+        const now = new Date(Date.now());
+        const taskDueDate = new Date(task.due);
+
+        // 0 is Sunday, 6 is Saturday.
+        // Task must be due this week and on a weekend day.
+        const isTaskDueThisWeekend =
+            TaskUtil.isTaskDueThisWeek(task) && (taskDueDate.getDay() === 0 || taskDueDate.getDay() === 6);
+
+        return isTaskDueThisWeekend;
+    };
+
     public static generateShardsForTask = (task: Task): JSX.Element => {
         if (TaskUtil.isTaskOverDue(task)) {
             return (
@@ -104,6 +124,16 @@ export class TaskUtil {
                 <Tooltip label="Task is due tomorrow!">
                     <Badge color="yellow" variant="light">
                         Tomorrow <IconHourglassHigh size={13} />
+                    </Badge>
+                </Tooltip>
+            );
+        }
+
+        if (TaskUtil.isTaskDueThisWeekend(task)) {
+            return (
+                <Tooltip label="Task is due this weekend!">
+                    <Badge color="lime" variant="light">
+                        This weekend <IconConfetti size={13} />
                     </Badge>
                 </Tooltip>
             );
@@ -169,6 +199,11 @@ export class TaskUtil {
                         !TaskUtil.isTaskOverDue(task)
                     ) {
                         // Skip tasks that aren't due this week, if the filter is applied.
+                        return;
+                    }
+
+                    if (filter === TaskListFilter.WEEKEND && !TaskUtil.isTaskDueThisWeekend(task)) {
+                        // Skip tasks that aren't due this weekend, if the filter is applied.
                         return;
                     }
                 }

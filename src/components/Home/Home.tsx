@@ -1,13 +1,11 @@
-import { Alert, Blockquote, Card, Center, Divider, List, Text, Title } from "@mantine/core";
+import { Alert, Center, List, Text } from "@mantine/core";
 import {
     IconBackhoe,
     IconBrandGithub,
-    IconBulb,
     IconBulldozer,
     IconGlassFull,
     IconInfoCircle,
     IconLogout,
-    IconMoodSad,
     IconWreckingBall,
 } from "@tabler/icons";
 import Quote from "inspirational-quotes";
@@ -75,28 +73,15 @@ export default function Home(): JSX.Element {
         <div className={"home"}>
             <Center>
                 <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo_bulb.png"} />
+                <span className="splash-dot-1" />
+                <span className="splash-dot-2" />
+                <span className="splash-dot-3" />
+                <span className="splash-dot-4" />
+                <span className="splash-dot-5" />
+                <span className="splash-dot-6" />
             </Center>
             <h2>Welcome to {LOGO}</h2>
             <i>A task-management application</i>
-            {userInfo && inspirationalQuote && (
-                <Card shadow="sm" p="lg" radius="md" withBorder>
-                    <Title order={3}>G'day, {userInfo.given_name}</Title>
-                    <Blockquote cite={inspirationalQuote.author}>{inspirationalQuote.text}</Blockquote>
-                    <Alert icon={<IconBulb size={32} />} title="Today at a glance" color="cyan">
-                        So far, you have completed {completedTasksToday} task{completedTasksToday === 1 ? "" : "s"}{" "}
-                        today. There's {taskNumbers.dueToday} task{taskNumbers.dueToday === 1 ? "" : "s"} left for
-                        today. {taskNumbers.dueTomorrow} task{taskNumbers.dueTomorrow === 1 ? "" : "s"} due for
-                        tomorrow. In total, {taskNumbers.dueThisWeek} task{taskNumbers.dueThisWeek === 1 ? "" : "s"}{" "}
-                        left this week.
-                    </Alert>
-                    {taskNumbers.overdue > 0 && (
-                        <Alert icon={<IconMoodSad size={16} />} title="Tasks overdue" color="red">
-                            {taskNumbers.overdue} task{taskNumbers.overdue === 1 ? "" : "s"} overdue.
-                        </Alert>
-                    )}
-                </Card>
-            )}
-            <Divider my="sm" />
             {SVG_WAVE}
             <div className={"home-content-area"}>
                 <IconBrandGithub />

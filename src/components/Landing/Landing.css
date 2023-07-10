@@ -1,0 +1,56 @@
+.landing .clock {
+  margin: auto;
+  position: absolute;
+  top: 30vh;
+  left: 0.5px;
+  right: 0.5px;
+  font-size: 3rem;
+  font-family: "Satisfy";
+}
+
+.landing .welcome {
+  position: absolute;
+  font-size: 2.1rem;
+  top: 35vh;
+  left: 0.5px;
+  right: 0.5px;
+  font-style: italic;
+  font-family: "Satisfy";
+}
+
+.landing .landing-inner {
+  backdrop-filter: invert(20%);
+  color: white;
+  height: 90vh;
+}
+
+.landing .quote {
+  position: absolute;
+  top: 83vh;
+  left: 0.5px;
+  right: 0.5px;
+}
+
+.landing .quote .mantine-Blockquote-root,
+.landing .quote .mantine-Blockquote-root svg,
+.landing .quote .mantine-Blockquote-root .mantine-Blockquote-cite {
+  color: white;
+  font-style: italic;
+}
+
+.landing .today-at-a-glance {
+  width: 400px;
+  position: absolute;
+  right: 1px;
+}
+
+.landing .today-at-a-glance .mantine-Alert-title {
+  margin: auto;
+  width: 50%;
+}
+
+.landing-wrapper {
+  height: 90vh;
+  margin: auto;
+  width: 100%;
+}
