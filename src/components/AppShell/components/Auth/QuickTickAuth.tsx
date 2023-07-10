@@ -1,8 +1,6 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-    useGoogleLogin
-} from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";

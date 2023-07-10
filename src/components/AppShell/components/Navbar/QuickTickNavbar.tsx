@@ -17,12 +17,7 @@ import {
 import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Task, TaskList } from "../../../../api/Types";
-import {
-    TaskNumbers,
-    navbarCollapsedAtom,
-    taskListsMapAtom,
-    taskNumbersAtom
-} from "../../../../recoil/Atoms";
+import { TaskNumbers, navbarCollapsedAtom, taskListsMapAtom, taskNumbersAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import { TaskListFilter } from "../../../MyTasks/components/TaskListCard";
 import NewTaskList from "../../../Tasks/NewTasklist/NewTasklist";

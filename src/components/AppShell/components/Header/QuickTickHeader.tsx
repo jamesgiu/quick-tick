@@ -6,13 +6,7 @@ import { fallDown as BurgerMenu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { Task } from "../../../../api/Types";
-import {
-    TaskNumbers,
-    credentialAtom,
-    taskListsMapAtom,
-    taskNumbersAtom,
-    userInfoAtom
-} from "../../../../recoil/Atoms";
+import { TaskNumbers, credentialAtom, taskListsMapAtom, taskNumbersAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import { QuickTickPage } from "../../../../util/QuickTickPage";
 import DataLoader from "../../../DataLoader/DataLoader";
 import { getNavbarLinks } from "../Navbar/QuickTickNavbar";

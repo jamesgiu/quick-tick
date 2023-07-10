@@ -1,8 +1,5 @@
 import { Alert, Blockquote, Title } from "@mantine/core";
-import {
-    IconBulb,
-    IconMoodSad
-} from "@tabler/icons";
+import { IconBulb, IconMoodSad } from "@tabler/icons";
 import Quote from "inspirational-quotes";
 import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
