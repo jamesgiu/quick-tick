@@ -42,8 +42,8 @@ function DataLoader(): JSX.Element {
     const [forceRefresh, setForceRefresh] = useRecoilState<boolean>(forceRefreshAtom);
     const [pollCountdown, setPollCountdown] = useState<number>(DEFAULT_POLL_COUNTDOWN);
 
-    const getTasks = (showLoading?: boolean): void => {
-        if (!showLoading) {
+    const getTasks = (hideLoading?: boolean): void => {
+        if (!hideLoading) {
             setLoading(true);
         }
         GoogleAPI.getTaskLists(
@@ -54,7 +54,7 @@ function DataLoader(): JSX.Element {
 
                 // Now get the tasks for each task list
                 taskLists.forEach((taskList) => {
-                    if (!showLoading) {
+                    if (!hideLoading) {
                         setLoading(true);
                     }
                     GoogleAPI.getTasks(

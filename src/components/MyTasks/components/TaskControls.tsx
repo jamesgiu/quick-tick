@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
     IconCircleCheck,
@@ -10,10 +10,10 @@ import {
     IconTrashX,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
-import { credentialAtom, forceRefreshAtom, tasksMapAtom } from "../../../recoil/Atoms";
+import { credentialAtom, forceRefreshAtom, taskListsMapAtom, tasksMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 import TaskForm from "../../Tasks/TaskForm/TaskForm";
 
@@ -27,8 +27,9 @@ interface TaskControlsProps {
 }
 
 export default function TaskControls(props: TaskControlsProps): JSX.Element {
-    const [forceRefresh, setForceRefresh] = useRecoilState<boolean>(forceRefreshAtom);
-    const tasksMap = useRecoilValue<Map<string, TaskListIdTitle>>(tasksMapAtom);
+    const setForceRefresh = useSetRecoilState<boolean>(forceRefreshAtom);
+    const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
+    const [tasksMap, setTasksMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
     const credential = useRecoilValue(credentialAtom);
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -36,13 +37,40 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
     const [isHoveringOverComplete, setIsHoveringOverComplete] = useState<boolean>(false);
     const [isHoveringOverTrash, setIsHoveringOverTrash] = useState<boolean>(false);
 
-    // Local copy of task obj
-    const [localTask, setLocalTask] = useState<Task>(props.targetTask);
+    // Removes this task from the stored lists (e.g. after deletion/completion)
+    const removeSelfFromLists = () => {
+        const newTaskListMap = new Map<string, Task[]>();
+
+        // Remove this task from the tasklist map
+        taskListMap.forEach((tasks, key) => {
+            const newTaskList = key;
+            const tasksToAdd: Task[] = [];
+            tasks.forEach((task) => {
+                if (task.id !== props.targetTask.id) {
+                    tasksToAdd.push(task);
+                }
+            });
+            newTaskListMap.set(newTaskList, tasksToAdd);
+        });
+
+        const newTasksMap = new Map<string, TaskListIdTitle>();
+
+        newTasksMap.forEach((taskListId, stringOfTask) => {
+            const task: Task = JSON.parse(stringOfTask);
+
+            if (task.id !== props.targetTask.id) {
+                newTasksMap.set(stringOfTask, taskListId);
+            }
+        });
+
+        setTasksMap(newTasksMap);
+        setTaskListMap(newTaskListMap);
+    };
 
     const completeTask = (): void => {
         setLoading(true);
         const completedTask = {
-            ...localTask,
+            ...props.targetTask,
             completed: new Date(Date.now()).toISOString(),
             hidden: true,
             status: "completed",
@@ -59,9 +87,9 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                     color: "green",
                     icon: <IconMoodSmileBeam />,
                 });
+
                 setLoading(false);
-                setLocalTask(completedTask);
-                setForceRefresh(true);
+                removeSelfFromLists();
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Task completion"));
@@ -72,16 +100,15 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
 
     const deleteTask = (): void => {
         setLoading(true);
-        const deletedTask = { ...localTask, deleted: true };
+        const deletedTask = { ...props.targetTask, deleted: true };
 
         GoogleAPI.deleteTask(
             credential,
             tasksMap.get(JSON.stringify(props.targetTask))!,
             deletedTask,
             (): void => {
-                setLocalTask(deletedTask);
                 setLoading(false);
-                setForceRefresh(true);
+                removeSelfFromLists();
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Task deletion"));
@@ -90,22 +117,14 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
         );
     };
 
-    useEffect(() => {
-        // FIXME could be !forceRefresh here
-        // Reset the local task if the data was refreshed.
-        setTimeout(() => {
-            setLocalTask(props.targetTask);
-        }, 1500);
-    }, [forceRefresh]);
-
     if (loading) {
         return <LoadingOverlay visible={true} overlayBlur={2} />;
     }
 
     // The default view, all actions available.
-    if (!localTask.completed && !localTask.deleted) {
-        return (
-            <Group className={"task-controls"}>
+    return (
+        <Group className={"task-controls"}>
+            <Tooltip label={`Complete task ${props.targetTask.title}`}>
                 <ActionIcon
                     color={"#a5d8ff"}
                     onMouseOver={(): void => setIsHoveringOverComplete(true)}
@@ -115,53 +134,33 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                 >
                     {isHoveringOverComplete ? <IconCircleCheck /> : <IconCircleDashed />}
                 </ActionIcon>
-                <ActionIcon color={"#a5d8ff"}>
-                    <TaskForm
-                        targetTaskIfEditing={props.targetTask}
-                        customTarget={<IconPencil />}
-                        defaultTaskList={tasksMap.get(JSON.stringify(props.targetTask))}
-                    />
-                </ActionIcon>
-                <Popover width={200} position="bottom" withArrow shadow="md">
-                    <Popover.Target>
-                        <ActionIcon
-                            color={"#a5d8ff"}
-                            onMouseOver={(): void => setIsHoveringOverTrash(true)}
-                            onMouseOut={(): void => setIsHoveringOverTrash(false)}
-                            onMouseLeave={(): void => setIsHoveringOverTrash(false)}
-                            onClick={(): void => deleteTask()}
-                        >
-                            {isHoveringOverTrash ? <IconTrashX /> : <IconTrash />}
-                        </ActionIcon>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                        <Text size="sm">Delete your task? This action cannot be undone.</Text>
-                        <Button color={"red"} onClick={deleteTask} leftIcon={<IconTrashX />}>
-                            Delete
-                        </Button>
-                    </Popover.Dropdown>
-                </Popover>
-            </Group>
-        );
-    }
-
-    // If the task was deleted.
-    if (localTask.deleted) {
-        return (
-            <Group className={"task-controls"}>
-                <IconGhost />
-            </Group>
-        );
-    }
-
-    // If the task was completed.
-    if (localTask.completed) {
-        return (
-            <Group className={"task-controls"}>
-                <IconMoodSmileBeam color={"lightgreen"} />
-            </Group>
-        );
-    }
-
-    return <></>;
+            </Tooltip>
+            <ActionIcon color={"#a5d8ff"}>
+                <TaskForm
+                    targetTaskIfEditing={props.targetTask}
+                    customTarget={<IconPencil />}
+                    defaultTaskList={tasksMap.get(JSON.stringify(props.targetTask))}
+                />
+            </ActionIcon>
+            <Popover width={200} position="bottom" withArrow shadow="md">
+                <Popover.Target>
+                    <ActionIcon
+                        color={"#a5d8ff"}
+                        onMouseOver={(): void => setIsHoveringOverTrash(true)}
+                        onMouseOut={(): void => setIsHoveringOverTrash(false)}
+                        onMouseLeave={(): void => setIsHoveringOverTrash(false)}
+                        onClick={(): void => deleteTask()}
+                    >
+                        {isHoveringOverTrash ? <IconTrashX /> : <IconTrash />}
+                    </ActionIcon>
+                </Popover.Target>
+                <Popover.Dropdown>
+                    <Text size="sm">Delete task {props.targetTask.title}? This action cannot be undone.</Text>
+                    <Button color={"red"} onClick={deleteTask} leftIcon={<IconTrashX />}>
+                        Delete
+                    </Button>
+                </Popover.Dropdown>
+            </Popover>
+        </Group>
+    );
 }

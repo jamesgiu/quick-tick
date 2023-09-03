@@ -15,10 +15,11 @@ import {
     taskListsMapAtom,
 } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
-import QuickTickTable from "../../QuickTickTable/QuickTickTable";
+import QuickTickTable, { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
 import TaskForm from "../../Tasks/TaskForm/TaskForm";
 import "./TaskListCard.css";
 import { TaskUtil } from "./TaskUtil";
+import TaskControls from "./TaskControls";
 
 export enum TaskListFilter {
     TODAY = "today",
@@ -36,15 +37,80 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     const setLoading = useSetRecoilState(dataLoadingAtom);
     const [layout, setLayout] = useRecoilState<Layout[]>(taskListLayoutAtom);
     const [collapsedTasklists, setCollapsedTasklists] = useRecoilState(collapsedTaskListIds);
-    const [forceRefresh, setForceRefresh] = useRecoilState<boolean>(forceRefreshAtom);
+    const setForceRefresh = useSetRecoilState<boolean>(forceRefreshAtom);
     const credential = useRecoilValue(credentialAtom);
     const taskListMap = useRecoilValue<Map<string, Task[]>>(taskListsMapAtom);
-    const getActiveTasks = (): Task[] =>
-        taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed) ?? [];
-    const [activeTasks, setActiveTasks] = useState<Task[]>(getActiveTasks());
     const isCollapsed = collapsedTasklists.includes(props.taskList.id);
-    const taskRows = TaskUtil.getTasksAsRows(activeTasks, props.filter);
-    const usePluralPhrasing = (): boolean => taskRows && (taskRows?.length === 0 || taskRows?.length > 1);
+
+    const getTasksAsRows = (): QuickTickTableRow[] => {
+        const activeTasks = taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed) ?? [];
+
+        const rows: QuickTickTableRow[] = [];
+        if (activeTasks?.length ?? 0 > 0) {
+            activeTasks!.forEach((task) => {
+                if (props.filter) {
+                    if (props.filter === TaskListFilter.OVERDUE && !TaskUtil.isTaskOverDue(task)) {
+                        // Skip tasks that aren't overdue.
+                        return;
+                    }
+
+                    if (
+                        props.filter === TaskListFilter.TODAY &&
+                        !TaskUtil.isTaskDueToday(task) &&
+                        !TaskUtil.isTaskOverDue(task)
+                    ) {
+                        // Skip tasks that aren't due today, if the filter is applied.
+                        return;
+                    }
+
+                    if (
+                        props.filter === TaskListFilter.WEEKLY &&
+                        !TaskUtil.isTaskDueThisWeek(task) &&
+                        !TaskUtil.isTaskDueToday(task) &&
+                        !TaskUtil.isTaskDueTomorrow(task) &&
+                        !TaskUtil.isTaskOverDue(task)
+                    ) {
+                        // Skip tasks that aren't due this week, if the filter is applied.
+                        return;
+                    }
+
+                    if (props.filter === TaskListFilter.WEEKEND && !TaskUtil.isTaskDueThisWeekend(task)) {
+                        // Skip tasks that aren't due this weekend, if the filter is applied.
+                        return;
+                    }
+                }
+
+                if (!task.completed) {
+                    rows.push({
+                        rowData: [
+                            <span>
+                                {task.title} {TaskUtil.generateShardsForTask(task)}
+                            </span>,
+                            new Date(task.due).toDateString(),
+                            <TaskControls targetTask={task} />,
+                        ],
+                    });
+                }
+            });
+        }
+
+        const sortedRows = rows.sort((row1, row2) => {
+            const row1Date = row1.rowData.at(1);
+            const row2Date = row2.rowData.at(1);
+
+            if (row1Date === "Invalid Date") {
+                return 1;
+            }
+
+            if (row2Date === "Invalid Date") {
+                return 1;
+            }
+
+            return new Date(row1Date as string).getTime() > new Date(row2Date as string).getTime() ? 1 : -1;
+        });
+
+        return sortedRows;
+    };
 
     const deleteList = (): void => {
         setLoading(true);
@@ -88,12 +154,8 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
         );
     };
 
-    // If the task list map has changed, then regenerate these lists.
-    useEffect(() => {
-        // FIXME could be !forceRefresh here
-        // Slight delay to allow the atom to load.
-        setTimeout(() => setActiveTasks(getActiveTasks()), 1500);
-    }, [forceRefresh]);
+    const taskRows = getTasksAsRows();
+    const usePluralPhrasing = (): boolean => taskRows && (taskRows?.length === 0 || taskRows?.length > 1);
 
     return (
         <Card shadow="sm" p="lg" radius="md" withBorder className="task-list">
