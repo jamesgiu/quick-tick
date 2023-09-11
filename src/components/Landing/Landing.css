@@ -22,6 +22,12 @@
   backdrop-filter: invert(20%);
   color: white;
   height: 90vh;
+  transition-property: backdrop-filter;
+  transition-duration: 0.2s;
+}
+
+.landing .landing-inner:hover {
+  backdrop-filter: invert(20%) blur(5px);
 }
 
 .landing .quote {

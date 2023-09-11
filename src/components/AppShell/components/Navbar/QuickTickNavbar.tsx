@@ -197,7 +197,7 @@ export default function QuickTickNavbar(): JSX.Element {
                     className={!collapsed ? "collapse-button" : "expand-button"}
                 />
                 <Collapse in={!collapsed}>
-                    <Navbar width={{ sm: !collapsed ? 250 : 0 }} p="xs">
+                    <Navbar width={{ sm: !collapsed ? 260 : 0 }} p="xs">
                         <Navbar.Section>{getNavbarLinks(false, taskNumbers, taskListsMap)}</Navbar.Section>
                     </Navbar>
                 </Collapse>
