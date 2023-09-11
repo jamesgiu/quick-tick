@@ -55,7 +55,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
 
         const newTasksMap = new Map<string, TaskListIdTitle>();
 
-        newTasksMap.forEach((taskListId, stringOfTask) => {
+        tasksMap.forEach((taskListId, stringOfTask) => {
             const task: Task = JSON.parse(stringOfTask);
 
             if (task.id !== props.targetTask.id) {
