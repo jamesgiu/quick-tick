@@ -3,13 +3,12 @@ import { showNotification } from "@mantine/notifications";
 import {
     IconCircleCheck,
     IconCircleDashed,
-    IconGhost,
     IconMoodSmileBeam,
     IconPencil,
     IconTrash,
     IconTrashX,
 } from "@tabler/icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";

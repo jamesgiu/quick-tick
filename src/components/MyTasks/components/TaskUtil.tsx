@@ -9,9 +9,6 @@ import {
     IconUrgent,
 } from "@tabler/icons";
 import { Task } from "../../../api/Types";
-import { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
-import TaskControls from "./TaskControls";
-import { TaskListFilter } from "./TaskListCard";
 import "./TaskListCard.css";
 
 // TODO
@@ -87,7 +84,6 @@ export class TaskUtil {
     };
 
     public static isTaskDueThisWeekend = (task: Task): boolean => {
-        const now = new Date(Date.now());
         const taskDueDate = new Date(task.due);
 
         // 0 is Sunday, 6 is Saturday.

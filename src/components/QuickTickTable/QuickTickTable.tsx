@@ -1,7 +1,5 @@
 import { Table } from "@mantine/core";
 import "./QuickTickTable.css";
-import { useRecoilState } from "recoil";
-import { forceRefreshAtom } from "../../recoil/Atoms";
 
 export interface QuickTickTableRow {
     rowData: (string | JSX.Element)[];

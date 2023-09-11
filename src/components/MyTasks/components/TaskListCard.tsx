@@ -1,7 +1,6 @@
 import { Badge, Button, Card, Collapse, Group, Popover, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconChevronDown, IconChevronRight, IconTrash, IconTrashX } from "@tabler/icons";
-import { useEffect, useState } from "react";
 import { Layout } from "react-grid-layout";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
