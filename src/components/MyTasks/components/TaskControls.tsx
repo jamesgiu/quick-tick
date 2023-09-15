@@ -1,13 +1,6 @@
 import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import {
-    IconCircleCheck,
-    IconCircleDashed,
-    IconMoodSmileBeam,
-    IconPencil,
-    IconTrash,
-    IconTrashX,
-} from "@tabler/icons";
+import { IconCircleCheck, IconCircleDashed, IconMoodSmileBeam, IconPencil, IconTrash, IconTrashX } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
