@@ -17,6 +17,11 @@
   width: 100%;
 }
 
+.navbar-link-stack {
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
 .navbar-link-stack .nav-accordion .mantine-Accordion-control:hover {
   background-color: unset;
 }

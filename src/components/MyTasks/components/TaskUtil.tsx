@@ -9,9 +9,6 @@ import {
     IconUrgent,
 } from "@tabler/icons";
 import { Task } from "../../../api/Types";
-import { QuickTickTableRow } from "../../QuickTickTable/QuickTickTable";
-import TaskControls from "./TaskControls";
-import { TaskListFilter } from "./TaskListCard";
 import "./TaskListCard.css";
 
 // TODO
@@ -87,7 +84,6 @@ export class TaskUtil {
     };
 
     public static isTaskDueThisWeekend = (task: Task): boolean => {
-        const now = new Date(Date.now());
         const taskDueDate = new Date(task.due);
 
         // 0 is Sunday, 6 is Saturday.
@@ -170,73 +166,5 @@ export class TaskUtil {
         }
 
         return <></>;
-    };
-
-    public static getTasksAsRows = (tasks: Task[], filter?: TaskListFilter): QuickTickTableRow[] => {
-        const rows: QuickTickTableRow[] = [];
-        if (tasks?.length ?? 0 > 0) {
-            tasks!.forEach((task) => {
-                if (filter) {
-                    if (filter === TaskListFilter.OVERDUE && !TaskUtil.isTaskOverDue(task)) {
-                        // Skip tasks that aren't overdue.
-                        return;
-                    }
-
-                    if (
-                        filter === TaskListFilter.TODAY &&
-                        !TaskUtil.isTaskDueToday(task) &&
-                        !TaskUtil.isTaskOverDue(task)
-                    ) {
-                        // Skip tasks that aren't due today, if the filter is applied.
-                        return;
-                    }
-
-                    if (
-                        filter === TaskListFilter.WEEKLY &&
-                        !TaskUtil.isTaskDueThisWeek(task) &&
-                        !TaskUtil.isTaskDueToday(task) &&
-                        !TaskUtil.isTaskDueTomorrow(task) &&
-                        !TaskUtil.isTaskOverDue(task)
-                    ) {
-                        // Skip tasks that aren't due this week, if the filter is applied.
-                        return;
-                    }
-
-                    if (filter === TaskListFilter.WEEKEND && !TaskUtil.isTaskDueThisWeekend(task)) {
-                        // Skip tasks that aren't due this weekend, if the filter is applied.
-                        return;
-                    }
-                }
-
-                if (!task.completed) {
-                    rows.push({
-                        rowData: [
-                            <span>
-                                {task.title} {TaskUtil.generateShardsForTask(task)}
-                            </span>,
-                            new Date(task.due).toDateString(),
-                            <TaskControls targetTask={task} />,
-                        ],
-                    });
-                }
-            });
-        }
-
-        const sortedRows = rows.sort((row1, row2) => {
-            const row1Date = row1.rowData.at(1);
-            const row2Date = row2.rowData.at(1);
-
-            if (row1Date === "Invalid Date") {
-                return 1;
-            }
-
-            if (row2Date === "Invalid Date") {
-                return 1;
-            }
-
-            return new Date(row1Date as string).getTime() > new Date(row2Date as string).getTime() ? 1 : -1;
-        });
-
-        return sortedRows;
     };
 }

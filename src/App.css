@@ -6,3 +6,7 @@
 html {
   background-color: #141517;
 }
+
+.mantine-Badge-root {
+  box-shadow: rgba(0, 0, 0, 0.15) 0 2px 8px;
+}

@@ -39,36 +39,6 @@ const SVG_WAVE_BOTTOM = (
 );
 
 export default function Home(): JSX.Element {
-    const userInfo = useRecoilValue(userInfoAtom);
-    const taskListMap = useRecoilValue(taskListsMapAtom);
-    const taskNumbers = useRecoilValue(taskNumbersAtom);
-
-    const [inspirationalQuote, setInspirationalQuote] = useState<{ text: string; author: string }>();
-
-    useEffect(() => {
-        setInspirationalQuote(Quote.getQuote());
-    }, []);
-
-    function getCompletedTasksToday(): number {
-        const now = new Date(Date.now());
-        const nowWeek = TaskUtil.getWeek(now);
-
-        const completedTasksToday = [];
-        taskListMap.forEach((tasks) => {
-            const completedTasks = tasks.filter((task) => {
-                const taskCompletionDate = new Date(task.completed);
-                const wasTaskCompletedThisWeek = TaskUtil.getWeek(taskCompletionDate) === nowWeek;
-                return wasTaskCompletedThisWeek && now.getDay() === taskCompletionDate.getDay();
-            });
-
-            completedTasksToday.push(...completedTasks);
-        });
-
-        return completedTasksToday.length;
-    }
-
-    const completedTasksToday = getCompletedTasksToday();
-
     return (
         <div className={"home"}>
             <Center>
