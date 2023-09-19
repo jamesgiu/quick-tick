@@ -1,6 +1,6 @@
 import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { IconCircleCheck, IconCircleDashed, IconMoodSmileBeam, IconPencil, IconTrash, IconTrashX } from "@tabler/icons";
+import { IconCircleCheck, IconCircleDashed, IconFlag, IconFlagOff, IconMoodSmileBeam, IconPencil, IconTrash, IconTrashX } from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
@@ -11,15 +11,17 @@ import TaskForm from "../../Tasks/TaskForm/TaskForm";
 
 // TODO
 
-// flag button (edit notes to store extra detail on a task)
 // automatic emoji/icon assignment, can change it too
 
 interface TaskControlsProps {
     targetTask: Task;
 }
 
+// Will appear in the 'notes' section of a task, to extend functionality.
+const QT_FLAGGED_STR = "QT_Flagged"
+
 export default function TaskControls(props: TaskControlsProps): JSX.Element {
-    const setForceRefresh = useSetRecoilState<boolean>(forceRefreshAtom);
+    const [isFlagged, setIsFlagged] = useState<boolean>(props.targetTask.notes === QT_FLAGGED_STR);
     const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
     const [tasksMap, setTasksMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
     const credential = useRecoilValue(credentialAtom);
@@ -90,6 +92,47 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
         );
     };
 
+    const flagTask = (): void => {
+        setLoading(true);
+        const flaggedTask = {...props.targetTask};
+
+        if (!isFlagged) {
+            flaggedTask.notes = QT_FLAGGED_STR;
+        } else {
+            flaggedTask.notes = QT_FLAGGED_STR;
+        }
+
+        GoogleAPI.updateTask(
+            credential,
+            tasksMap.get(JSON.stringify(props.targetTask))!.id,
+            flaggedTask,
+            (): void => {
+                if (!isFlagged) {
+                    showNotification({
+                        title: "Task flagged.",
+                        message: "It's in their court now",
+                        color: "orange",
+                        icon: <IconFlag />,
+                    });
+                    setIsFlagged(true)
+                } else {
+                    showNotification({
+                        title: "Task unflagged.",
+                        message: "You're unblocked! Go and get 'em",
+                        color: "yellow",
+                        icon: <IconFlagOff />,
+                    });
+                    setIsFlagged(false)
+                }
+                setLoading(false);
+            },
+            (): void => {
+                showNotification(genErrorNotificationProps("Task flag"));
+                setLoading(false);
+            }
+        );
+    };
+
     const deleteTask = (): void => {
         setLoading(true);
         const deletedTask = { ...props.targetTask, deleted: true };
@@ -115,16 +158,24 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
 
     // The default view, all actions available.
     return (
-        <Group className={"task-controls"}>
+        <Group className={isFlagged ? "task-controls flagged" : "task-controls"}>
             <Tooltip label={`Complete task ${props.targetTask.title}`}>
                 <ActionIcon
-                    color={"#a5d8ff"}
+                    color={"green"}
                     onMouseOver={(): void => setIsHoveringOverComplete(true)}
                     onMouseOut={(): void => setIsHoveringOverComplete(false)}
                     onMouseLeave={(): void => setIsHoveringOverComplete(false)}
                     onClick={(): void => completeTask()}
                 >
                     {isHoveringOverComplete ? <IconCircleCheck /> : <IconCircleDashed />}
+                </ActionIcon>
+            </Tooltip>
+            <Tooltip label={`Flag task ${props.targetTask.title}`}>
+                <ActionIcon
+                    color={"orange"}
+                    onClick={(): void => flagTask()}
+                >
+                 {!isFlagged ? <IconFlag /> : <IconFlagOff/>}
                 </ActionIcon>
             </Tooltip>
             <ActionIcon color={"#a5d8ff"}>
@@ -137,7 +188,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             <Popover width={200} position="bottom" withArrow shadow="md">
                 <Popover.Target>
                     <ActionIcon
-                        color={"#a5d8ff"}
+                        color={"gray"}
                         onMouseOver={(): void => setIsHoveringOverTrash(true)}
                         onMouseOut={(): void => setIsHoveringOverTrash(false)}
                         onMouseLeave={(): void => setIsHoveringOverTrash(false)}

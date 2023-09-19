@@ -138,7 +138,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
         return (
             <Popover width={200} position="bottom" withArrow shadow="md">
                 <Popover.Target>
-                    <Button variant="subtle" leftIcon={<IconTrash />} size="sm">
+                    <Button variant="subtle" color="gray" leftIcon={<IconTrash />} size="sm">
                         {" "}
                         Delete{" "}
                     </Button>
