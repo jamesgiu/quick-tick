@@ -1,6 +1,15 @@
 import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
-import { IconCircleCheck, IconCircleDashed, IconFlag, IconFlagOff, IconMoodSmileBeam, IconPencil, IconTrash, IconTrashX } from "@tabler/icons";
+import {
+    IconCircleCheck,
+    IconCircleDashed,
+    IconFlag,
+    IconFlagOff,
+    IconMoodSmileBeam,
+    IconPencil,
+    IconTrash,
+    IconTrashX,
+} from "@tabler/icons";
 import { useState } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
@@ -18,7 +27,7 @@ interface TaskControlsProps {
 }
 
 // Will appear in the 'notes' section of a task, to extend functionality.
-const QT_FLAGGED_STR = "QT_Flagged"
+const QT_FLAGGED_STR = "QT_Flagged";
 
 export default function TaskControls(props: TaskControlsProps): JSX.Element {
     const [isFlagged, setIsFlagged] = useState<boolean>(props.targetTask.notes === QT_FLAGGED_STR);
@@ -94,7 +103,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
 
     const flagTask = (): void => {
         setLoading(true);
-        const flaggedTask = {...props.targetTask};
+        const flaggedTask = { ...props.targetTask };
 
         if (!isFlagged) {
             flaggedTask.notes = QT_FLAGGED_STR;
@@ -114,7 +123,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                         color: "orange",
                         icon: <IconFlag />,
                     });
-                    setIsFlagged(true)
+                    setIsFlagged(true);
                 } else {
                     showNotification({
                         title: "Task unflagged.",
@@ -122,7 +131,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                         color: "yellow",
                         icon: <IconFlagOff />,
                     });
-                    setIsFlagged(false)
+                    setIsFlagged(false);
                 }
                 setLoading(false);
             },
@@ -171,11 +180,8 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                 </ActionIcon>
             </Tooltip>
             <Tooltip label={`Flag task ${props.targetTask.title}`}>
-                <ActionIcon
-                    color={"orange"}
-                    onClick={(): void => flagTask()}
-                >
-                 {!isFlagged ? <IconFlag /> : <IconFlagOff/>}
+                <ActionIcon color={"orange"} onClick={(): void => flagTask()}>
+                    {!isFlagged ? <IconFlag /> : <IconFlagOff />}
                 </ActionIcon>
             </Tooltip>
             <ActionIcon color={"#a5d8ff"}>
