@@ -8,14 +8,8 @@ import {
     IconLogout,
     IconWreckingBall,
 } from "@tabler/icons";
-import Quote from "inspirational-quotes";
-import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { taskListsMapAtom, taskNumbersAtom, userInfoAtom } from "../../recoil/Atoms";
 import { LOGO } from "../AppShell/components/Header/QuickTickHeader";
-import { TaskUtil } from "../MyTasks/components/TaskUtil";
 import "./Home.css";
-import { Pipeline, PipelineIcons, PipelineIntent, PipelineSize } from "quick-cyc";
 
 const SVG_WAVE = (
     <svg viewBox="0 -30 500 80" width="100%" height="50" preserveAspectRatio="none" className={"svg-wave"}>
