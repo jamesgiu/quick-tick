@@ -8,12 +8,7 @@ import {
     IconLogout,
     IconWreckingBall,
 } from "@tabler/icons";
-import Quote from "inspirational-quotes";
-import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
-import { taskListsMapAtom, taskNumbersAtom, userInfoAtom } from "../../recoil/Atoms";
 import { LOGO } from "../AppShell/components/Header/QuickTickHeader";
-import { TaskUtil } from "../MyTasks/components/TaskUtil";
 import "./Home.css";
 
 const SVG_WAVE = (

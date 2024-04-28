@@ -1,4 +1,4 @@
-import { MantineProvider } from "@mantine/core";
+import { MantineProvider, createEmotionCache } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet"></link>
         <RecoilRoot>
             <GoogleOAuthProvider clientId={import.meta.env.VITE_GC_CLIENT_ID}>
-                <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme: "dark" }}>
+                <MantineProvider withNormalizeCSS theme={{ colorScheme: "dark" }}>
                     <NotificationsProvider limit={3}>
                         <RouterProvider router={router} />
                     </NotificationsProvider>
