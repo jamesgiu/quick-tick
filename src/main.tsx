@@ -16,9 +16,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <link href="https://fonts.googleapis.com/css?family=Satisfy" rel="stylesheet"></link>
         <RecoilRoot>
             <GoogleOAuthProvider clientId={import.meta.env.VITE_GC_CLIENT_ID}>
-                <MantineProvider 
-                withNormalizeCSS 
-                theme={{ colorScheme: "dark" }}>
+                <MantineProvider withNormalizeCSS theme={{ colorScheme: "dark" }}>
                     <NotificationsProvider limit={3}>
                         <RouterProvider router={router} />
                     </NotificationsProvider>

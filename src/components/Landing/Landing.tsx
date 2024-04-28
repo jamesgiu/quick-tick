@@ -24,7 +24,7 @@ export default function Landing(): JSX.Element {
     const [bgImage, setBgImage] = useState<string>();
 
     const [inspirationalQuote, setInspirationalQuote] = useState<{ text: string; author: string }>();
-    
+
     function getPipelineView(): JSX.Element {
         const tasksDueToday = taskNumbers.dueToday;
         const tasksCompletedToday = getCompletedTasksToday();
@@ -33,49 +33,76 @@ export default function Landing(): JSX.Element {
 
         const overdueTasks = taskNumbers.overdue;
         const completedOverdueTasksToday = getCompletedOverdueTasksToday();
-        
 
-        return  <Pipeline
-        label="Pipeline"
-        schema={[
-          {
-            active: overdueTasks > 0,
-            attempts: overdueTasks,
-            icon: PipelineIcons.IconExclamationMark,
-            intent: completedOverdueTasksToday === overdueTasks ? PipelineIntent.SUCCESS : overdueTasks === 0 ? PipelineIntent.NONE : PipelineIntent.FAILURE,
-            size: PipelineSize.L,
-            percentComplete: (completedOverdueTasksToday / overdueTasks) * 100,
-            className: "overdueTasksNode"
-          },
-          {
-            active: overdueTasks > 0,
-            intent: completedOverdueTasksToday === overdueTasks ? PipelineIntent.SUCCESS : overdueTasks === 0 ? PipelineIntent.NONE : PipelineIntent.FAILURE,
-            size: PipelineSize.M
-          },
-          {
-           active: tasksDueToday > 0,
-           attempts: tasksDueToday,
-           icon: PipelineIcons.IconCalendarBolt,
-           intent: tasksCompletedToday === tasksDueToday ? PipelineIntent.SUCCESS : tasksDueToday === 0 ? PipelineIntent.NONE : PipelineIntent.WARNING,
-           size: PipelineSize.L,
-           percentComplete: (tasksCompletedToday / tasksDueToday) * 100,
-           className: "todayTasksNode"
-         },
-         {
-            active: tasksDueToday > 0,
-            intent: tasksCompletedToday === tasksDueToday ? PipelineIntent.SUCCESS : tasksDueToday === 0 ? PipelineIntent.NONE : PipelineIntent.IN_PROGRESS,
-            size: PipelineSize.M
-          },
-          {
-           active: tasksDueThisWeek > 0,
-           attempts: tasksDueThisWeek,
-           icon: PipelineIcons.IconClock,
-           intent: tasksCompletedThisWeek === tasksDueThisWeek ? PipelineIntent.SUCCESS : tasksDueThisWeek === 0 ? PipelineIntent.NONE : PipelineIntent.IN_PROGRESS,
-           size: PipelineSize.L,
-           percentComplete: (tasksCompletedThisWeek / tasksDueThisWeek) * 100,
-           className: "weekTasksNode"
-         }]}
-       />
+        return (
+            <Pipeline
+                label="Pipeline"
+                schema={[
+                    {
+                        active: overdueTasks > 0,
+                        attempts: overdueTasks,
+                        icon: PipelineIcons.IconExclamationMark,
+                        intent:
+                            completedOverdueTasksToday === overdueTasks
+                                ? PipelineIntent.SUCCESS
+                                : overdueTasks === 0
+                                ? PipelineIntent.NONE
+                                : PipelineIntent.FAILURE,
+                        size: PipelineSize.L,
+                        percentComplete: (completedOverdueTasksToday / overdueTasks) * 100,
+                        className: "overdueTasksNode",
+                    },
+                    {
+                        active: overdueTasks > 0,
+                        intent:
+                            completedOverdueTasksToday === overdueTasks
+                                ? PipelineIntent.SUCCESS
+                                : overdueTasks === 0
+                                ? PipelineIntent.NONE
+                                : PipelineIntent.FAILURE,
+                        size: PipelineSize.M,
+                    },
+                    {
+                        active: tasksDueToday > 0,
+                        attempts: tasksDueToday,
+                        icon: PipelineIcons.IconCalendarBolt,
+                        intent:
+                            tasksCompletedToday === tasksDueToday
+                                ? PipelineIntent.SUCCESS
+                                : tasksDueToday === 0
+                                ? PipelineIntent.NONE
+                                : PipelineIntent.WARNING,
+                        size: PipelineSize.L,
+                        percentComplete: (tasksCompletedToday / tasksDueToday) * 100,
+                        className: "todayTasksNode",
+                    },
+                    {
+                        active: tasksDueToday > 0,
+                        intent:
+                            tasksCompletedToday === tasksDueToday
+                                ? PipelineIntent.SUCCESS
+                                : tasksDueToday === 0
+                                ? PipelineIntent.NONE
+                                : PipelineIntent.IN_PROGRESS,
+                        size: PipelineSize.M,
+                    },
+                    {
+                        active: tasksDueThisWeek > 0,
+                        attempts: tasksDueThisWeek,
+                        icon: PipelineIcons.IconClock,
+                        intent:
+                            tasksCompletedThisWeek === tasksDueThisWeek
+                                ? PipelineIntent.SUCCESS
+                                : tasksDueThisWeek === 0
+                                ? PipelineIntent.NONE
+                                : PipelineIntent.IN_PROGRESS,
+                        size: PipelineSize.L,
+                        percentComplete: (tasksCompletedThisWeek / tasksDueThisWeek) * 100,
+                        className: "weekTasksNode",
+                    },
+                ]}
+            />
+        );
     }
 
     const getDateStr = (): string => {
@@ -141,7 +168,11 @@ export default function Landing(): JSX.Element {
             const completedTasks = tasks.filter((task) => {
                 const taskCompletionDate = new Date(task.completed);
                 const wasTaskCompletedThisWeek = TaskUtil.getWeek(taskCompletionDate) === nowWeek;
-                return wasTaskCompletedThisWeek && now.getDay() === taskCompletionDate.getDay() && new Date(task.due).getTime() < new Date(task.completed).getTime();
+                return (
+                    wasTaskCompletedThisWeek &&
+                    now.getDay() === taskCompletionDate.getDay() &&
+                    new Date(task.due).getTime() < new Date(task.completed).getTime()
+                );
             });
 
             completedTasksToday.push(...completedTasks);
@@ -181,9 +212,7 @@ export default function Landing(): JSX.Element {
                         <Title className={"clock"}>{time}</Title>
                         <Title className={"welcome"} order={3}>
                             G'day, {userInfo.given_name}
-                            <div className="pipeline">
-                                {getPipelineView()}
-                            </div>
+                            <div className="pipeline">{getPipelineView()}</div>
                         </Title>
                         <div className="quote">
                             <Blockquote cite={inspirationalQuote.author}>{inspirationalQuote.text}</Blockquote>
