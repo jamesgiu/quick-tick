@@ -62,8 +62,9 @@ The guidelines are as follows:
 Retrieved from https://console.cloud.google.com/apis/credentials
 
 ## Screenshots
+![image](https://github.com/jamesgiu/quick-tick/assets/13777223/fdf9ac73-d6d8-4aa6-9d88-5fcec051989b)
+![image](https://github.com/jamesgiu/quick-tick/assets/13777223/b26333a5-cc4a-48ea-99af-b9038d52e9cb)
 ![image](https://user-images.githubusercontent.com/13777223/213909303-c43b6d0f-b5de-4f54-876d-b34cb91f14fd.png)
 ![image](https://user-images.githubusercontent.com/13777223/213909368-c4fc3d8a-5608-4b67-ab30-6ff79b833469.png)
 ![image](https://user-images.githubusercontent.com/13777223/213909486-2da0258f-a7d6-493b-b82d-ddbd27705b52.png)
 ![image](https://user-images.githubusercontent.com/13777223/213909490-a54300b9-011b-4a0f-9720-46ae5891606c.png)
-![image](https://user-images.githubusercontent.com/13777223/213909524-361c063d-a0b4-4806-808f-2afcb7c76081.png)
