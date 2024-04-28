@@ -15,6 +15,7 @@ import { taskListsMapAtom, taskNumbersAtom, userInfoAtom } from "../../recoil/At
 import { LOGO } from "../AppShell/components/Header/QuickTickHeader";
 import { TaskUtil } from "../MyTasks/components/TaskUtil";
 import "./Home.css";
+import { Pipeline, PipelineIcons, PipelineIntent, PipelineSize } from "quick-cyc";
 
 const SVG_WAVE = (
     <svg viewBox="0 -30 500 80" width="100%" height="50" preserveAspectRatio="none" className={"svg-wave"}>
