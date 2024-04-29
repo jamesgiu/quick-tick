@@ -8,7 +8,6 @@ import { TaskUtil } from "../MyTasks/components/TaskUtil";
 import "./Landing.css";
 import { MOTIVATIONAL_IMAGES } from "./images";
 import { Pipeline, PipelineIcons, PipelineIntent, PipelineSize } from "quick-cyc";
-import { AbortedDeferredError } from "react-router";
 
 export function getRandomInt(min: number, max: number): number {
     min = Math.ceil(min);
@@ -48,9 +47,10 @@ export default function Landing(): JSX.Element {
                                 : overdueTasks === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.FAILURE,
-                        size: PipelineSize.L,
+                        size: PipelineSize.M,
                         percentComplete: (completedOverdueTasksToday / overdueTasks) * 100,
                         className: "overdueTasksNode",
+                        outerLabel: "Overdue",
                     },
                     {
                         active: overdueTasks > 0,
@@ -60,7 +60,7 @@ export default function Landing(): JSX.Element {
                                 : overdueTasks === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.FAILURE,
-                        size: PipelineSize.M,
+                        size: PipelineSize.S,
                     },
                     {
                         active: tasksDueToday > 0,
@@ -72,9 +72,10 @@ export default function Landing(): JSX.Element {
                                 : tasksDueToday === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.WARNING,
-                        size: PipelineSize.L,
+                        size: PipelineSize.M,
                         percentComplete: (tasksCompletedToday / tasksDueToday) * 100,
                         className: "todayTasksNode",
+                        outerLabel: "Today",
                     },
                     {
                         active: tasksDueToday > 0,
@@ -84,21 +85,22 @@ export default function Landing(): JSX.Element {
                                 : tasksDueToday === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.IN_PROGRESS,
-                        size: PipelineSize.M,
+                        size: PipelineSize.S,
                     },
                     {
                         active: tasksDueThisWeek > 0,
                         attempts: tasksDueThisWeek,
-                        icon: PipelineIcons.IconClock,
+                        icon: PipelineIcons.IconCalendarDue,
                         intent:
                             tasksCompletedThisWeek === tasksDueThisWeek
                                 ? PipelineIntent.SUCCESS
                                 : tasksDueThisWeek === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.IN_PROGRESS,
-                        size: PipelineSize.L,
+                        size: PipelineSize.M,
                         percentComplete: (tasksCompletedThisWeek / tasksDueThisWeek) * 100,
                         className: "weekTasksNode",
+                        outerLabel: "Week",
                     },
                 ]}
             />

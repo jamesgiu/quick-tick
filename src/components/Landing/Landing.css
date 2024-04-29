@@ -67,29 +67,14 @@
   padding-top: 200px;
 }
 
-.pipeline .overdueTasksNode::after {
-  content: "Overdue";
-  position: absolute;
-  bottom: 8px;
-  left: 1px;
-  right: 1px;
+.pipeline .overdueTasksNode {
   font-size: 1.3rem;
 }
 
-.pipeline .todayTasksNode::after {
-  content: "Today";
-  position: absolute;
-  bottom: 8px;
-  left: 1px;
-  right: 1px;
+.pipeline .todayTasksNode {
   font-size: 1.3rem;
 }
 
-.pipeline .weekTasksNode::after {
-  content: "Week";
-  position: absolute;
-  bottom: 8px;
-  left: 1px;
-  right: 1px;
+.pipeline .weekTasksNode {
   font-size: 1.3rem;
 }
