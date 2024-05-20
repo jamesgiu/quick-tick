@@ -3,10 +3,10 @@ import { showNotification } from "@mantine/notifications";
 import { useGoogleLogin } from "@react-oauth/google";
 import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
 import { QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse } from "../../../../api/Types";
-import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
+import { credentialAtom, forceRefreshAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import "./QuickTickAuth.css";
 
 const errorNotification = {
@@ -19,6 +19,7 @@ const errorNotification = {
 export default function QuickTickAuth(): JSX.Element {
     const resetCredentials = useResetRecoilState(credentialAtom);
     const resetUserState = useResetRecoilState(userInfoAtom);
+    const setForceRefresh = useSetRecoilState(forceRefreshAtom);
     const [credential, setCredential] = useRecoilState<QuickTickCredential>(credentialAtom);
     const [userInfo, setUserInfo] = useRecoilState<UserInfoResponse>(userInfoAtom);
 
@@ -35,7 +36,7 @@ export default function QuickTickAuth(): JSX.Element {
     };
 
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse): void => {
-        const expiryDateEpoch = Date.now() + response.expires_in * 1000;
+        const expiryDateEpoch = Date.now() + (response.expires_in * 1000);
         // Setting the credential with a date for when the access token expires.
         setCredential({
             ...response,
@@ -55,7 +56,7 @@ export default function QuickTickAuth(): JSX.Element {
             setCredential({
                 ...credential,
                 access_token: implicitResponse.access_token,
-                accessTokenExpiryEpoch: Date.now() + implicitResponse.expires_in * 1000,
+                accessTokenExpiryEpoch: Date.now() + (implicitResponse.expires_in * 1000),
                 expires_in: implicitResponse.expires_in,
             });
         },
@@ -93,7 +94,7 @@ export default function QuickTickAuth(): JSX.Element {
     useEffect((): void => {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
         // May not be required with the onload autologin.
-        if (credential && credential.refresh_token) {
+        if (credential && credential.refresh_token && Date.now() < credential.refreshTokenExpiryEpoch) {
             GoogleAPI.refreshToken(
                 credential,
                 (response) => {
@@ -115,15 +116,24 @@ export default function QuickTickAuth(): JSX.Element {
                         },
                         () => showNotification(errorNotification)
                     ),
-                credential.expires_in * 1000 - TWO_MINUTES_MS
+                (credential.expires_in * 1000) - TWO_MINUTES_MS
             );
         }
+
+        // Autologin if user info present.
+        if (credential) {
+            if (userInfo && userInfo.email) {
+                setTimeout(() => autoLogin(), 1500);
+            }
+        }
+
     }, []);
 
     // When the credential changes, get the user info again.
     useEffect((): void => {
         if (!userInfo && credential && credential.access_token) {
             getUserInfo();
+            setForceRefresh(true);
         }
     }, [credential]);
 
@@ -144,15 +154,6 @@ export default function QuickTickAuth(): JSX.Element {
             );
         }
     };
-
-    // Force logout if credential expired or autologin if user info present.
-    if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
-        if (userInfo && userInfo.email) {
-            setTimeout(() => autoLogin(), 1500);
-        } else {
-            logout();
-        }
-    }
 
     return (
         <div className={"quick-tick-auth"}>
