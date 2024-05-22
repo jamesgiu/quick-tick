@@ -59,6 +59,7 @@ export default function QuickTickAuth(): JSX.Element {
                 accessTokenExpiryEpoch: Date.now() + (implicitResponse.expires_in * 1000),
                 expires_in: implicitResponse.expires_in,
             });
+            setForceRefresh(true);
         },
         onError: (): void => {
             showNotification(errorNotification);
@@ -95,6 +96,7 @@ export default function QuickTickAuth(): JSX.Element {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
         // May not be required with the onload autologin.
         if (credential && credential.refresh_token && Date.now() < credential.refreshTokenExpiryEpoch) {
+            console.log(credential);
             GoogleAPI.refreshToken(
                 credential,
                 (response) => {
@@ -102,6 +104,13 @@ export default function QuickTickAuth(): JSX.Element {
                 },
                 () => showNotification(errorNotification)
             );
+        } else {
+        // Autologin if user info present.
+            if (credential) {
+                if (userInfo && userInfo.email) {
+                    setTimeout(() => autoLogin(), 1500);
+                }
+            }
         }
 
         // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
@@ -119,14 +128,6 @@ export default function QuickTickAuth(): JSX.Element {
                 (credential.expires_in * 1000) - TWO_MINUTES_MS
             );
         }
-
-        // Autologin if user info present.
-        if (credential) {
-            if (userInfo && userInfo.email) {
-                setTimeout(() => autoLogin(), 1500);
-            }
-        }
-
     }, []);
 
     // When the credential changes, get the user info again.
