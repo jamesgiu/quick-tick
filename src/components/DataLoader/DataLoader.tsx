@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Text } from "@mantine/core";
 import { NotificationProps, showNotification } from "@mantine/notifications";
 import { IconBug, IconRefresh, IconRefreshAlert } from "@tabler/icons";
 import { useEffect, useState } from "react";
@@ -140,7 +140,7 @@ function DataLoader(): JSX.Element {
             getTasks();
             setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
         }
-    }, [credential]);
+    }, []);
 
     useEffect(() => {
         if (credential) {

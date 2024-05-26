@@ -62,9 +62,16 @@
 }
 
 .pipeline {
-  margin: auto;
-  width: 35%;
+  display: block;
   padding-top: 200px;
+  position: relative;
+  margin: auto;
+  width: 60vw;
+}
+
+.pipeline .qc-pipeline {
+  margin: auto;
+  width: 500px;
 }
 
 .pipeline .overdueTasksNode {
