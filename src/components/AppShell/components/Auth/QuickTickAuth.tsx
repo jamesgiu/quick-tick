@@ -1,7 +1,7 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useGoogleLogin } from "@react-oauth/google";
-import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
+import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconMoodSmileBeam, IconUserX } from "@tabler/icons";
 import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
@@ -96,11 +96,13 @@ export default function QuickTickAuth(): JSX.Element {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
         // May not be required with the onload autologin.
         if (credential && credential.refresh_token && Date.now() < credential.refreshTokenExpiryEpoch) {
-            console.log(credential);
             GoogleAPI.refreshToken(
                 credential,
                 (response) => {
+                    showNotification({title: "Good to see you!", message: "Welcome back " + userInfo.given_name + "! 👋",  color: "green",
+                    icon: <IconMoodSmileBeam />})
                     generateExpirationTimeAndSetCredentials(response);
+                    setForceRefresh(true);
                 },
                 () => showNotification(errorNotification)
             );
@@ -108,6 +110,8 @@ export default function QuickTickAuth(): JSX.Element {
         // Autologin if user info present.
             if (credential) {
                 if (userInfo && userInfo.email) {
+                    showNotification({message: "Auto-logging in via pop-up...", title: "Welcome back " + userInfo.given_name + "! 👋",  color: "blue",
+                    icon: <IconMoodSmileBeam />})
                     setTimeout(() => autoLogin(), 1500);
                 }
             }
@@ -121,6 +125,8 @@ export default function QuickTickAuth(): JSX.Element {
                     GoogleAPI.refreshToken(
                         credential,
                         (response) => {
+                            showNotification({message: "Refreshing session...", title: "Refreshed your session, " + userInfo.given_name + "! 👍",  color: "green",
+                            icon: <IconMoodSmileBeam />})
                             generateExpirationTimeAndSetCredentials(response);
                         },
                         () => showNotification(errorNotification)

@@ -1,4 +1,4 @@
-import { ActionIcon, Group, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Text } from "@mantine/core";
 import { NotificationProps, showNotification } from "@mantine/notifications";
 import { IconBug, IconRefresh, IconRefreshAlert } from "@tabler/icons";
 import { useEffect, useState } from "react";
