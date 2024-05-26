@@ -35,7 +35,7 @@ export default function Landing(): JSX.Element {
 
         const overdueTasks = taskNumbers.overdue;
         const completedOverdueTasksToday = getCompletedOverdueTasksToday();
-        let nodeSize = height < 1280 ? PipelineSize.XS : PipelineSize.M;
+        const nodeSize = height < 1280 ? PipelineSize.XS : PipelineSize.M;
         return (
             <Pipeline
                 label="Pipeline"
