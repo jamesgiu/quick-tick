@@ -1,7 +1,14 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useGoogleLogin } from "@react-oauth/google";
-import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconMoodSmileBeam, IconUserX } from "@tabler/icons";
+import {
+    IconBrandGoogle,
+    IconHandStop,
+    IconLogout,
+    IconMoodSmileDizzy,
+    IconMoodSmileBeam,
+    IconUserX,
+} from "@tabler/icons";
 import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
@@ -36,7 +43,7 @@ export default function QuickTickAuth(): JSX.Element {
     };
 
     const generateExpirationTimeAndSetCredentials = (response: TokenResponse): void => {
-        const expiryDateEpoch = Date.now() + (response.expires_in * 1000);
+        const expiryDateEpoch = Date.now() + response.expires_in * 1000;
         // Setting the credential with a date for when the access token expires.
         setCredential({
             ...response,
@@ -56,7 +63,7 @@ export default function QuickTickAuth(): JSX.Element {
             setCredential({
                 ...credential,
                 access_token: implicitResponse.access_token,
-                accessTokenExpiryEpoch: Date.now() + (implicitResponse.expires_in * 1000),
+                accessTokenExpiryEpoch: Date.now() + implicitResponse.expires_in * 1000,
                 expires_in: implicitResponse.expires_in,
             });
             setForceRefresh(true);
@@ -99,19 +106,27 @@ export default function QuickTickAuth(): JSX.Element {
             GoogleAPI.refreshToken(
                 credential,
                 (response) => {
-                    showNotification({title: "Good to see you!", message: "Welcome back " + userInfo.given_name + "! 👋",  color: "green",
-                    icon: <IconMoodSmileBeam />})
+                    showNotification({
+                        title: "Good to see you!",
+                        message: "Welcome back " + userInfo.given_name + "! 👋",
+                        color: "green",
+                        icon: <IconMoodSmileBeam />,
+                    });
                     generateExpirationTimeAndSetCredentials(response);
                     setForceRefresh(true);
                 },
                 () => showNotification(errorNotification)
             );
         } else {
-        // Autologin if user info present.
+            // Autologin if user info present.
             if (credential) {
                 if (userInfo && userInfo.email) {
-                    showNotification({message: "Auto-logging in via pop-up...", title: "Welcome back " + userInfo.given_name + "! 👋",  color: "blue",
-                    icon: <IconMoodSmileBeam />})
+                    showNotification({
+                        message: "Auto-logging in via pop-up...",
+                        title: "Welcome back " + userInfo.given_name + "! 👋",
+                        color: "blue",
+                        icon: <IconMoodSmileBeam />,
+                    });
                     setTimeout(() => autoLogin(), 1500);
                 }
             }
@@ -125,13 +140,17 @@ export default function QuickTickAuth(): JSX.Element {
                     GoogleAPI.refreshToken(
                         credential,
                         (response) => {
-                            showNotification({message: "Refreshing session...", title: "Refreshed your session, " + userInfo.given_name + "! 👍",  color: "green",
-                            icon: <IconMoodSmileBeam />})
+                            showNotification({
+                                message: "Refreshing session...",
+                                title: "Refreshed your session, " + userInfo.given_name + "! 👍",
+                                color: "green",
+                                icon: <IconMoodSmileBeam />,
+                            });
                             generateExpirationTimeAndSetCredentials(response);
                         },
                         () => showNotification(errorNotification)
                     ),
-                (credential.expires_in * 1000) - TWO_MINUTES_MS
+                credential.expires_in * 1000 - TWO_MINUTES_MS
             );
         }
     }, []);

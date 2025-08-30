@@ -4,12 +4,11 @@ import { TimerDay, TimerState } from "./Timecharging";
 import { timersMapAtom } from "../../recoil/Atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 
-
 interface TimerProps {
-    name: String,
-    id: String,
-    day: TimerDay,
-    onTick: (mapKey: string, seconds: number)=>void,
+    name: String;
+    id: String;
+    day: TimerDay;
+    onTick: (mapKey: string, seconds: number) => void;
 }
 
 export default function Timer(props: TimerProps): JSX.Element {
@@ -22,7 +21,7 @@ export default function Timer(props: TimerProps): JSX.Element {
         }
 
         return 0;
-    }
+    };
 
     // Store this in atom with key being name
     const [timeSecondsState, setTimeSecondsState] = useState<number>(0);
@@ -30,22 +29,24 @@ export default function Timer(props: TimerProps): JSX.Element {
 
     const handleOnChange = () => {
         setIsCounting(!isCounting);
-    }
+    };
 
     useEffect(() => {
-         setTimeSecondsState(getTimeForTimer());
-    }, [timersMap])
+        setTimeSecondsState(getTimeForTimer());
+    }, [timersMap]);
 
     useEffect(() => {
         if (isCounting) {
-            setTimeout(()=> {
-                setTimeSecondsState(timeSecondsState + 1)
-                props.onTick(`${props.id}${props.day}`, timeSecondsState + 1)
-            }, 1000)
+            setTimeout(() => {
+                setTimeSecondsState(timeSecondsState + 1);
+                props.onTick(`${props.id}${props.day}`, timeSecondsState + 1);
+            }, 1000);
         }
-    }, [isCounting, timeSecondsState])
+    }, [isCounting, timeSecondsState]);
 
     return (
-        <Chip checked={isCounting} onChange={handleOnChange}>{new Date(timeSecondsState * 1000).toISOString().slice(11, 19)} : {props.name} : </Chip>
-      );
+        <Chip checked={isCounting} onChange={handleOnChange}>
+            {new Date(timeSecondsState * 1000).toISOString().slice(11, 19)} : {props.name} :{" "}
+        </Chip>
+    );
 }

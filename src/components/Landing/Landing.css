@@ -64,24 +64,12 @@
 .pipeline {
   display: block;
   padding-top: 200px;
-  position: relative;
+  width: 400px;
   margin: auto;
-  width: 60vw;
 }
 
-.pipeline .qc-pipeline {
-  margin: auto;
-  width: 500px;
-}
-
-.pipeline .overdueTasksNode {
-  font-size: 1.3rem;
-}
-
-.pipeline .todayTasksNode {
-  font-size: 1.3rem;
-}
-
-.pipeline .weekTasksNode {
-  font-size: 1.3rem;
+.pipeline .qc-node-wrapper {
+  padding: 30px;
+  margin-left: 15px;
+  margin-right: 15px;
 }
