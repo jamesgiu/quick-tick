@@ -1,12 +1,19 @@
 import { Accordion, Avatar, Box, Button, Group, Stack, Text } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { useGoogleLogin } from "@react-oauth/google";
-import { IconBrandGoogle, IconHandStop, IconLogout, IconMoodSmileDizzy, IconUserX } from "@tabler/icons";
+import {
+    IconBrandGoogle,
+    IconHandStop,
+    IconLogout,
+    IconMoodSmileDizzy,
+    IconMoodSmileBeam,
+    IconUserX,
+} from "@tabler/icons";
 import { useEffect } from "react";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
 import { QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse } from "../../../../api/Types";
-import { credentialAtom, userInfoAtom } from "../../../../recoil/Atoms";
+import { credentialAtom, forceRefreshAtom, userInfoAtom } from "../../../../recoil/Atoms";
 import "./QuickTickAuth.css";
 
 const errorNotification = {
@@ -19,6 +26,7 @@ const errorNotification = {
 export default function QuickTickAuth(): JSX.Element {
     const resetCredentials = useResetRecoilState(credentialAtom);
     const resetUserState = useResetRecoilState(userInfoAtom);
+    const setForceRefresh = useSetRecoilState(forceRefreshAtom);
     const [credential, setCredential] = useRecoilState<QuickTickCredential>(credentialAtom);
     const [userInfo, setUserInfo] = useRecoilState<UserInfoResponse>(userInfoAtom);
 
@@ -58,6 +66,7 @@ export default function QuickTickAuth(): JSX.Element {
                 accessTokenExpiryEpoch: Date.now() + implicitResponse.expires_in * 1000,
                 expires_in: implicitResponse.expires_in,
             });
+            setForceRefresh(true);
         },
         onError: (): void => {
             showNotification(errorNotification);
@@ -93,14 +102,34 @@ export default function QuickTickAuth(): JSX.Element {
     useEffect((): void => {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
         // May not be required with the onload autologin.
-        if (credential && credential.refresh_token) {
+        if (credential && credential.refresh_token && Date.now() < credential.refreshTokenExpiryEpoch) {
             GoogleAPI.refreshToken(
                 credential,
                 (response) => {
+                    showNotification({
+                        title: "Good to see you!",
+                        message: "Welcome back " + userInfo.given_name + "! 👋",
+                        color: "green",
+                        icon: <IconMoodSmileBeam />,
+                    });
                     generateExpirationTimeAndSetCredentials(response);
+                    setForceRefresh(true);
                 },
                 () => showNotification(errorNotification)
             );
+        } else {
+            // Autologin if user info present.
+            if (credential) {
+                if (userInfo && userInfo.email) {
+                    showNotification({
+                        message: "Auto-logging in via pop-up...",
+                        title: "Welcome back " + userInfo.given_name + "! 👋",
+                        color: "blue",
+                        icon: <IconMoodSmileBeam />,
+                    });
+                    setTimeout(() => autoLogin(), 1500);
+                }
+            }
         }
 
         // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
@@ -111,6 +140,12 @@ export default function QuickTickAuth(): JSX.Element {
                     GoogleAPI.refreshToken(
                         credential,
                         (response) => {
+                            showNotification({
+                                message: "Refreshing session...",
+                                title: "Refreshed your session, " + userInfo.given_name + "! 👍",
+                                color: "green",
+                                icon: <IconMoodSmileBeam />,
+                            });
                             generateExpirationTimeAndSetCredentials(response);
                         },
                         () => showNotification(errorNotification)
@@ -124,6 +159,7 @@ export default function QuickTickAuth(): JSX.Element {
     useEffect((): void => {
         if (!userInfo && credential && credential.access_token) {
             getUserInfo();
+            setForceRefresh(true);
         }
     }, [credential]);
 
@@ -144,15 +180,6 @@ export default function QuickTickAuth(): JSX.Element {
             );
         }
     };
-
-    // Force logout if credential expired or autologin if user info present.
-    if (credential && Date.now() >= credential.accessTokenExpiryEpoch) {
-        if (userInfo && userInfo.email) {
-            setTimeout(() => autoLogin(), 1500);
-        } else {
-            logout();
-        }
-    }
 
     return (
         <div className={"quick-tick-auth"}>

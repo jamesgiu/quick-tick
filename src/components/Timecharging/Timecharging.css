@@ -1,0 +1,18 @@
+.timecharging tbody .mantine-Chip-root {
+  float: left;
+  text-align: left;
+}
+
+.timecharging td,
+.timecharging tr {
+  border-style: solid;
+  border-width: 0.1px;
+  border-color: grey;
+}
+
+.timecharging {
+  width: 90%;
+  margin: auto;
+  overflow-x: auto;
+  height: 100%;
+}

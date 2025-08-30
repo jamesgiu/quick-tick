@@ -140,7 +140,7 @@ function DataLoader(): JSX.Element {
             getTasks();
             setTimeout(() => setPollCountdown(pollCountdown - 1), 1000);
         }
-    }, [credential]);
+    }, []);
 
     useEffect(() => {
         if (credential) {

@@ -8,6 +8,7 @@ import { TaskUtil } from "../MyTasks/components/TaskUtil";
 import "./Landing.css";
 import { MOTIVATIONAL_IMAGES } from "./images";
 import { Pipeline, PipelineIcons, PipelineIntent, PipelineSize } from "quick-cyc";
+import { useViewportSize } from "@mantine/hooks";
 
 export function getRandomInt(min: number, max: number): number {
     min = Math.ceil(min);
@@ -21,6 +22,7 @@ export default function Landing(): JSX.Element {
     const taskNumbers = useRecoilValue(taskNumbersAtom);
     const [time, setTime] = useState<string>();
     const [bgImage, setBgImage] = useState<string>();
+    const { height } = useViewportSize();
 
     const [inspirationalQuote, setInspirationalQuote] = useState<{ text: string; author: string }>();
 
@@ -32,7 +34,7 @@ export default function Landing(): JSX.Element {
 
         const overdueTasks = taskNumbers.overdue;
         const completedOverdueTasksToday = getCompletedOverdueTasksToday();
-
+        const nodeSize = height < 1280 ? PipelineSize.M : PipelineSize.L;
         return (
             <Pipeline
                 label="Pipeline"
@@ -47,20 +49,10 @@ export default function Landing(): JSX.Element {
                                 : overdueTasks === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.FAILURE,
-                        size: PipelineSize.M,
+                        size: nodeSize,
                         percentComplete: (completedOverdueTasksToday / overdueTasks) * 100,
                         className: "overdueTasksNode",
                         outerLabel: "Overdue",
-                    },
-                    {
-                        active: overdueTasks > 0,
-                        intent:
-                            completedOverdueTasksToday === overdueTasks
-                                ? PipelineIntent.SUCCESS
-                                : overdueTasks === 0
-                                ? PipelineIntent.NONE
-                                : PipelineIntent.FAILURE,
-                        size: PipelineSize.S,
                     },
                     {
                         active: tasksDueToday > 0,
@@ -72,20 +64,10 @@ export default function Landing(): JSX.Element {
                                 : tasksDueToday === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.WARNING,
-                        size: PipelineSize.M,
+                        size: nodeSize,
                         percentComplete: (tasksCompletedToday / tasksDueToday) * 100,
                         className: "todayTasksNode",
                         outerLabel: "Today",
-                    },
-                    {
-                        active: tasksDueToday > 0,
-                        intent:
-                            tasksCompletedToday === tasksDueToday
-                                ? PipelineIntent.SUCCESS
-                                : tasksDueToday === 0
-                                ? PipelineIntent.NONE
-                                : PipelineIntent.IN_PROGRESS,
-                        size: PipelineSize.S,
                     },
                     {
                         active: tasksDueThisWeek > 0,
@@ -97,7 +79,7 @@ export default function Landing(): JSX.Element {
                                 : tasksDueThisWeek === 0
                                 ? PipelineIntent.NONE
                                 : PipelineIntent.IN_PROGRESS,
-                        size: PipelineSize.M,
+                        size: nodeSize,
                         percentComplete: (tasksCompletedThisWeek / tasksDueThisWeek) * 100,
                         className: "weekTasksNode",
                         outerLabel: "Week",

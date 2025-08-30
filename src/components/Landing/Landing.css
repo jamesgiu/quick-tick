@@ -62,19 +62,14 @@
 }
 
 .pipeline {
-  margin: auto;
-  width: 35%;
+  display: block;
   padding-top: 200px;
+  width: 400px;
+  margin: auto;
 }
 
-.pipeline .overdueTasksNode {
-  font-size: 1.3rem;
-}
-
-.pipeline .todayTasksNode {
-  font-size: 1.3rem;
-}
-
-.pipeline .weekTasksNode {
-  font-size: 1.3rem;
+.pipeline .qc-node-wrapper {
+  padding: 30px;
+  margin-left: 15px;
+  margin-right: 15px;
 }

@@ -22,6 +22,12 @@ export const userInfoAtom = atom<UserInfoResponse>({
     effects_UNSTABLE: [persistAtom],
 });
 
+export const timersMapAtom = atom<string | undefined>({
+    key: "timersMap",
+    default: undefined,
+    effects_UNSTABLE: [persistAtom],
+});
+
 export const tasksAtom = atom<Task[]>({
     key: "tasks",
     default: [] as Task[],

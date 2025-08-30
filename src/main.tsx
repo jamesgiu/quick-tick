@@ -1,4 +1,4 @@
-import { MantineProvider, createEmotionCache } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { NotificationsProvider } from "@mantine/notifications";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";

@@ -6,6 +6,7 @@ import {
     IconCalendar,
     IconChecklist,
     IconCheckupList,
+    IconClock,
     IconConfetti,
     IconExclamationMark,
     IconExternalLink,
@@ -171,6 +172,11 @@ export const getNavbarLinks = (
             >
                 Calendar <IconExternalLink size={16} />
             </Button>
+            <Link to={QuickTickPage.TIMECHARGING} onClick={onClickCallback}>
+                <Button leftIcon={<IconClock />} variant="subtle" size={mobile ? "xl" : "sm"}>
+                    Timecharging
+                </Button>
+            </Link>
             <Link to={QuickTickPage.STATS} onClick={onClickCallback}>
                 <Button leftIcon={<IconTimeline />} variant="subtle" size={mobile ? "xl" : "sm"}>
                     Stats
