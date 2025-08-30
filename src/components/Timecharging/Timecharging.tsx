@@ -19,8 +19,8 @@ export enum TimerDay {
 
 export interface TimerState {
     day: TimerDay;
-    listName: String;
-    listId: String;
+    listName: string;
+    listId: string;
     timeSeconds: number;
 }
 
