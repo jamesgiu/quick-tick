@@ -11,10 +11,10 @@ import {
     IconTrashX,
 } from "@tabler/icons";
 import { useState } from "react";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
-import { credentialAtom, forceRefreshAtom, taskListsMapAtom, tasksMapAtom } from "../../../recoil/Atoms";
+import { credentialAtom, taskListsMapAtom, tasksMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 import TaskForm from "../../Tasks/TaskForm/TaskForm";
 

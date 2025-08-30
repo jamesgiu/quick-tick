@@ -2,7 +2,6 @@ import { Layout } from "react-grid-layout";
 import { atom } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import { QuickTickCredential, Task, TaskList, TaskListIdTitle, UserInfoResponse } from "../api/Types";
-import { TimerState } from "../components/Timecharging/Timecharging";
 
 const { persistAtom } = recoilPersist();
 

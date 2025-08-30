@@ -1,8 +1,8 @@
-import { Card, Chip, Table } from "@mantine/core";
+import { Chip } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { TimerDay, TimerState } from "./Timecharging";
+import { TimerDay } from "./Timecharging";
 import { timersMapAtom } from "../../recoil/Atoms";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
 interface TimerProps {
     name: string;
