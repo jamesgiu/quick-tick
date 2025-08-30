@@ -5,8 +5,8 @@ import { timersMapAtom } from "../../recoil/Atoms";
 import { useRecoilState, useRecoilValue } from "recoil";
 
 interface TimerProps {
-    name: String;
-    id: String;
+    name: string;
+    id: string;
     day: TimerDay;
     onTick: (mapKey: string, seconds: number) => void;
 }

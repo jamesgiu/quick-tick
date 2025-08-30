@@ -1,5 +1,4 @@
 import { Button, Table } from "@mantine/core";
-import { useState } from "react";
 import Timer from "./Timer";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { TaskList } from "../../api/Types";
@@ -29,7 +28,7 @@ export default function Timecharging(): JSX.Element {
     const [timersMap, setTimersMap] = useRecoilState<string | undefined>(timersMapAtom);
 
     const buildRows = (): JSX.Element[] => {
-        let rows: JSX.Element[] = [];
+        const rows: JSX.Element[] = [];
 
         for (let i = 0; i < 7; i++) {
             rows.push(<td>{buildRowFromTaskLists(i)}</td>);
