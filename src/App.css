@@ -14,21 +14,19 @@ html {
 :root {
   --mantine-color-body: #0b0d12;
   --mantine-color-text: #e6e8ee;
-
-  --mantine-primary-color-filled: linear-gradient(
-    135deg,
-    #7c7cff,
-    #5f9cff
-  );
-
+  --mantine-primary-color-filled:
+    linear-gradient(
+      135deg,
+      #7c7cff,
+      #5f9cff
+    );
   --mantine-radius-default: 14px;
   --mantine-radius-sm: 10px;
   --mantine-radius-md: 14px;
   --mantine-radius-lg: 18px;
-
-  --mantine-shadow-sm: 0 6px 24px rgba(0,0,0,0.25);
-  --mantine-shadow-md: 0 12px 40px rgba(0,0,0,0.35);
-  --mantine-shadow-lg: 0 20px 60px rgba(0,0,0,0.45);
+  --mantine-shadow-sm: 0 6px 24px rgba(0, 0, 0, 0.25);
+  --mantine-shadow-md: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --mantine-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
 /* App background */
@@ -45,9 +43,9 @@ body {
 .mantine-Card-root {
   background: rgba(20, 24, 45, 0.65);
   backdrop-filter: blur(18px) saturate(140%);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: var(--mantine-shadow-md);
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .mantine-Paper-root:hover,
@@ -59,12 +57,12 @@ body {
 /* Buttons */
 .mantine-Button-root {
   border: none;
-  transition: transform .2s ease, box-shadow .2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .mantine-Button-root:hover {
   transform: translateY(-1px) scale(1.01);
-  box-shadow: 0 14px 40px rgba(95,156,255,0.5);
+  box-shadow: 0 14px 40px rgba(95, 156, 255, 0.5);
 }
 
 .mantine-Button-root:active {
@@ -73,15 +71,15 @@ body {
 
 /* Inputs */
 .mantine-Input-input {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
-  transition: border-color .2s ease, box-shadow .2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .mantine-Input-input:focus {
   border-color: #7c7cff;
-  box-shadow: 0 0 0 2px rgba(124,124,255,0.35);
+  box-shadow: 0 0 0 2px rgba(124, 124, 255, 0.35);
 }
 
 /* Subtle motion everywhere */
