@@ -2,6 +2,7 @@ import { Table } from "@mantine/core";
 import "./QuickTickTable.css";
 
 export interface QuickTickTableRow {
+    key: string;
     rowData: (string | JSX.Element)[];
 }
 interface QuickTickTableProps {
@@ -13,8 +14,8 @@ export default function QuickTickTable(props: QuickTickTableProps): JSX.Element 
         const headers: JSX.Element[] = [];
 
         {
-            props.headers.forEach((header) => {
-                headers.push(<th>{header}</th>);
+            props.headers.forEach((header, index) => {
+                headers.push(<th key={`${header}-${index}`}>{header}</th>);
             });
         }
 
@@ -26,9 +27,9 @@ export default function QuickTickTable(props: QuickTickTableProps): JSX.Element 
 
         props.rows.forEach((row) => {
             rows.push(
-                <tr>
-                    {row.rowData.map((rowItem) => (
-                        <td>{rowItem}</td>
+                <tr key={row.key}>
+                    {row.rowData.map((rowItem, index) => (
+                        <td key={`${row.key}-${index}`}>{rowItem}</td>
                     ))}
                 </tr>
             );

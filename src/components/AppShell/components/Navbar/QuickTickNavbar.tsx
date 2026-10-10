@@ -59,7 +59,7 @@ export const getNavbarLinks = (
 ): JSX.Element => {
     return (
         <Stack className={"navbar-link-stack"} align={"stretch"}>
-            <Accordion className="nav-accordion" value={"my-tasks-filters"} chevron={null}>
+            <Accordion className="nav-accordion" defaultValue={"my-tasks-filters"} chevron={null}>
                 <Accordion.Item value="my-tasks-filters">
                     <Accordion.Control>
                         <Link to={QuickTickPage.MY_TASKS} onClick={onClickCallback}>
@@ -130,7 +130,7 @@ export const getNavbarLinks = (
                     )}
                 </Accordion.Item>
             </Accordion>
-            <Accordion className="nav-accordion" value="by-list" chevron={null}>
+            <Accordion className="nav-accordion" defaultValue="by-list" chevron={null}>
                 <Accordion.Item value="by-list">
                     <Accordion.Control>
                         <Button leftIcon={<IconChecklist />} variant="subtle" size={mobile ? "xl" : "sm"}>
@@ -140,7 +140,7 @@ export const getNavbarLinks = (
                     <Accordion.Panel>{getTaskListButtons(taskListMap, mobile, onClickCallback)}</Accordion.Panel>
                 </Accordion.Item>
             </Accordion>
-            <Accordion className="nav-accordion" value="create-new" chevron={null}>
+            <Accordion className="nav-accordion" defaultValue="create-new" chevron={null}>
                 <Accordion.Item value="create-new">
                     <Accordion.Control>
                         <Button leftIcon={<IconPlaylistAdd />} variant="subtle" size={mobile ? "xl" : "sm"}>

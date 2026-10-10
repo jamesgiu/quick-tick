@@ -9,13 +9,13 @@ import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle, buildDateStringRFC3339 } from "../../../api/Types";
 import { credentialAtom, forceRefreshAtom, taskListsAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
+import { TaskUtil } from "../../MyTasks/components/TaskUtil";
 
 export interface TaskFormFields {
     taskListId: string;
     title: string;
     notes: string;
-    // RFC-3339 timestamp
-    due: string;
+    due: Date | null;
 }
 
 export interface TaskFormProps {
@@ -38,7 +38,9 @@ function TaskForm(props: TaskFormProps): JSX.Element {
             taskListId: props.defaultTaskList ? props.defaultTaskList.id : "",
             title: props.targetTaskIfEditing?.title ?? "",
             notes: "",
-            due: props.targetTaskIfEditing?.due ?? new Date(Date.now()).toString(),
+            due: props.targetTaskIfEditing
+                ? TaskUtil.getTaskDueDate(props.targetTaskIfEditing) ?? new Date()
+                : new Date(),
         },
         validate: {
             taskListId: (value) => (value == "" ? "Required field" : null),
@@ -48,8 +50,6 @@ function TaskForm(props: TaskFormProps): JSX.Element {
 
     const submit = (values: TaskFormFields): void => {
         setLoading(true);
-        form.setFieldValue("due", new Date(form.values.due).toString());
-
         const onSuccess = (): void => {
             showNotification({
                 title: `Task ${taskActionText}d!`,
@@ -59,6 +59,8 @@ function TaskForm(props: TaskFormProps): JSX.Element {
             });
             setLoading(false);
             setForceRefresh(true);
+            setOpened(false);
+            if (!props.targetTaskIfEditing) form.reset();
         };
 
         const onFailure = (): void => {
@@ -69,7 +71,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
         if (props.targetTaskIfEditing) {
             const editedTask: Task = {
                 ...props.targetTaskIfEditing,
-                due: buildDateStringRFC3339(new Date(values.due as string)),
+                due: buildDateStringRFC3339(values.due ?? new Date()),
                 title: values.title,
             };
 
@@ -77,8 +79,6 @@ function TaskForm(props: TaskFormProps): JSX.Element {
         } else {
             GoogleAPI.createNewTask(credential, values, onSuccess, onFailure);
         }
-
-        setOpened(false);
     };
 
     const buildSelectValuesFromTaskLists = (): SelectItem[] => {
@@ -119,7 +119,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
                             <DatePicker
                                 placeholder={
                                     props.targetTaskIfEditing
-                                        ? new Date(props.targetTaskIfEditing?.due as string).toDateString()
+                                        ? TaskUtil.getTaskDueDate(props.targetTaskIfEditing)?.toDateString()
                                         : new Date(Date.now()).toDateString()
                                 }
                                 label="Due date"
@@ -130,6 +130,7 @@ function TaskForm(props: TaskFormProps): JSX.Element {
                                 label="Task list"
                                 placeholder="Pick a task list"
                                 data={buildSelectValuesFromTaskLists()}
+                                disabled={Boolean(props.targetTaskIfEditing)}
                                 {...form.getInputProps("taskListId")}
                             />
                             <Group position="right" mt="md">

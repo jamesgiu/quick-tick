@@ -34,35 +34,61 @@ export class GoogleAPI {
         onSuccess: (response: TaskListResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS, {
-            headers: {
-                Authorization: `Bearer ${credential.access_token}`,
-            },
-        })
-            .then((response) => onSuccess(response.data))
-            .catch((error) => onFailure(error.message));
+        const taskLists: TaskListResponse["items"] = [];
+        const fetchPage = (pageToken?: string): void => {
+            axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLISTS, {
+                headers: {
+                    Authorization: `Bearer ${credential.access_token}`,
+                },
+                params: { maxResults: 1000, pageToken },
+            })
+                .then((response) => {
+                    const page: TaskListResponse = response.data;
+                    taskLists.push(...(page.items ?? []));
+                    if (page.nextPageToken) {
+                        fetchPage(page.nextPageToken);
+                    } else {
+                        onSuccess({ ...page, items: taskLists, nextPageToken: undefined });
+                    }
+                })
+                .catch((error) => onFailure(error.message));
+        };
+
+        fetchPage();
     }
 
-    // TODO will need to get this to return all tasks, loop through 100 items at a time
     public static getTasks(
         credential: QuickTickCredential,
         taskListId: string,
         onSuccess: (response: TaskResponse) => void,
         onFailure: (error: string) => void
     ): void {
-        axios(
-            TASK_API_ACTIONS.TASK_URL +
-                TASK_API_ACTIONS.TASKLIST +
-                taskListId +
-                "/tasks?showCompleted=true&showHidden=true&maxResults=100",
-            {
+        const tasks: Task[] = [];
+        const fetchPage = (pageToken?: string): void => {
+            axios(TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + taskListId + "/tasks", {
                 headers: {
                     Authorization: `Bearer ${credential.access_token}`,
                 },
-            }
-        )
-            .then((response) => onSuccess(response.data))
-            .catch((error) => onFailure(error.message));
+                params: {
+                    showCompleted: true,
+                    showHidden: true,
+                    maxResults: 100,
+                    pageToken,
+                },
+            })
+                .then((response) => {
+                    const page: TaskResponse = response.data;
+                    tasks.push(...(page.items ?? []));
+                    if (page.nextPageToken) {
+                        fetchPage(page.nextPageToken);
+                    } else {
+                        onSuccess({ ...page, items: tasks, nextPageToken: undefined });
+                    }
+                })
+                .catch((error) => onFailure(error.message));
+        };
+
+        fetchPage();
     }
 
     public static createNewTaskList(
@@ -94,7 +120,7 @@ export class GoogleAPI {
         axios
             .post(
                 TASK_API_ACTIONS.TASK_URL + TASK_API_ACTIONS.TASKLIST + newTaskValues.taskListId + "/tasks",
-                { ...newTaskValues, due: buildDateStringRFC3339(new Date(newTaskValues.due)) },
+                { ...newTaskValues, due: buildDateStringRFC3339(newTaskValues.due ?? new Date()) },
                 {
                     headers: {
                         Authorization: `Bearer ${credential.access_token}`,

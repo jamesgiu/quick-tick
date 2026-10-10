@@ -16,11 +16,31 @@ export function getRandomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min) + min); // The maximum is exclusive and the minimum is inclusive
 }
 
+const getDateStr = (): string => new Date().toLocaleTimeString(undefined, { hour12: false });
+
+const startOfDay = (date: Date): Date => new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+const startOfWeek = (date: Date): Date => {
+    const start = startOfDay(date);
+    start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+    return start;
+};
+
+const getPipelineIntent = (
+    total: number,
+    remaining: number,
+    successIntent: PipelineIntent,
+    incompleteIntent: PipelineIntent
+): PipelineIntent => {
+    if (total === 0) return PipelineIntent.NONE;
+    return remaining === 0 ? successIntent : incompleteIntent;
+};
+
 export default function Landing(): JSX.Element {
     const userInfo = useRecoilValue(userInfoAtom);
     const taskListMap = useRecoilValue(taskListsMapAtom);
     const taskNumbers = useRecoilValue(taskNumbersAtom);
-    const [time, setTime] = useState<string>();
+    const [time, setTime] = useState<string>(getDateStr);
     const [bgImage, setBgImage] = useState<string>();
     const { height } = useViewportSize();
 
@@ -28,12 +48,33 @@ export default function Landing(): JSX.Element {
 
     function getPipelineView(): JSX.Element {
         const tasksDueToday = taskNumbers.dueToday;
-        const tasksCompletedToday = getCompletedTasksToday();
+        const tasksCompletedToday = getCompletedTasksDueToday();
         const tasksDueThisWeek = taskNumbers.dueThisWeek;
         const tasksCompletedThisWeek = getCompletedTasksThisWeek();
 
         const overdueTasks = taskNumbers.overdue;
         const completedOverdueTasksToday = getCompletedOverdueTasksToday();
+        const overdueTotal = overdueTasks + completedOverdueTasksToday;
+        const todayTotal = tasksDueToday + tasksCompletedToday;
+        const weekTotal = tasksDueThisWeek + tasksCompletedThisWeek;
+        const overdueIntent = getPipelineIntent(
+            overdueTotal,
+            overdueTasks,
+            PipelineIntent.SUCCESS,
+            PipelineIntent.FAILURE
+        );
+        const todayIntent = getPipelineIntent(
+            todayTotal,
+            tasksDueToday,
+            PipelineIntent.SUCCESS,
+            PipelineIntent.WARNING
+        );
+        const weekIntent = getPipelineIntent(
+            weekTotal,
+            tasksDueThisWeek,
+            PipelineIntent.SUCCESS,
+            PipelineIntent.IN_PROGRESS
+        );
         const nodeSize = height < 1280 ? PipelineSize.M : PipelineSize.L;
         return (
             <Pipeline
@@ -41,46 +82,31 @@ export default function Landing(): JSX.Element {
                 schema={[
                     {
                         active: overdueTasks > 0,
-                        attempts: overdueTasks,
+                        attempts: overdueTotal,
                         icon: PipelineIcons.IconExclamationMark,
-                        intent:
-                            completedOverdueTasksToday === overdueTasks
-                                ? PipelineIntent.SUCCESS
-                                : overdueTasks === 0
-                                ? PipelineIntent.NONE
-                                : PipelineIntent.FAILURE,
+                        intent: overdueIntent,
                         size: nodeSize,
-                        percentComplete: (completedOverdueTasksToday / overdueTasks) * 100,
+                        percentComplete: overdueTotal ? (completedOverdueTasksToday / overdueTotal) * 100 : 0,
                         className: "overdueTasksNode",
                         outerLabel: "Overdue",
                     },
                     {
                         active: tasksDueToday > 0,
-                        attempts: tasksDueToday,
+                        attempts: todayTotal,
                         icon: PipelineIcons.IconCalendarBolt,
-                        intent:
-                            tasksCompletedToday === tasksDueToday
-                                ? PipelineIntent.SUCCESS
-                                : tasksDueToday === 0
-                                ? PipelineIntent.NONE
-                                : PipelineIntent.WARNING,
+                        intent: todayIntent,
                         size: nodeSize,
-                        percentComplete: (tasksCompletedToday / tasksDueToday) * 100,
+                        percentComplete: todayTotal ? (tasksCompletedToday / todayTotal) * 100 : 0,
                         className: "todayTasksNode",
                         outerLabel: "Today",
                     },
                     {
                         active: tasksDueThisWeek > 0,
-                        attempts: tasksDueThisWeek,
+                        attempts: weekTotal,
                         icon: PipelineIcons.IconCalendarDue,
-                        intent:
-                            tasksCompletedThisWeek === tasksDueThisWeek
-                                ? PipelineIntent.SUCCESS
-                                : tasksDueThisWeek === 0
-                                ? PipelineIntent.NONE
-                                : PipelineIntent.IN_PROGRESS,
+                        intent: weekIntent,
                         size: nodeSize,
-                        percentComplete: (tasksCompletedThisWeek / tasksDueThisWeek) * 100,
+                        percentComplete: weekTotal ? (tasksCompletedThisWeek / weekTotal) * 100 : 0,
                         className: "weekTasksNode",
                         outerLabel: "Week",
                     },
@@ -89,18 +115,10 @@ export default function Landing(): JSX.Element {
         );
     }
 
-    const getDateStr = (): string => {
-        const nowDate = new Date(Date.now());
-        const timeString = `${nowDate.getHours() < 10 ? "0" + nowDate.getHours() : nowDate.getHours()}:${
-            nowDate.getMinutes() < 10 ? "0" + nowDate.getMinutes() : nowDate.getMinutes()
-        }:${nowDate.getSeconds() < 10 ? "0" + nowDate.getSeconds() : nowDate.getSeconds()}`;
-
-        return timeString;
-    };
-
     useEffect(() => {
-        setTimeout(() => setTime(getDateStr), 1000);
-    }, [time]);
+        const interval = window.setInterval(() => setTime(getDateStr()), 1000);
+        return () => window.clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         setBgImage(MOTIVATIONAL_IMAGES[getRandomInt(0, MOTIVATIONAL_IMAGES.length)].url);
@@ -108,61 +126,68 @@ export default function Landing(): JSX.Element {
     }, []);
 
     function getCompletedTasksToday(): number {
-        const now = new Date(Date.now());
-        const nowWeek = TaskUtil.getWeek(now);
-
-        const completedTasksToday = [];
-        taskListMap.forEach((tasks) => {
-            const completedTasks = tasks.filter((task) => {
-                const taskCompletionDate = new Date(task.completed);
-                const wasTaskCompletedThisWeek = TaskUtil.getWeek(taskCompletionDate) === nowWeek;
-                return wasTaskCompletedThisWeek && now.getDay() === taskCompletionDate.getDay();
-            });
-
-            completedTasksToday.push(...completedTasks);
-        });
-
-        return completedTasksToday.length;
+        const today = startOfDay(new Date());
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        let count = 0;
+        taskListMap.forEach((tasks) =>
+            tasks.forEach((task) => {
+                const completedAt = task.completed ? new Date(task.completed) : undefined;
+                if (completedAt && completedAt >= today && completedAt < tomorrow) count++;
+            })
+        );
+        return count;
     }
 
     function getCompletedTasksThisWeek(): number {
-        const now = new Date(Date.now());
-        const nowWeek = TaskUtil.getWeek(now);
+        const weekStart = startOfWeek(new Date());
+        const nextWeek = new Date(weekStart);
+        nextWeek.setDate(nextWeek.getDate() + 7);
+        let count = 0;
+        taskListMap.forEach((tasks) =>
+            tasks.forEach((task) => {
+                const dueDate = TaskUtil.getTaskDueDate(task);
+                if (task.completed && dueDate && dueDate >= weekStart && dueDate < nextWeek) count++;
+            })
+        );
+        return count;
+    }
 
-        const completedTasksWeek = [];
-        taskListMap.forEach((tasks) => {
-            const completedTasks = tasks.filter((task) => {
-                const taskCompletionDate = new Date(task.completed);
-                const wasTaskCompletedThisWeek = TaskUtil.getWeek(taskCompletionDate) === nowWeek;
-                return wasTaskCompletedThisWeek;
-            });
-
-            completedTasksWeek.push(...completedTasks);
-        });
-
-        return completedTasksWeek.length;
+    function getCompletedTasksDueToday(): number {
+        const today = startOfDay(new Date());
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        let count = 0;
+        taskListMap.forEach((tasks) =>
+            tasks.forEach((task) => {
+                const dueDate = TaskUtil.getTaskDueDate(task);
+                if (task.completed && dueDate && dueDate >= today && dueDate < tomorrow) count++;
+            })
+        );
+        return count;
     }
 
     function getCompletedOverdueTasksToday(): number {
-        const now = new Date(Date.now());
-        const nowWeek = TaskUtil.getWeek(now);
-
-        const completedTasksToday = [];
-        taskListMap.forEach((tasks) => {
-            const completedTasks = tasks.filter((task) => {
-                const taskCompletionDate = new Date(task.completed);
-                const wasTaskCompletedThisWeek = TaskUtil.getWeek(taskCompletionDate) === nowWeek;
-                return (
-                    wasTaskCompletedThisWeek &&
-                    now.getDay() === taskCompletionDate.getDay() &&
-                    new Date(task.due).getTime() < new Date(task.completed).getTime()
-                );
-            });
-
-            completedTasksToday.push(...completedTasks);
-        });
-
-        return completedTasksToday.length;
+        const today = startOfDay(new Date());
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        let count = 0;
+        taskListMap.forEach((tasks) =>
+            tasks.forEach((task) => {
+                const dueDate = TaskUtil.getTaskDueDate(task);
+                const completedAt = task.completed ? new Date(task.completed) : undefined;
+                if (
+                    dueDate &&
+                    completedAt &&
+                    startOfDay(dueDate) < today &&
+                    completedAt >= today &&
+                    completedAt < tomorrow
+                ) {
+                    count++;
+                }
+            })
+        );
+        return count;
     }
 
     const completedTasksToday = getCompletedTasksToday();

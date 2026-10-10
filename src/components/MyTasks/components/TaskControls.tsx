@@ -10,7 +10,7 @@ import {
     IconTrash,
     IconTrashX,
 } from "@tabler/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
@@ -30,7 +30,7 @@ interface TaskControlsProps {
 const QT_FLAGGED_STR = "QT_Flagged";
 
 export default function TaskControls(props: TaskControlsProps): JSX.Element {
-    const [isFlagged, setIsFlagged] = useState<boolean>(props.targetTask.notes === QT_FLAGGED_STR);
+    const [isFlagged, setIsFlagged] = useState<boolean>(props.targetTask.notes?.includes(QT_FLAGGED_STR) ?? false);
     const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
     const [tasksMap, setTasksMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
     const credential = useRecoilValue(credentialAtom);
@@ -40,37 +40,47 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
     const [isHoveringOverComplete, setIsHoveringOverComplete] = useState<boolean>(false);
     const [isHoveringOverTrash, setIsHoveringOverTrash] = useState<boolean>(false);
 
-    // Removes this task from the stored lists (e.g. after deletion/completion)
-    const removeSelfFromLists = () => {
-        const newTaskListMap = new Map<string, Task[]>();
+    useEffect(() => {
+        setIsFlagged(props.targetTask.notes?.includes(QT_FLAGGED_STR) ?? false);
+    }, [props.targetTask.notes]);
 
-        // Remove this task from the tasklist map
-        taskListMap.forEach((tasks, key) => {
-            const newTaskList = key;
-            const tasksToAdd: Task[] = [];
-            tasks.forEach((task) => {
-                if (task.id !== props.targetTask.id) {
-                    tasksToAdd.push(task);
+    const getTaskListForTask = (): TaskListIdTitle | undefined => {
+        const mappedTaskList = tasksMap.get(JSON.stringify(props.targetTask));
+        if (mappedTaskList) return mappedTaskList;
+        const cachedEntry = Array.from(taskListMap.entries()).find(([, tasks]) =>
+            tasks.some((task) => task.id === props.targetTask.id)
+        );
+        return cachedEntry ? JSON.parse(cachedEntry[0]) : undefined;
+    };
+
+    const updateTaskInLists = (taskList: TaskListIdTitle, updatedTask?: Task): void => {
+        setTaskListMap((current) => {
+            const next = new Map(current);
+            next.forEach((tasks, key) => {
+                const containsTask = tasks.some((task) => task.id === props.targetTask.id);
+                if (containsTask) {
+                    const remainingTasks = tasks.filter((task) => task.id !== props.targetTask.id);
+                    next.set(key, updatedTask ? [...remainingTasks, updatedTask] : remainingTasks);
                 }
             });
-            newTaskListMap.set(newTaskList, tasksToAdd);
+            return next;
         });
-
-        const newTasksMap = new Map<string, TaskListIdTitle>();
-
-        tasksMap.forEach((taskListId, stringOfTask) => {
-            const task: Task = JSON.parse(stringOfTask);
-
-            if (task.id !== props.targetTask.id) {
-                newTasksMap.set(stringOfTask, taskListId);
-            }
+        setTasksMap((current) => {
+            const next = new Map(current);
+            next.forEach((list, taskKey) => {
+                if ((JSON.parse(taskKey) as Task).id === props.targetTask.id) next.delete(taskKey);
+            });
+            if (updatedTask && taskList) next.set(JSON.stringify(updatedTask), taskList);
+            return next;
         });
-
-        setTasksMap(newTasksMap);
-        setTaskListMap(newTaskListMap);
     };
 
     const completeTask = (): void => {
+        const taskList = getTaskListForTask();
+        if (!taskList) {
+            showNotification(genErrorNotificationProps("Task completion"));
+            return;
+        }
         setLoading(true);
         const completedTask = {
             ...props.targetTask,
@@ -81,7 +91,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
 
         GoogleAPI.updateTask(
             credential,
-            tasksMap.get(JSON.stringify(props.targetTask))!.id,
+            taskList.id,
             completedTask,
             (): void => {
                 showNotification({
@@ -92,7 +102,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                 });
 
                 setLoading(false);
-                removeSelfFromLists();
+                updateTaskInLists(taskList, completedTask);
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Task completion"));
@@ -102,20 +112,24 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
     };
 
     const flagTask = (): void => {
+        const taskList = getTaskListForTask();
+        if (!taskList) {
+            showNotification(genErrorNotificationProps("Task flag"));
+            return;
+        }
         setLoading(true);
         const flaggedTask = { ...props.targetTask };
-
-        if (!isFlagged) {
-            flaggedTask.notes = QT_FLAGGED_STR;
-        } else {
-            flaggedTask.notes = QT_FLAGGED_STR;
-        }
+        const existingNotes = flaggedTask.notes ?? "";
+        flaggedTask.notes = isFlagged
+            ? existingNotes.replace(new RegExp(`(^|\\n)${QT_FLAGGED_STR}(?=\\n|$)`), "").replace(/^\n|\n$/g, "")
+            : [existingNotes, QT_FLAGGED_STR].filter(Boolean).join("\n");
 
         GoogleAPI.updateTask(
             credential,
-            tasksMap.get(JSON.stringify(props.targetTask))!.id,
+            taskList.id,
             flaggedTask,
             (): void => {
+                updateTaskInLists(taskList, flaggedTask);
                 if (!isFlagged) {
                     showNotification({
                         title: "Task flagged.",
@@ -143,16 +157,20 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
     };
 
     const deleteTask = (): void => {
+        const taskList = getTaskListForTask();
+        if (!taskList) {
+            showNotification(genErrorNotificationProps("Task deletion"));
+            return;
+        }
         setLoading(true);
-        const deletedTask = { ...props.targetTask, deleted: true };
 
         GoogleAPI.deleteTask(
             credential,
-            tasksMap.get(JSON.stringify(props.targetTask))!,
-            deletedTask,
+            taskList,
+            props.targetTask,
             (): void => {
                 setLoading(false);
-                removeSelfFromLists();
+                updateTaskInLists(taskList);
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Task deletion"));
@@ -198,7 +216,6 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
                         onMouseOver={(): void => setIsHoveringOverTrash(true)}
                         onMouseOut={(): void => setIsHoveringOverTrash(false)}
                         onMouseLeave={(): void => setIsHoveringOverTrash(false)}
-                        onClick={(): void => deleteTask()}
                     >
                         {isHoveringOverTrash ? <IconTrashX /> : <IconTrash />}
                     </ActionIcon>

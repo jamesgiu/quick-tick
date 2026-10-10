@@ -1,7 +1,7 @@
 import { Burger, Button, Group, Header, MediaQuery } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import { IconChecks, IconChevronRight, IconHandStop, IconLogout } from "@tabler/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fallDown as BurgerMenu } from "react-burger-menu";
 import { Link } from "react-router-dom";
 import { useRecoilValue, useResetRecoilState } from "recoil";
@@ -20,7 +20,7 @@ export const LOGO = (
     <span>
         {" "}
         <span className={"header-logo"}>
-            <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo.png"} width={40} />
+            <img src={import.meta.env.VITE_BASE_PATH + "/qtlogo.png"} width={40} alt="QuickTick" />
             <IconChevronRight />
         </span>
         <span className={"header-text"}>
@@ -38,10 +38,15 @@ export default function QuickTickHeader(): JSX.Element {
     const resetUserState = useResetRecoilState(userInfoAtom);
     const userInfo = useRecoilValue(userInfoAtom);
     const [burgerOpen, setBurgerOpen] = useState(false);
-    const [windowSize, setWindowSize] = useState<WindowSize>({ width: window.innerWidth, height: window.innerWidth });
-    window.onresize = (): void => {
-        setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    };
+    const [windowSize, setWindowSize] = useState<WindowSize>({ width: window.innerWidth, height: window.innerHeight });
+
+    useEffect(() => {
+        const updateWindowSize = (): void => {
+            setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+        };
+        window.addEventListener("resize", updateWindowSize);
+        return () => window.removeEventListener("resize", updateWindowSize);
+    }, []);
 
     // Will also reset the credentials atom
     const logout = (): void => {

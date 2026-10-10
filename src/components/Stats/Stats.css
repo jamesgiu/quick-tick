@@ -13,8 +13,35 @@
 }
 
 .stats .tasks-breakdown-chart .VictoryContainer {
-  max-width: 400px;
+  max-width: 760px;
+  height: 280px;
   margin: auto;
+}
+
+.stats {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.stats .stats-summary-card,
+.stats .rpg-card,
+.stats .stats-panel {
+  background: rgba(36, 36, 38, 0.45);
+}
+
+.stats .stats-summary-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #40c4cf;
+}
+
+.stats .rpg-progress {
+  margin: 1.25rem 0 0.5rem;
+}
+
+.stats .rpg-level-titles {
+  margin-top: 1rem;
 }
 
 /* stylelint-disable */

@@ -23,12 +23,14 @@ export interface TaskListResponse {
     kind: string;
     etag: string;
     items: TaskList[];
+    nextPageToken?: string;
 }
 
 export interface TaskResponse {
     kind: string;
     etag: string;
     items: Task[];
+    nextPageToken?: string;
 }
 
 export interface TaskListIdTitle {
@@ -89,5 +91,7 @@ export const REQUIRED_SCOPES =
     "https://www.googleapis.com/auth/admin.directory.resource.calendar.readonly";
 
 export const buildDateStringRFC3339 = (date: Date): string => {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}T23:59:00.000Z`;
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${date.getFullYear()}-${month}-${day}T23:59:00.000Z`;
 };

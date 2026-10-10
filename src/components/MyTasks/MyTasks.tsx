@@ -30,52 +30,32 @@ export default function MyTasks(): JSX.Element {
         setListFilter(searchParams.get("listFilter"));
     }, [searchParams]);
 
-    const getTaskListPanels = (): JSX.Element[] => {
-        const taskListPanels: JSX.Element[] = [];
-        const layoutIds = layout.map((layoutItem) => layoutItem.i).sort();
-        const taskListIds = taskLists.map((taskList) => taskList.id).sort();
-        const newLayout: Layout[] = [...layout];
-
-        for (let i = 0; i < taskLists.length; i++) {
-            const taskList = taskLists.at(i)!;
-
-            if (listFilter && listFilter !== taskList.id) {
-                // Early break if we have a filter on and the current taskList is not the filtered one.
-                continue;
-            }
-
-            const taskListIdTitle = {
-                id: taskList.id,
-                title: taskList.title,
-            };
-
-            taskListPanels.push(
-                <div key={taskList.id} className="panel">
-                    <TaskListCard taskList={taskListIdTitle} filter={filter} />
-                </div>
+    useEffect(() => {
+        if (listFilter) {
+            const selectedList = taskLists.find((taskList) => taskList.id === listFilter);
+            const focusedLayout = selectedList ? [{ i: selectedList.id, x: 0, y: 0, h: 50, w: 50 }] : [];
+            setEphemeralLayout((current) =>
+                JSON.stringify(current) === JSON.stringify(focusedLayout) ? current : focusedLayout
             );
-
-            // If we have a filter on, then clear the layout and focus on the one list.
-            if (listFilter) {
-                const layoutItem = { i: taskList.id, x: 0, y: i, h: 50, w: 50 };
-
-                if (JSON.stringify(ephemeralLayout) !== JSON.stringify([layoutItem])) {
-                    setEphemeralLayout([layoutItem]);
-                }
-            } else if (JSON.stringify(layoutIds) !== JSON.stringify(taskListIds)) {
-                // If we haven't seen this tasklist id before, add it to our layouts array.
-                if (!layoutIds.includes(taskList.id)) {
-                    const layoutItem = { i: taskList.id, x: 0, y: i, h: 15, w: 5 };
-                    newLayout.push(layoutItem);
-                }
-
-                if (i === taskLists.length - 1 && JSON.stringify(layout) !== JSON.stringify(newLayout)) {
-                    setLayout(newLayout);
-                }
-            }
+            return;
         }
 
-        return taskListPanels;
+        setEphemeralLayout((current) => (current.length ? [] : current));
+        const existingLayout = new Map(layout.map((item) => [item.i, item]));
+        const nextLayout = taskLists.map(
+            (taskList, index) => existingLayout.get(taskList.id) ?? { i: taskList.id, x: 0, y: index, h: 15, w: 5 }
+        );
+        if (JSON.stringify(layout) !== JSON.stringify(nextLayout)) setLayout(nextLayout);
+    }, [layout, listFilter, setLayout, taskLists]);
+
+    const getTaskListPanels = (): JSX.Element[] => {
+        return taskLists
+            .filter((taskList) => !listFilter || listFilter === taskList.id)
+            .map((taskList) => (
+                <div key={taskList.id} className="panel">
+                    <TaskListCard taskList={{ id: taskList.id, title: taskList.title }} filter={filter} />
+                </div>
+            ));
     };
     return (
         <div className={"my-tasks"}>
@@ -85,6 +65,7 @@ export default function MyTasks(): JSX.Element {
                     className="task-filter-select"
                     label="Filtered by:"
                     placeholder={filter ?? "Select..."}
+                    value={filter ?? ""}
                     data={[
                         { value: "", label: "All" },
                         { value: TaskListFilter.TODAY, label: "today" },
@@ -94,7 +75,7 @@ export default function MyTasks(): JSX.Element {
                     ]}
                     onChange={(newValue): void => {
                         // Set filter off if "All" is selected.
-                        setFilter(newValue === "" ? undefined : (newValue as TaskListFilter));
+                        setFilter(newValue ? (newValue as TaskListFilter) : undefined);
                     }}
                 />
             </div>

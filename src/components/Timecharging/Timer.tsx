@@ -2,7 +2,7 @@ import { Chip } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { TimerDay } from "./Timecharging";
 import { timersMapAtom } from "../../recoil/Atoms";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 
 interface TimerProps {
     name: string;
@@ -12,41 +12,43 @@ interface TimerProps {
 }
 
 export default function Timer(props: TimerProps): JSX.Element {
-    const [timersMap, setTimersMap] = useRecoilState<string | undefined>(timersMapAtom);
-    const timersMapObj = timersMap ? new Map(JSON.parse(timersMap)) : new Map<string, number>();
-
-    const getTimeForTimer = (): number => {
-        if (timersMapObj.has(`${props.id}${props.day}`)) {
-            return timersMapObj.get(`${props.id}${props.day}`) as number;
-        }
-
-        return 0;
-    };
+    const timersMap = useRecoilValue<string | undefined>(timersMapAtom);
+    const { name, id, day, onTick } = props;
+    const mapKey = JSON.stringify([id, day]);
 
     // Store this in atom with key being name
     const [timeSecondsState, setTimeSecondsState] = useState<number>(0);
     const [isCounting, setIsCounting] = useState<boolean>(false);
 
-    const handleOnChange = () => {
-        setIsCounting(!isCounting);
+    const handleOnChange = (): void => {
+        setIsCounting((counting) => !counting);
     };
 
     useEffect(() => {
-        setTimeSecondsState(getTimeForTimer());
-    }, [timersMap]);
+        if (timersMap === undefined) {
+            setTimeSecondsState(0);
+            setIsCounting(false);
+        } else {
+            const savedTimers = new Map<string, number>(JSON.parse(timersMap));
+            setTimeSecondsState(savedTimers.get(mapKey) ?? 0);
+        }
+    }, [timersMap, mapKey]);
 
     useEffect(() => {
         if (isCounting) {
-            setTimeout(() => {
-                setTimeSecondsState(timeSecondsState + 1);
-                props.onTick(`${props.id}${props.day}`, timeSecondsState + 1);
+            const timeout = window.setTimeout(() => {
+                const nextTime = timeSecondsState + 1;
+                setTimeSecondsState(nextTime);
+                onTick(mapKey, nextTime);
             }, 1000);
+            return () => window.clearTimeout(timeout);
         }
-    }, [isCounting, timeSecondsState]);
+        return undefined;
+    }, [isCounting, mapKey, onTick, timeSecondsState]);
 
     return (
         <Chip checked={isCounting} onChange={handleOnChange}>
-            {new Date(timeSecondsState * 1000).toISOString().slice(11, 19)} : {props.name} :{" "}
+            {new Date(timeSecondsState * 1000).toISOString().slice(11, 19)} : {name} :{" "}
         </Chip>
     );
 }

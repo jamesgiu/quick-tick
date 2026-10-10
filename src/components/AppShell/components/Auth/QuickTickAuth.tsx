@@ -9,11 +9,19 @@ import {
     IconMoodSmileBeam,
     IconUserX,
 } from "@tabler/icons";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../../api/GoogleAPI";
 import { QuickTickCredential, REQUIRED_SCOPES, TokenResponse, UserInfoResponse } from "../../../../api/Types";
-import { credentialAtom, forceRefreshAtom, userInfoAtom } from "../../../../recoil/Atoms";
+import {
+    credentialAtom,
+    forceRefreshAtom,
+    taskListsAtom,
+    taskListsMapAtom,
+    tasksMapAtom,
+    taskNumbersAtom,
+    userInfoAtom,
+} from "../../../../recoil/Atoms";
 import "./QuickTickAuth.css";
 
 const errorNotification = {
@@ -26,6 +34,10 @@ const errorNotification = {
 export default function QuickTickAuth(): JSX.Element {
     const resetCredentials = useResetRecoilState(credentialAtom);
     const resetUserState = useResetRecoilState(userInfoAtom);
+    const resetTaskLists = useResetRecoilState(taskListsAtom);
+    const resetTaskListsMap = useResetRecoilState(taskListsMapAtom);
+    const resetTasksMap = useResetRecoilState(tasksMapAtom);
+    const resetTaskNumbers = useResetRecoilState(taskNumbersAtom);
     const setForceRefresh = useSetRecoilState(forceRefreshAtom);
     const [credential, setCredential] = useRecoilState<QuickTickCredential>(credentialAtom);
     const [userInfo, setUserInfo] = useRecoilState<UserInfoResponse>(userInfoAtom);
@@ -34,6 +46,10 @@ export default function QuickTickAuth(): JSX.Element {
     const logout = (): void => {
         resetCredentials();
         resetUserState();
+        resetTaskLists();
+        resetTaskListsMap();
+        resetTasksMap();
+        resetTaskNumbers();
         showNotification({
             title: "Logged out",
             message: "Successfully logged out, goodbye!",
@@ -42,30 +58,33 @@ export default function QuickTickAuth(): JSX.Element {
         location.reload();
     };
 
-    const generateExpirationTimeAndSetCredentials = (response: TokenResponse): void => {
-        const expiryDateEpoch = Date.now() + response.expires_in * 1000;
-        // Setting the credential with a date for when the access token expires.
-        setCredential({
-            ...response,
-            accessTokenExpiryEpoch: expiryDateEpoch,
-            // The refresh token is only returned on a fresh login.
-            refresh_token: response.refresh_token ?? credential.refresh_token,
-            // 7 days in MS.
-            refreshTokenExpiryEpoch: response.refresh_token
-                ? Date.now() + 604800000
-                : credential.refreshTokenExpiryEpoch,
-        });
-    };
+    const generateExpirationTimeAndSetCredentials = useCallback(
+        (response: TokenResponse): void => {
+            const expiryDateEpoch = Date.now() + response.expires_in * 1000;
+            // Setting the credential with a date for when the access token expires.
+            setCredential((current) => ({
+                ...current,
+                ...response,
+                accessTokenExpiryEpoch: expiryDateEpoch,
+                // The refresh token is only returned on a fresh login.
+                refresh_token: response.refresh_token ?? current?.refresh_token,
+                // 7 days in MS.
+                refreshTokenExpiryEpoch: response.refresh_token
+                    ? Date.now() + 604800000
+                    : current?.refreshTokenExpiryEpoch ?? 0,
+            }));
+        },
+        [setCredential]
+    );
 
     const autoLogin = useGoogleLogin({
         onSuccess: (implicitResponse): void => {
-            console.log(implicitResponse);
-            setCredential({
-                ...credential,
+            setCredential((current) => ({
+                ...current,
                 access_token: implicitResponse.access_token,
                 accessTokenExpiryEpoch: Date.now() + implicitResponse.expires_in * 1000,
                 expires_in: implicitResponse.expires_in,
-            });
+            }));
             setForceRefresh(true);
         },
         onError: (): void => {
@@ -99,7 +118,7 @@ export default function QuickTickAuth(): JSX.Element {
         ux_mode: "popup",
     });
 
-    useEffect((): void => {
+    useEffect((): (() => void) | void => {
         // Get a new access token on refresh, even if the old one was still valid... (otherwise, can refresh after expiry with something like Date.now() >= credential.accessTokenExpiryEpoch)
         // May not be required with the onload autologin.
         if (credential && credential.refresh_token && Date.now() < credential.refreshTokenExpiryEpoch) {
@@ -108,7 +127,7 @@ export default function QuickTickAuth(): JSX.Element {
                 (response) => {
                     showNotification({
                         title: "Good to see you!",
-                        message: "Welcome back " + userInfo.given_name + "! 👋",
+                        message: userInfo ? "Welcome back " + userInfo.given_name + "! 👋" : "Welcome back! 👋",
                         color: "green",
                         icon: <IconMoodSmileBeam />,
                     });
@@ -132,54 +151,57 @@ export default function QuickTickAuth(): JSX.Element {
             }
         }
 
-        // Set a timeout to request a new access token when close to expiry, with a 2 minute grace period.
-        const TWO_MINUTES_MS = 2 * 60 * 1000;
-        if (credential) {
-            setTimeout(
-                () =>
-                    GoogleAPI.refreshToken(
-                        credential,
-                        (response) => {
-                            showNotification({
-                                message: "Refreshing session...",
-                                title: "Refreshed your session, " + userInfo.given_name + "! 👍",
-                                color: "green",
-                                icon: <IconMoodSmileBeam />,
-                            });
-                            generateExpirationTimeAndSetCredentials(response);
-                        },
-                        () => showNotification(errorNotification)
-                    ),
-                credential.expires_in * 1000 - TWO_MINUTES_MS
-            );
-        }
+        // This is an initial-session check; token writes above use functional updates to avoid stale state.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // When the credential changes, get the user info again.
+    useEffect((): (() => void) | void => {
+        if (!credential?.refresh_token) return;
+        const twoMinutesMs = 2 * 60 * 1000;
+        const refreshInMs = Math.max(0, credential.accessTokenExpiryEpoch - Date.now() - twoMinutesMs);
+        const refreshTimeout = window.setTimeout(() => {
+            GoogleAPI.refreshToken(
+                credential,
+                (response) => {
+                    showNotification({
+                        message: "Refreshing session...",
+                        title: userInfo
+                            ? "Refreshed your session, " + userInfo.given_name + "! 👍"
+                            : "Session refreshed! 👍",
+                        color: "green",
+                        icon: <IconMoodSmileBeam />,
+                    });
+                    generateExpirationTimeAndSetCredentials(response);
+                },
+                () => showNotification(errorNotification)
+            );
+        }, refreshInMs);
+        return () => window.clearTimeout(refreshTimeout);
+    }, [credential, generateExpirationTimeAndSetCredentials, userInfo]);
+
+    const getUserInfo = useCallback((): void => {
+        if (!credential) return;
+        GoogleAPI.getUserInfo(
+            credential,
+            (info) => {
+                setUserInfo(info);
+                showNotification({
+                    title: "Authenticated!",
+                    message: `Welcome ${info.name}!`,
+                    icon: <IconMoodSmileDizzy />,
+                    color: "green",
+                });
+            },
+            () => showNotification(errorNotification)
+        );
+    }, [credential, setUserInfo]);
+
     useEffect((): void => {
         if (!userInfo && credential && credential.access_token) {
             getUserInfo();
             setForceRefresh(true);
         }
-    }, [credential]);
-
-    const getUserInfo = (): void => {
-        if (credential) {
-            GoogleAPI.getUserInfo(
-                credential,
-                (userInfo) => {
-                    setUserInfo(userInfo);
-                    showNotification({
-                        title: "Authenticated!",
-                        message: `Welcome ${userInfo.name}!`,
-                        icon: <IconMoodSmileDizzy />,
-                        color: "green",
-                    });
-                },
-                () => showNotification(errorNotification)
-            );
-        }
-    };
+    }, [credential, getUserInfo, setForceRefresh, userInfo]);
 
     return (
         <div className={"quick-tick-auth"}>

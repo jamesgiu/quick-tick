@@ -42,11 +42,19 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
     const isCollapsed = collapsedTasklists.includes(props.taskList.id);
 
     const getTasksAsRows = (): QuickTickTableRow[] => {
-        const activeTasks = taskListMap.get(JSON.stringify(props.taskList))?.filter((task) => !task.completed) ?? [];
+        const activeTasks = (taskListMap.get(JSON.stringify(props.taskList)) ?? [])
+            .filter((task) => !task.completed && !task.deleted)
+            .sort((first, second) => {
+                const firstDue = TaskUtil.getTaskDueDate(first)?.getTime() ?? Number.POSITIVE_INFINITY;
+                const secondDue = TaskUtil.getTaskDueDate(second)?.getTime() ?? Number.POSITIVE_INFINITY;
+                const safeFirstDue = Number.isNaN(firstDue) ? Number.POSITIVE_INFINITY : firstDue;
+                const safeSecondDue = Number.isNaN(secondDue) ? Number.POSITIVE_INFINITY : secondDue;
+                return safeFirstDue - safeSecondDue;
+            });
 
         const rows: QuickTickTableRow[] = [];
-        if (activeTasks?.length ?? 0 > 0) {
-            activeTasks!.forEach((task) => {
+        if (activeTasks.length > 0) {
+            activeTasks.forEach((task) => {
                 if (props.filter) {
                     if (props.filter === TaskListFilter.OVERDUE && !TaskUtil.isTaskOverDue(task)) {
                         // Skip tasks that aren't overdue.
@@ -80,12 +88,14 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
                 }
 
                 if (!task.completed) {
+                    const dueDate = TaskUtil.getTaskDueDate(task);
                     rows.push({
+                        key: task.id,
                         rowData: [
                             <span>
                                 {task.title} {TaskUtil.generateShardsForTask(task)}
                             </span>,
-                            new Date(task.due).toDateString(),
+                            dueDate && !Number.isNaN(dueDate.getTime()) ? dueDate.toLocaleDateString() : "No due date",
                             <TaskControls targetTask={task} />,
                         ],
                     });
@@ -93,22 +103,7 @@ export default function TaskListCard(props: TaskListProps): JSX.Element {
             });
         }
 
-        const sortedRows = rows.sort((row1, row2) => {
-            const row1Date = row1.rowData.at(1);
-            const row2Date = row2.rowData.at(1);
-
-            if (row1Date === "Invalid Date") {
-                return 1;
-            }
-
-            if (row2Date === "Invalid Date") {
-                return 1;
-            }
-
-            return new Date(row1Date as string).getTime() > new Date(row2Date as string).getTime() ? 1 : -1;
-        });
-
-        return sortedRows;
+        return rows;
     };
 
     const deleteList = (): void => {

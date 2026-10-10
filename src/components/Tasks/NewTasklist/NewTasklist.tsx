@@ -41,14 +41,14 @@ function NewTaskList(): JSX.Element {
                 });
                 setLoading(false);
                 setForceRefresh(true);
+                setOpened(false);
+                form.reset();
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Tasklist creation"));
                 setLoading(false);
             }
         );
-
-        setOpened(false);
     };
 
     return (

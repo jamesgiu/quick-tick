@@ -1,5 +1,6 @@
 import { Button, Table } from "@mantine/core";
 import Timer from "./Timer";
+import { useCallback } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { TaskList } from "../../api/Types";
 import { taskListsAtom, timersMapAtom } from "../../recoil/Atoms";
@@ -25,41 +26,42 @@ export interface TimerState {
 
 export default function Timecharging(): JSX.Element {
     const taskLists = useRecoilValue<TaskList[]>(taskListsAtom);
-    const [timersMap, setTimersMap] = useRecoilState<string | undefined>(timersMapAtom);
+    const [, setTimersMap] = useRecoilState<string | undefined>(timersMapAtom);
 
-    const buildRows = (): JSX.Element[] => {
-        const rows: JSX.Element[] = [];
+    const buildRows = (): JSX.Element[] => [
+        <tr key="timer-days">
+            {Array.from({ length: 7 }, (_, day) => (
+                <td key={day}>{buildRowFromTaskLists(day as TimerDay)}</td>
+            ))}
+        </tr>,
+    ];
 
-        for (let i = 0; i < 7; i++) {
-            rows.push(<td>{buildRowFromTaskLists(i)}</td>);
-        }
+    const onTick = useCallback(
+        (mapKey: string, seconds: number): void => {
+            setTimersMap((currentTimers) => {
+                const newTimers = currentTimers
+                    ? new Map<string, number>(JSON.parse(currentTimers))
+                    : new Map<string, number>();
+                newTimers.set(mapKey, seconds);
+                return JSON.stringify([...newTimers]);
+            });
+        },
+        [setTimersMap]
+    );
 
-        return rows;
-    };
-
-    const onTick = (mapKey: string, seconds: number) => {
-        const newTimers = timersMap ? new Map(JSON.parse(timersMap!)) : new Map<string, number>();
-        newTimers.set(mapKey, seconds);
-        setTimersMap(JSON.stringify([...newTimers]));
-    };
-
-    const onReset = () => {
+    const onReset = (): void => {
         setTimersMap(undefined);
     };
 
-    const buildRowFromTaskLists = (timerDay: TimerDay): JSX.Element[] => {
-        const timers: JSX.Element[] = [];
-        taskLists.forEach((list) => {
-            timers.push(<Timer name={list.title} id={list.id} day={timerDay} onTick={onTick} />);
-        });
-
-        return timers;
-    };
+    const buildRowFromTaskLists = (timerDay: TimerDay): JSX.Element[] =>
+        taskLists.map((list) => (
+            <Timer key={`${list.id}-${timerDay}`} name={list.title} id={list.id} day={timerDay} onTick={onTick} />
+        ));
 
     return (
         <div className={"timecharging"}>
             Timecharging
-            <Table width={10}>
+            <Table>
                 <thead>
                     <tr>
                         <th>Monday</th>

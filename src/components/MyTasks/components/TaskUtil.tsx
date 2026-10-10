@@ -19,7 +19,34 @@ export class TaskUtil {
     // distributed without restrictions. Attribution not necessary but appreciated.
     // Source: https://weeknumber.net/how-to/javascript
 
-    // Returns the ISO week of the date.
+    public static getTaskDueDate = (task: Task): Date | undefined => {
+        if (!task.due) return undefined;
+        const calendarDate = task.due.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        const date = calendarDate
+            ? new Date(Number(calendarDate[1]), Number(calendarDate[2]) - 1, Number(calendarDate[3]))
+            : new Date(task.due);
+        return Number.isNaN(date.getTime()) ? undefined : date;
+    };
+
+    private static startOfDay = (date: Date): Date => {
+        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    };
+
+    private static startOfWeek = (date: Date): Date => {
+        const start = TaskUtil.startOfDay(date);
+        start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+        return start;
+    };
+
+    private static sameDay = (first: Date, second: Date): boolean => {
+        return (
+            first.getFullYear() === second.getFullYear() &&
+            first.getMonth() === second.getMonth() &&
+            first.getDate() === second.getDate()
+        );
+    };
+
+    // Returns the ISO week number; using the Thursday also keeps year boundaries correct.
     public static getWeek = (givenDate: Date): number => {
         const date = new Date(givenDate.getTime());
         date.setHours(0, 0, 0, 0);
@@ -32,66 +59,53 @@ export class TaskUtil {
     };
 
     public static isTaskDueThisWeek = (task: Task): boolean => {
-        const now = new Date(Date.now());
-        const nowWeek = TaskUtil.getWeek(now);
-        const taskDueDate = new Date(task.due);
-        const isTaskDueThisWeek = TaskUtil.getWeek(taskDueDate) === nowWeek;
-
-        return isTaskDueThisWeek;
+        const dueDate = TaskUtil.getTaskDueDate(task);
+        if (!dueDate) return false;
+        const start = TaskUtil.startOfWeek(new Date());
+        const end = new Date(start);
+        end.setDate(end.getDate() + 7);
+        return dueDate >= start && dueDate < end;
     };
 
     public static isTaskDueToday = (task: Task): boolean => {
-        const now = new Date(Date.now());
-        const taskDueDate = new Date(task.due);
-        const isTaskDueToday = TaskUtil.isTaskDueThisWeek(task) && now.getDay() === taskDueDate.getDay();
-
-        return isTaskDueToday;
+        const dueDate = TaskUtil.getTaskDueDate(task);
+        return dueDate ? TaskUtil.sameDay(dueDate, new Date()) : false;
     };
 
     public static isTaskDueTomorrow = (task: Task): boolean => {
-        const now = new Date(Date.now());
-        const taskDueDate = new Date(task.due);
-        const isTaskDueTomorrow = TaskUtil.isTaskDueThisWeek(task) && now.getDay() + 1 === taskDueDate.getDay();
-
-        return isTaskDueTomorrow;
+        const dueDate = TaskUtil.getTaskDueDate(task);
+        if (!dueDate) return false;
+        const tomorrow = TaskUtil.startOfDay(new Date());
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return TaskUtil.sameDay(dueDate, tomorrow);
     };
 
     public static isTaskDueNextWeek = (task: Task): boolean => {
-        const now = new Date(Date.now());
-        const nowWeek = TaskUtil.getWeek(now);
-        const taskDueDate = new Date(task.due);
-        const isTaskDueNextWeek = TaskUtil.getWeek(taskDueDate) === nowWeek + 1;
-
-        return isTaskDueNextWeek;
+        const dueDate = TaskUtil.getTaskDueDate(task);
+        if (!dueDate) return false;
+        const start = TaskUtil.startOfWeek(new Date());
+        start.setDate(start.getDate() + 7);
+        const end = new Date(start);
+        end.setDate(end.getDate() + 7);
+        return dueDate >= start && dueDate < end;
     };
 
     public static isTaskOverDue = (task: Task): boolean => {
-        const now = new Date(Date.now());
-        const taskDueDate = new Date(task.due);
-        const isTaskOverDue = taskDueDate.getTime() < now.getTime() && !TaskUtil.isTaskDueToday(task);
-
-        return isTaskOverDue;
+        const dueDate = TaskUtil.getTaskDueDate(task);
+        return dueDate ? TaskUtil.startOfDay(dueDate) < TaskUtil.startOfDay(new Date()) : false;
     };
 
     public static isTaskDueThisMonth = (task: Task): boolean => {
-        const now = new Date(Date.now());
-        const nowMonth = now.getMonth();
-        const taskDueDate = new Date(task.due);
-        const isTaskDueThisMonth =
-            taskDueDate.getMonth() === nowMonth && taskDueDate.getFullYear() === now.getFullYear();
-
-        return isTaskDueThisMonth;
+        const dueDate = TaskUtil.getTaskDueDate(task);
+        const now = new Date();
+        return dueDate ? dueDate.getMonth() === now.getMonth() && dueDate.getFullYear() === now.getFullYear() : false;
     };
 
     public static isTaskDueThisWeekend = (task: Task): boolean => {
-        const taskDueDate = new Date(task.due);
-
-        // 0 is Sunday, 6 is Saturday.
-        // Task must be due this week and on a weekend day.
-        const isTaskDueThisWeekend =
-            TaskUtil.isTaskDueThisWeek(task) && (taskDueDate.getDay() === 0 || taskDueDate.getDay() === 6);
-
-        return isTaskDueThisWeekend;
+        const dueDate = TaskUtil.getTaskDueDate(task);
+        return Boolean(
+            dueDate && TaskUtil.isTaskDueThisWeek(task) && (dueDate.getDay() === 0 || dueDate.getDay() === 6)
+        );
     };
 
     public static generateShardsForTask = (task: Task): JSX.Element => {
