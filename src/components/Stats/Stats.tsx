@@ -241,31 +241,6 @@ export default function Stats(): JSX.Element {
                         </Grid.Col>
                     </Grid>
                 </Paper>
-
-                {/* <Paper className="stats-panel" p="md" radius="md" withBorder>
-                    <Title order={4}>Completions per day · last 7 days</Title>
-                    {completedLast7Days ? (
-                        <span className="tasks-breakdown-chart">
-                            <VictoryChart domainPadding={{ x: 18 }} theme={VictoryTheme.material}>
-                                <VictoryAxis
-                                    tickFormat={(date: Date): string =>
-                                        date.toLocaleDateString(undefined, { weekday: "short" })
-                                    }
-                                />
-                                <VictoryAxis dependentAxis tickFormat={(tick: number): number => Math.round(tick)} />
-                                <VictoryBar
-                                    data={recentDays}
-                                    style={{ data: { fill: "#40c4cf" } }}
-                                    animate={{ duration: 500 }}
-                                />
-                            </VictoryChart>
-                        </span>
-                    ) : (
-                        <Text color="dimmed" size="sm">
-                            Complete a task and your weekly activity will appear here.
-                        </Text>
-                    )}
-                </Paper> */}
             </Stack>
         </div>
     );
