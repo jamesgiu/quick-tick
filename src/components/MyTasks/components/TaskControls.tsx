@@ -1,22 +1,23 @@
-import { ActionIcon, Button, Group, LoadingOverlay, Popover, Text, Tooltip } from "@mantine/core";
+import { ActionIcon, Button, Group, LoadingOverlay, Popover, Progress, Stack, Text, Tooltip } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 import {
+    IconAward,
     IconCircleCheck,
     IconCircleDashed,
     IconFlag,
     IconFlagOff,
-    IconMoodSmileBeam,
     IconPencil,
     IconTrash,
     IconTrashX,
 } from "@tabler/icons";
 import { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { GoogleAPI } from "../../../api/GoogleAPI";
 import { Task, TaskListIdTitle } from "../../../api/Types";
-import { credentialAtom, taskListsMapAtom, tasksMapAtom } from "../../../recoil/Atoms";
+import { credentialAtom, taskCelebrationAtom, taskListsMapAtom, tasksMapAtom } from "../../../recoil/Atoms";
 import { genErrorNotificationProps } from "../../DataLoader/DataLoader";
 import TaskForm from "../../Tasks/TaskForm/TaskForm";
+import { getRpgProgress, XP_PER_COMPLETED_TASK } from "../../../util/TaskProgression";
 
 // TODO
 
@@ -33,6 +34,7 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
     const [isFlagged, setIsFlagged] = useState<boolean>(props.targetTask.notes?.includes(QT_FLAGGED_STR) ?? false);
     const [taskListMap, setTaskListMap] = useRecoilState<Map<string, Task[]>>(taskListsMapAtom);
     const [tasksMap, setTasksMap] = useRecoilState<Map<string, TaskListIdTitle>>(tasksMapAtom);
+    const setTaskCelebration = useSetRecoilState(taskCelebrationAtom);
     const credential = useRecoilValue(credentialAtom);
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -94,15 +96,46 @@ export default function TaskControls(props: TaskControlsProps): JSX.Element {
             taskList.id,
             completedTask,
             (): void => {
+                let completedTaskCount = 0;
+                taskListMap.forEach((tasks) =>
+                    tasks.forEach((task) => {
+                        if (task.completed && !task.deleted) completedTaskCount++;
+                    })
+                );
+                const previousXp = completedTaskCount * XP_PER_COMPLETED_TASK;
+                const nextXp = previousXp + XP_PER_COMPLETED_TASK;
+                const previousProgress = getRpgProgress(previousXp);
+                const nextProgress = getRpgProgress(nextXp);
+                const levelledUp = nextProgress.level > previousProgress.level;
+
                 showNotification({
-                    title: "Task completed!",
-                    message: "Well done!",
-                    color: "green",
-                    icon: <IconMoodSmileBeam />,
+                    title: levelledUp
+                        ? `Level up! Level ${nextProgress.level}: ${nextProgress.title}`
+                        : `+${XP_PER_COMPLETED_TASK} XP earned`,
+                    message: (
+                        <Stack spacing={6}>
+                            <Text size="sm">
+                                {levelledUp ? "A new rank for completing" : "Earned XP for completing"} “
+                                {props.targetTask.title}”
+                            </Text>
+                            <Progress value={nextProgress.progress} size="sm" radius="xl" color="teal" />
+                            <Text size="xs" color="dimmed">
+                                {nextProgress.nextXp !== undefined
+                                    ? `${nextXp.toLocaleString()} / ${nextProgress.nextXp.toLocaleString()} XP · ${
+                                          nextProgress.nextXp - nextXp
+                                      } XP to next level`
+                                    : `${nextXp.toLocaleString()} XP · highest level reached`}
+                            </Text>
+                        </Stack>
+                    ),
+                    color: "teal",
+                    icon: <IconAward />,
+                    autoClose: 5500,
                 });
 
                 setLoading(false);
                 updateTaskInLists(taskList, completedTask);
+                setTaskCelebration((count) => count + 1);
             },
             (): void => {
                 showNotification(genErrorNotificationProps("Task completion"));

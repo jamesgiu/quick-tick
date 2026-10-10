@@ -6,6 +6,7 @@ import "./QuickTickAppShell.css";
 import QuickTickFooter from "./components/Footer/QuickTickFooter";
 import QuickTickHeader from "./components/Header/QuickTickHeader";
 import QuickTickNavbar from "./components/Navbar/QuickTickNavbar";
+import TaskCelebration from "./components/TaskCelebration/TaskCelebration";
 
 export default function QuickTickAppShell(): JSX.Element {
     const dataLoading = useRecoilValue(dataLoadingAtom);
@@ -19,6 +20,7 @@ export default function QuickTickAppShell(): JSX.Element {
             header={<QuickTickHeader />}
             footer={<QuickTickFooter />}
         >
+            <TaskCelebration />
             {dataLoading ? <LoadingOverlay overlayBlur={2} visible={true} /> : <Outlet />}
         </AppShell>
     );

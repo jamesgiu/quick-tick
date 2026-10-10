@@ -89,3 +89,8 @@ export const forceRefreshAtom = atom<boolean>({
     key: "forceRefresh",
     default: false,
 });
+
+export const taskCelebrationAtom = atom<number>({
+    key: "taskCelebration",
+    default: 0,
+});

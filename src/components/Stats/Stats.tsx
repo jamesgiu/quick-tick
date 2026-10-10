@@ -1,9 +1,10 @@
-import { Badge, Box, Grid, Group, Paper, Progress, SimpleGrid, Stack, Text, Title } from "@mantine/core";
+import { Badge, Box, Grid, Group, Paper, Progress, SimpleGrid, Stack, Table, Text, Title } from "@mantine/core";
 import { useRecoilValue } from "recoil";
 import { IconAward, IconChartBar, IconChecklist, IconFlame } from "@tabler/icons";
-import { VictoryAxis, VictoryBar, VictoryChart, VictoryPie, VictoryTheme } from "victory";
+import { VictoryPie, VictoryTheme } from "victory";
 import { Task } from "../../api/Types";
 import { taskListsMapAtom } from "../../recoil/Atoms";
+import { getRpgProgress, RPG_LEVELS, XP_PER_COMPLETED_TASK } from "../../util/TaskProgression";
 import "./Stats.css";
 
 interface ChartValueItem {
@@ -62,30 +63,6 @@ export const generateChartValuesLastXDays = (taskListMap: Map<string, Task[]>, d
     });
 };
 
-export const RPG_LEVELS = [
-    { level: 1, title: "Novice", xp: 0 },
-    { level: 2, title: "Apprentice", xp: 500 },
-    { level: 3, title: "Task Tactician", xp: 1500 },
-    { level: 4, title: "Quest Keeper", xp: 3000 },
-    { level: 5, title: "Productivity Hero", xp: 5000 },
-    { level: 6, title: "QuickTick Legend", xp: 8000 },
-];
-
-export const getRpgProgress = (xp: number): { level: number; title: string; progress: number; nextXp?: number } => {
-    const currentIndex = RPG_LEVELS.reduce(
-        (index, level, candidateIndex) => (xp >= level.xp ? candidateIndex : index),
-        0
-    );
-    const current = RPG_LEVELS[currentIndex];
-    const next = RPG_LEVELS[currentIndex + 1];
-    return {
-        level: current.level,
-        title: current.title,
-        progress: next ? ((xp - current.xp) / (next.xp - current.xp)) * 100 : 100,
-        nextXp: next?.xp,
-    };
-};
-
 const getTaskTotals = (taskListMap: Map<string, Task[]>): { completed: number; active: number } => {
     let completed = 0;
     let active = 0;
@@ -97,6 +74,39 @@ const getTaskTotals = (taskListMap: Map<string, Task[]>): { completed: number; a
         })
     );
     return { completed, active };
+};
+
+const getTaskListTotals = (
+    taskListMap: Map<string, Task[]>
+): {
+    id: string;
+    title: string;
+    total: number;
+    completed: number;
+    active: number;
+}[] => {
+    const taskListTotals: {
+        id: string;
+        title: string;
+        total: number;
+        completed: number;
+        active: number;
+    }[] = [];
+
+    taskListMap.forEach((tasks, taskListKey) => {
+        const visibleTasks = tasks.filter((task) => !task.deleted);
+        const completed = visibleTasks.filter((task) => Boolean(task.completed)).length;
+        const taskList = JSON.parse(taskListKey) as { id: string; title: string };
+        taskListTotals.push({
+            id: taskList.id,
+            title: taskList.title,
+            total: visibleTasks.length,
+            completed,
+            active: visibleTasks.length - completed,
+        });
+    });
+
+    return taskListTotals.sort((first, second) => first.title.localeCompare(second.title));
 };
 
 const StatSummary = ({
@@ -124,16 +134,15 @@ const StatSummary = ({
 export default function Stats(): JSX.Element {
     const taskListMap = useRecoilValue(taskListsMapAtom);
     const totals = getTaskTotals(taskListMap);
-    const totalXp = totals.completed * 100;
+    const totalXp = totals.completed * XP_PER_COMPLETED_TASK;
     const progression = getRpgProgress(totalXp);
-    const recentDays = generateChartValuesLastXDays(taskListMap, 7);
-    const completedLast7Days = recentDays.reduce((total, item) => total + item.y, 0);
     const completedLast30Days = generateChartValuesLastXDays(taskListMap, 30).reduce(
         (total, item) => total + item.y,
         0
     );
     const breakdown30Days = generatePieValuesForBreakdownLastXDays(taskListMap, 30);
     const breakdown7Days = generatePieValuesForBreakdownLastXDays(taskListMap, 7);
+    const taskListTotals = getTaskListTotals(taskListMap);
     const progressToNextLevel =
         progression.nextXp !== undefined
             ? `${(progression.nextXp - totalXp).toLocaleString()} XP to Level ${progression.level + 1}`
@@ -196,7 +205,7 @@ export default function Stats(): JSX.Element {
                             {progressToNextLevel}
                         </Text>
                         <Text size="sm" color="dimmed">
-                            100 XP per completed task
+                            {XP_PER_COMPLETED_TASK} XP per completed task
                         </Text>
                     </Group>
                     <Group className="rpg-level-titles" spacing="xs">
@@ -210,6 +219,43 @@ export default function Stats(): JSX.Element {
                             </Badge>
                         ))}
                     </Group>
+                </Paper>
+
+                <Paper className="stats-panel" p="md" radius="md" withBorder>
+                    <Title order={4}>Task totals by list</Title>
+                    <Text size="sm" color="dimmed" mb="sm">
+                        Total tasks in each list, including completed tasks.
+                    </Text>
+                    {taskListTotals.length ? (
+                        <Table striped highlightOnHover>
+                            <thead>
+                                <tr>
+                                    <th>Task list</th>
+                                    <th>Total tasks</th>
+                                    <th>Active</th>
+                                    <th>Completed</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {taskListTotals.map((taskList) => (
+                                    <tr key={taskList.id}>
+                                        <td>{taskList.title}</td>
+                                        <td>
+                                            <Badge color="blue" variant="light">
+                                                {taskList.total}
+                                            </Badge>
+                                        </td>
+                                        <td>{taskList.active}</td>
+                                        <td>{taskList.completed}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    ) : (
+                        <Text size="sm" color="dimmed">
+                            No task lists to show yet.
+                        </Text>
+                    )}
                 </Paper>
 
                 <Paper className="stats-panel" p="md" radius="md" withBorder>

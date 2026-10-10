@@ -1,0 +1,58 @@
+.task-celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -16px;
+  width: 10px;
+  height: 16px;
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: task-confetti-fall;
+  animation-timing-function: cubic-bezier(0.18, 0.65, 0.45, 1);
+  animation-fill-mode: both;
+}
+
+.confetti-piece:nth-child(4n) {
+  background: #40c4cf;
+}
+
+.confetti-piece:nth-child(4n + 1) {
+  background: #ffd43b;
+}
+
+.confetti-piece:nth-child(4n + 2) {
+  background: #ff8787;
+}
+
+.confetti-piece:nth-child(4n + 3) {
+  background: #b197fc;
+}
+
+@keyframes task-confetti-fall {
+  0% {
+    transform: translate3d(0, -4vh, 0) rotate(0deg);
+    opacity: 0;
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate3d(42px, 108vh, 0) rotate(760deg);
+    opacity: 0.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece {
+    animation: none;
+    opacity: 0;
+  }
+}
